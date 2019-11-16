@@ -1,0 +1,33 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-column-gap: 100px;
+  }
+
+  .grid-item {
+    font-size: 15px;
+  }
+
+  div.auctionBox{
+      width:  250px;
+        border: 1px solid #7971ea;
+      height: 310px;
+       margin: 20px;
+  }
+
+  div.bidBox{
+	width:  250px;
+        border: 1px solid #7971ea;
+        background-color : #232323
+        height: 310px;
+        margin: 20px;
+  }
+
+  .gridbtn{
+      width : 60%;
+  }
+
+center.timer{
+	color : red;
+	font-size: 15px;
+}
