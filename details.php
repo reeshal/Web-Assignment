@@ -38,20 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       //Insert bidding
       require_once "includes/db_connect.php";
       
-
-      //query start price
-      $startPriceQuery = $conn->query("SELECT start_price FROM Product WHERE productId = '$productId' LIMIT 1")->fetch();
-      $startPrice =  $startPriceQuery['start_price'];
-
-      //query last bidded price
-      $lastBidPriceQuery = $conn->query("SELECT MAX(price_bidded) AS max FROM Bidding WHERE productId = '$productId' LIMIT 1")->fetch();
-      $lastBidPrice =  $lastBidPriceQuery['max'];
-
-      //calculate new bidded price
-      if(empty($lastBidPrice)){
-        $lastBidPrice = $startPrice;
-      }
-      $newBid = (0.1 * $startPrice) + $lastBidPrice;
+      //query bidded price
+      $newBid  = $_POST["BiddingPrice"];
 
       //querying if user already bidded
       $query = $conn->query("SELECT price_bidded FROM Bidding WHERE productId = '$productId' AND username = '$username'")->fetch();
@@ -180,15 +168,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
 				  <div class=\"grid-item\" style=\"padding-top:75px;\">
 				    <form method=\"post\">
-              <div class=\"grid-container\">
-                <div class=\"grid-item\" style=\"padding-top:10px;\">
-                Final sales price :
+                <div  style=\"padding-top:10px;\">";
+                if($isBid){
+                  echo "Enter Bidding Price (should be higher than the price shown) :";
+                }
+                else{
+                  echo "<center><b>You are currently the highest bidder</b></center>";
+                }
+
+                 echo "
                 </div>
 
-                <div class=\"grid-item\">
-                <div style=\"font-size : 30px;\">Rs $biddingPrice</div>
-                </div>
-              </div>
+                  <div class=\"grid-container\" > 
+                    <div class=\"grid-item\" style=\"font-size : 30px;\">
+                      Rs
+                    </div>
+
+                    <div class=\"grid-item\" style=\"padding-top:10px;\">
+                      <input id=\"price\"
+                        type=\"number\"
+                        class=\"form-control\"
+                        name=\"BiddingPrice\"
+                        value=\"$biddingPrice\"
+                        min=\"$biddingPrice\"
+                        onchange=\"validatePrice();\">
+                    </div>
+                     
+                  </div>
 
               <div class=\"grid-container\">
                 <div class=\"grid-item\" style=\"padding-top:10px;\">
@@ -198,17 +204,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 <div class=\"grid-item\">
                   <center id=\"demo\" class=\"timer\" style=\"font-size : 30px;\"></center> 
                 </div>
-              </div>";
+              </div>
+              ";
               
               if($isBid){
-                echo "<center><input type=\"submit\" class=\"gridbtn btn-success\" value=\"Bid\"></center>";
+                echo "<center><input id=\"bid\" type=\"submit\" class=\"gridbtn btn-success\" value=\"Bid\" style=\"display:none;\"></center>";
               }
               else{
-                echo "<center><input type=\"submit\" class=\"gridbtn btn-danger\" value=\"Cancel Bid\" ></center>";
+                echo "<center><input type=\"submit\"  class=\"gridbtn btn-danger\" value=\"Cancel Bid\" ></center>";
               }
-              
-
-
+         
               echo "</form>
 						
 				 </div>
@@ -252,9 +257,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		    } 
 		}, 1000); 
 
-    function changeButton(){
+    function validatePrice(){
+       var currentPrice = "<?php echo $biddingPrice ?>";
+       console.log("currentPrice : " , currentPrice);
 
+       var price = document.getElementById("price").value;
+       console.log("price : " , price);
+
+       if(price > currentPrice){
+          document.getElementById("bid").style.display = 'block';
+          return false;
+       }
+       else{
+          document.getElementById("bid").style.display = 'none';
+          return true;
+       }
     }
+
 </script>
 
    
