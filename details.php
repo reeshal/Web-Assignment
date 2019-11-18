@@ -227,7 +227,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 <script type="text/javascript"> 
 		var end_time = "<?php echo $end_time ?>";
     console.log("end_time : " , end_time);
-		var deadline = new Date(end_time).getTime(); 
+    var deadline = new Date(end_time).getTime(); 
+    
 		var x = setInterval(function() { 
 		var now = new Date().getTime(); 
 		var t = deadline - now; 
@@ -242,7 +243,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 			document.getElementById("demo").innerHTML = days + " day "  
 			+ hours + ":" + minutes + ":" + seconds ; 
 		}
-		document.getElementById("demo").style.color = "red";
+    document.getElementById("demo").style.color = "red";
+
+    var productId = "<?php echo $id ?>";
+    console.log("++++++productId : " , productId);
+    
+    setTimeout("location.reload(true);",5000);
 		
 		    if (t < 0) { 
           clearInterval(x); 
@@ -273,6 +279,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           return true;
        }
     }
+
 
 </script>
 
