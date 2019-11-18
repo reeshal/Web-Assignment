@@ -93,7 +93,7 @@ if ($user ==""){
                   <ul class="dropdown">
                       <li><a href="MyProfile.html">My Profile</a></li>
                       <li><a href="MyProducts.php">My Products</a></li>
-                      <li><a href="Biddings.php">My Biddings</a></li>
+                      <li><a href="MyBiddings.php">My Biddings</a></li>
                       <li><a href="homepage.php">Logout</a></li>
                   </ul>
                 </li>
