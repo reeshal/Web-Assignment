@@ -1,4 +1,7 @@
 <?php 
+session_start();
+$user=$_SESSION['username'];
+
     require_once "includes/db_connect.php";
     //Insert into auction detail
     $productId = $_GET['id'];
@@ -32,5 +35,23 @@
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
     $Result =$conn->exec($update) ;
 
+    if($user == $currentOwner){
+        echo "<script>alert('Congratulations !! You have won this auction');</script>";
+    }
+
     header("Location: ProductsNew.php"); 
 ?>
+
+<script>
+    var user = "<?php echo $user ?>";
+    var winner = "<?php echo $currentOwner ?>";
+
+    console.log("user : " , user);
+    console.log("winner : " , winner);
+
+    if(user == winner){
+        console.log("Displaying message");
+        alert("Congratulations !! You have won this auction");
+    }
+    location.href = 'http://localhost/Assignment/ProductsNew.php?referer=login';
+</script>

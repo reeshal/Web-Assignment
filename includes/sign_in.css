@@ -1,6 +1,7 @@
 @import "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
+
 body{
-    background:url('cover.jpg');
+    background:url('hero_1.jpg');
     background-size: cover;
     font-family: Arial, Helvetica, sans-serif;
     font-size:14px;
@@ -29,7 +30,7 @@ input[type=text],input[type=password],input[type=email],input[type=date]{
     outline: none;
     border:none;
     border-bottom: 1px solid ;
-    border-bottom-color: #5bc220;
+    border-bottom-color: #7971ea;
     color:#ffffff;
     border-radius: 5px;
     margin:5px;
@@ -42,7 +43,7 @@ input[type=submit]{
     outline: none;
     border:none;
     margin-top:30px;
-    background: #5bc220;
+    background: #7971ea;
     border-radius:20px;
     opacity: 0.7;
     font-size: 20px;

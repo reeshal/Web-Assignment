@@ -244,11 +244,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 			+ hours + ":" + minutes + ":" + seconds ; 
 		}
     document.getElementById("demo").style.color = "red";
-
-    var productId = "<?php echo $id ?>";
-    console.log("++++++productId : " , productId);
     
     setTimeout("location.reload(true);",5000);
+      /* var productId = "<?php echo $id ?>";
+       console.log("productId : " , productId);
+       var xhttp = new XMLHttpRequest();
+       xhttp.open("GET", "test.php?id="+productId, true);
+       xhttp.send();*/
 		
 		    if (t < 0) { 
           clearInterval(x); 
