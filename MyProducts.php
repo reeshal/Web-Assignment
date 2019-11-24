@@ -2,20 +2,37 @@
 session_start();
 $user=$_SESSION['username'];
 
+require_once "includes/db_connect.php";
+
 function test_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
 }
-  
-$search=$category=$query=$boughtOrSold="";
-if ($_SERVER["REQUEST_METHOD"] == "POST"){
-    if (!empty($_POST["tags"]))
-      $search=test_input($_POST["tags"]);
+function dateformatter($date){
+	$date = str_replace('/', '-', $date );
+	$newDate = date("Y-m-d", strtotime($date));
+	return $newDate;
+}
 
-      $category=$_POST["category"];
-      $boughtOrSold=$_POST["boughtOrSold"];
+$start_price=$start_time=$duration="";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
+  $start_price = test_input($_POST["start_price"]);
+  $duration = test_input($_POST["duration"]);
+  $pid=$_POST["prodId"];
+  $the_time = date('Y-m-d H:i:s');
+  $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' days',strtotime($the_time)));
+  
+  $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
+                              start_price=$start_price
+                          WHERE current_owner='$user'
+                          AND productId=$pid ";
+
+$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$Result =$conn->exec($update) ;
+header("Location: MyProducts.php");
 }
 ?>
 
@@ -32,6 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/style.css">
 
     <link rel="stylesheet" href="includes/productsRishikesh.css">
+    <link rel="stylesheet" href="includes/myproductsTab.css">
 
 </head>
 <body>
@@ -77,128 +95,116 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       </div>
     </header>
     <!--End of header-->
-    <!--Search Bar only-->
-    <div class="container">
-          <div class="row align-items-center justify-content-center text-center">
-            <div class="col-md-10">
-              <div class="form-search-wrap p-2" style="margin-top: 100px; margin-bottom: 50px">
-                <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-                  <div class="row ">
-  
-                    <div class="col-5 border-right">
-                      <!--met  echo value searched-->
-                      <input type="text" name="tags"  class="form-control" placeholder="Search your products" value="<?php echo $search;?>">
-                    </div>
-                    <div class="col-2 border-right">
-                    <div class="select-wrap">
-                        <select class="form-control" name="boughtOrSold">
-                          <option value="">All </option>
-                          <option value="Bought">Bought</option>
-                          <option value="Sold">Sold </option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-3">
-                      <div class="select-wrap">
-                        <select class="form-control" name="category">
-                          <option value="">All Categories</option>
-                          <option value="Art">Art</option>
-                          <option value="Books and magazines">Books &amp; Magazines</option>
-                          <option value="Cellphones">Cellphones</option>
-                          <option value="Computers">Computers</option>
-                          <option value="Clothes">Clothes</option>
-                          <option value="Jewellery and Watches">Jewellery &amp; Watches</option>
-                          <option value="Music">Music</option>
-                          <option value="Movies">Movies</option>
-                          <option value="Health Care">Health Care</option>
-                          <option value="Vehicles">Vehicles</option>
-                        </select>
-                      </div>
-                    </div>
-  
-                    <div class="col-2 text-right">
-                      <input type="submit" class="btn btn-primary" value="Search">
-                    </div>
-                    
-                  </div>
-                </form>
-              </div>
-  
-            </div>
-          </div>
-        </div> 
-        <!--End of Search bar only-->
 
-    <div class="row" style="padding-left:100px;">
-    <?php
-    require_once "includes/db_connect.php";
-    //Start of searching when bought or sold are displayed together//
-    if($search=="" && $category=="" && $boughtOrSold==""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time 
-                  FROM Product p, ProductImage i			
-                  where p.productId = i.prodId
-                  AND p.current_owner='$user'";
-    }    
-    else if($search=="" && $category!="" && $boughtOrSold==""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time 
-                  FROM Product p, ProductImage i 			
-                  where p.productId = i.prodId
-                  AND p.category='$category'
-                  AND p.current_owner='$user'";                  
-    }
-      else if($search!="" && $category=="" && $boughtOrSold==""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
-                  FROM Product p, ProductImage i, ProductTag t			
-                  where p.productId = i.prodId
-                  AND p.productId = t.productId
-                  AND t.product_tags LIKE '%$search%'
+
+    <div class="container" style="padding-left:70px; padding-top:75px">
+      <div class="row tab">
+        <button class="tablinks" onclick="switchTab(event, 'owned')">Items Owned</button>
+        <button class="tablinks" onclick="switchTab(event, 'inauction')">Items In Auction</button>
+      </div>
+      <div id="owned" class="tabcontent row">
+        <?php
+          $query="SELECT a.date, MAX(a.amount_paid) AS pmax, p.name, s.imageName,p.productId
+                  FROM Product p, AuctionDetail a, ProductImage s
+                  WHERE a.productId=p.productId
+                  AND p.productId=s.prodID
                   AND p.current_owner='$user'
-                  
-                  UNION
-                  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
-                  FROM Product p, ProductImage i		
-                  where p.productId = i.prodId
-                  AND p.name LIKE '%$search%'
-                  AND p.current_owner='$user'";
-    }
-      else if($search!="" && $category!=""&& $boughtOrSold=="" ){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
-                  FROM Product p, ProductImage i, ProductTag t			
-                  where p.productId = i.prodId
-                  AND p.productId = t.productId
-                  AND t.product_tags LIKE '%$search%'
-                  AND p.category='$category'
-                  AND p.current_owner='$user'
-                  UNION
-                  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
-                  FROM Product p, ProductImage i		
-                  where p.productId = i.prodId
-                  AND p.name LIKE '%$search%'
-                  AND p.category='$category'
-                  AND p.current_owner='$user'";
-    }
-    //End of searching when bought or sold are displayed together//
+                  AND p.is_Sold=1
+                  GROUP BY p.name";
+          $data  =$conn->query($query) ;
+          $result = $data->fetchAll(PDO::FETCH_ASSOC);
     
-    $data  =$conn->query($query) ;
-    $result = $data->fetchAll(PDO::FETCH_ASSOC);    
+          foreach($result as $output) {
+              $name =  $output["name"];
+              $price = $output["pmax"];
+              $date = $output["date"];
+              $imageName = $output["imageName"];
+              $pid=$output['productId'];
+              echo "
+              <div class=\"auctionBox grid-item\">
+                <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
+                <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+                <center>Amount Paid: Rs $price</center>
+                <center>Date bought: $date</center>
+                <button  onclick=\"resell('$pid')\">Resell</button>
+                <button>Leave Feedback</button>
+                </div>";
+            }
+          
+        ?>
+      </div>
+      <div id="inauction" class="tabcontent row">
+        <?php
+        $query="SELECT p.start_time, p.start_price, p.name, s.imageName,p.productId
+                FROM Product p, ProductImage s
+                WHERE p.current_owner='$user'
+                AND p.productId=s.prodID
+                AND p.is_Sold=0";
+        $data  =$conn->query($query) ;
+        $result = $data->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach($result as $output) {
-        $name =  $output["name"];
-        $start_price = $output["start_price"];
-        $start_time = $output["start_time"];
-        $end_time = $output["end_time"];
-        $prodId = $output["productId"];
-        $imageName = $output["imageName"];
-        
-        echo "
-          <div class=\"auctionBox grid-item\">
-            <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
-            <img src=\"http://localhost/Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
-            <center>Rs $start_price</center>
-            </div>";
-    }
-     ?>
+        foreach($result as $output) {
+            $name =  $output["name"];
+            $price = $output["start_price"];
+            $date = $output["start_time"];
+            $imageName = $output["imageName"];
+
+            echo "
+            <div class=\"auctionBox grid-item\">
+              <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
+              <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+              <center>Starting Price: Rs $price</center>
+              <center>Current Price: TO BE IMPLEMENTED</center>
+              <center>Time Left: TO BE IMPLEMENTED</center>
+              </div>";
+          }
+        ?>
+      </div>
+      
+      
     </div>
+    <div id="modal-wrapper" class="modal">
+      <form class="modal-content animate" action="" method="post">
+        <div class="container">
+          <h3>Reselling Product</h3>
+          <span onclick="document.getElementById('modal-wrapper').style.display='none' " class="close" title="Close PopUp">&times;</span>
+          <input type="number" class="form-control" name="start_price" value="" placeholder="Starting Price" maxlength="20">
+          <input type="number" class="form-control" name="duration" value="" placeholder="Duration" maxlength="20">
+          <input type="hidden" id="prodId" name="prodId">
+          <input type="submit" value="Confirm Resale">
+        </div>
+      </form>
+    </div>
+
 </div>
+<script>
+        function switchTab(evt,choice){
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(choice).style.display = "inline";
+          evt.currentTarget.className += " active";
+        }
+
+        function resell(pid){
+          document.getElementById("modal-wrapper").style.display="block";
+          document.getElementById("prodId").value=pid;
+         // productid.innerHTML="Value= "+"'"+pid+"'";
+        }
+
+        var modal = document.getElementById('modal-wrapper');
+        window.onclick = function(at) {
+        if (at.target == modal) {
+        modal.style.display = "none";
+        }
+        }
+        
+      </script>
 </body>
 </html>
