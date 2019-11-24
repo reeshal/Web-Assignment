@@ -8,19 +8,16 @@ if(isset($_GET['referer'])){
     $user=$_SESSION['username'];
   }//end if
 }
-
 function test_input($data) {
   $data = trim($data);
   $data = stripslashes($data);
   $data = htmlspecialchars($data);
   return $data;
 }
-
 $search=$category=$query="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
   if (!empty($_POST["tags"]))
     $search=test_input($_POST["tags"]);
-
   if (!empty($_POST["category"]))
     $category=test_input($_POST["category"]);
 }
@@ -159,7 +156,6 @@ if ($user ==""){
       <div class="row" style="padding-left:100px;">
       <?php
       require_once "includes/db_connect.php";
-
       if($search=="" && $category==""){
         $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time 
                   FROM Product p, ProductImage i 			
@@ -210,25 +206,33 @@ if ($user ==""){
                   AND p.name LIKE '%$search%'
                   AND p.category='$category'";
       }
-
 	
       $data  =$conn->query($query) ;
       $result = $data->fetchAll(PDO::FETCH_ASSOC);
-
       foreach($result as $output) {
           $name =  $output["name"];
-          $start_price = $output["start_price"];
           $start_time = $output["start_time"];
           $end_time = $output["end_time"];
           $prodId = $output["productId"];
           $imageName = $output["imageName"];
+
+          $currentPriceQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
+                                                           FROM Bidding
+                                                           WHERE productId = '$prodId'")->fetch();
+                                                           
+          $currentPrice = $currentPriceQuery['price_bidded'];
+
+         if(empty($currentPrice)){
+          $currentPrice = $output["start_price"];
+         }
+
           
         if($user!=""){
           echo "
           <div class=\"auctionBox grid-item\">
             <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
-            <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
-            <center>Rs $start_price</center>
+            <img src=\"http://localhost/Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+            <center>Rs $currentPrice</center>
             <center>Ends at $end_time</center>
             <center>Click on product name to bid</center>
             </div>";
@@ -237,8 +241,8 @@ if ($user ==""){
           echo "
           <div class=\"auctionBox grid-item\">
             <center>$name</center>
-            <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
-            <center>Rs $start_price</center>
+            <img src=\"http://localhost/Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+            <center>Rs $currentPrice</center>
             </div>";
         }
           }

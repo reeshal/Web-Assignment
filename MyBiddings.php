@@ -1,7 +1,6 @@
 <?php 
 	session_start();
 	$user=$_SESSION['username'];
-
 	function test_input($data) {
 		$data = trim($data);
 		$data = stripslashes($data);
@@ -117,7 +116,6 @@
 	<div class="row" style="padding-left:100px;">
 		<?php 
 			require_once "includes/db_connect.php";
-
 			if($search=="" && $category==""){
 				$query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time 
 						  FROM Product p, ProductImage i, Bidding b 			
@@ -176,7 +174,6 @@
 						  AND p.category='$category'
 						  AND  p.is_sold = 0	";
 			  }
-
 			$data  =$conn->query($query) ;
 			$result = $data->fetchAll(PDO::FETCH_ASSOC);
 				
@@ -187,8 +184,6 @@
 				$end_time = $output["end_time"];
 				$prodId = $output["productId"];
 				$imageName = $output["imageName"];
-
-
 				echo "
 				<div class=\"auctionBox grid-item\">
 				  <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
@@ -196,8 +191,6 @@
 				  <center>Rs $start_price</center>
 				  </div>";
 			}
-
-
 		?>
 	</div>
 
