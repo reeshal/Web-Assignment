@@ -10,17 +10,14 @@ function test_input($data) {
 	$data = htmlspecialchars($data);
 	return $data;
 }
-
 function dateformatter($date){
 	$date = str_replace('/', '-', $date );
 	$newDate = date("Y-m-d", strtotime($date));
 	return $newDate;
 }
-
 //defining variables
 $product_name=$description=$tags=$start_price=$category=$start_time=$duration="";
 $errorproduct_name=$errordescription=$errorstart_price=$errorcategory=$errorstart_time=$errorduration="";
-
    
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	//checking emptiness
@@ -33,15 +30,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	if(!empty($_POST["description"])){
 		  $description = test_input($_POST["description"]);
 	}
-
 	$category = test_input($_POST["category"]);			
-
 	if (empty($_POST["start_price"])) {
 		$errorstart_price = "Starting price is required";
 	} else {
 		$start_price = test_input($_POST["start_price"]);
 	}
-
 	  if (empty($_POST["duration"])) {
 			  $errorduration = "Duration of auction is required";
 			} else {
@@ -53,21 +47,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		require_once "includes/db_connect.php";
 	    $username = $user;
 		$the_time = date('Y-m-d H:i:s');
-		$endtime=date('Y-m-d H:i',strtotime('+'.$duration.' days',strtotime($the_time)));
-
+		$duration += 3; //Timezone
+		$endtime=date('Y-m-d H:i',strtotime('+'.$duration.' hours',strtotime($the_time)));
 	    $insert = "INSERT INTO Product(name, description, start_price, category, start_time, duration, current_owner, end_time)
 			 VALUES(" . $conn->quote($product_name) .", " . $conn->quote($description) .", " . $conn->quote($start_price) .", " . $conn->quote($category) .", " . $conn->quote($the_time) .", " . $conn->quote($duration) .", " . $conn->quote($username) .", " . $conn->quote($endtime) .")";
-
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		//$conn->beginTransaction() ;
-
 		$Result =$conn->exec($insert) ;
 /*
 		if(!$Result){
 			$conn->rollBack();	
 			die();
 		}*/
-
 		/*Getting product id of recently created product 
 		li pa marC acz timezone problems
 		$query = "SELECT productId FROM Product ORDER BY start_time DESC limit 1";
@@ -85,7 +76,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 			$productid =  $output["productId"];
 		} */
 		$productid =  $userResults['prodId'];
-
 		//Inserting Product tags
 		if(!empty($_POST["product_tags"])){
 			$tags = test_input($_POST["product_tags"]);
@@ -115,7 +105,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	}
 	header("Location: MyProducts.php");
   }
-
 ?>
 <html lang="en">
 <head>
@@ -199,14 +188,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		     Upload picture of product<!--onChange="validateAndUpload(this);" -->
         	<input type="file" name="image" id="image" accept="image/*" required="true"><br><br>
 
-		     <input type="number" class="form-control" name="start_price" value="<?php echo $start_price;?>" placeholder="Starting Price" maxlength="20">
+		     <input type="number" class="form-control" name="start_price" value="<?php echo $start_price;?>" placeholder="Starting Price" min="1" maxlength="20">
 		     <span class="error"> <?php echo $errorstart_price;?></span><br>
 
 			<!--Start Time
 			<input type="time" name="start_time" value="<?php echo $start_time;?>" placeholder="Start Time" maxlength="20"><br>
 			<span class="error"> <?php echo $errorstart_time;?></span><br-->
 
-       		<input type="number" class="form-control" name="duration" value="<?php echo $duration;?>" placeholder="Duration" maxlength="20">
+       		<input type="number" class="form-control" name="duration" value="<?php echo $duration;?>" placeholder="Duration(hours)" min="1" maxlength="20">
 			<span class="error"> <?php echo $errorduration;?></span>
 
 			<input type="submit" value="Upload Product">
