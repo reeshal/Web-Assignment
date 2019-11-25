@@ -122,7 +122,7 @@ header("Location: MyProducts.php");
               $pid=$output['productId'];
               echo "
               <div class=\"auctionBox grid-item\">
-                <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
+                <center>$name</center>
                 <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
                 <center>Amount Paid: Rs $price</center>
                 <center>Date bought: $date</center>
@@ -151,7 +151,7 @@ header("Location: MyProducts.php");
 
             echo "
             <div class=\"auctionBox grid-item\">
-              <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
+              <center>$name</center>
               <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
               <center>Starting Price: Rs $price</center>
               <center>Current Price: TO BE IMPLEMENTED</center>
