@@ -3,7 +3,6 @@ session_start();
 $user=$_SESSION['username'];
 
 require_once "includes/db_connect.php";
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 function test_input($data) {
     $data = trim($data);
@@ -20,43 +19,47 @@ function dateformatter($date){
 $start_price=$start_time=$duration="";
 $deleteConfirmation="";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST"){
-  
+//if ($_SERVER["REQUEST_METHOD"] == "POST"){
+if(isset($_POST['submit'])){
+if ($_POST['submit']=='Confirm Resale') {
   $start_price = test_input($_POST["start_price"]);
   $duration = test_input($_POST["duration"]);
   $pid=$_POST["prodId"];
+  $the_time = date('Y-m-d H:i:s');
+  $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' days',strtotime($the_time)));
   
-  $deleteConfirmation=$_POST["deleteConfirmation"];
-  
-  if($start_price!="" && $duration!=""){
-    $the_time = date('Y-m-d H:i:s');
-    $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' days',strtotime($the_time)));
-    $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
+  $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
                               start_price=$start_price
                           WHERE current_owner='$user'
                           AND productId=$pid ";
 
-    $Result =$conn->exec($update) ;
-    header("Location: MyProducts.php");
-  }
-  else{
-    if($deleteConfirmation=="yes"){
-      $query="SELECT username FROM Bidding WHERE productId=$pid";
-      $Result =$conn->query($query);
-      if(!empty($Result)){
-        $delQuery="DELETE FROM Product WHERE productId=$pid";
-        $delResult =$conn->exec($delQuery) ;
-        header("Location: MyProducts.php");
-      }
-      else{
-        //echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
-        echo "failed";
-      }
-    }
-    else{
+$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$Result =$conn->exec($update) ;
+header("Location: MyProducts.php");
+}
+
+else if ($_POST['submit']=='Delete') {
+  $deleteConfirmation=$_POST["deleteConfirmation"];
+  $pid=$_POST["prodIds"];
+  if($deleteConfirmation=="yes"){
+    $query="SELECT username FROM Bidding WHERE productId=$pid";
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $Result =$conn->query($query)->fetch() ;
+    if(!empty($Result)){
+      $delQuery="DELETE FROM Product WHERE productId=$pid";
+      $delResult =$conn->exec($update) ;
       header("Location: MyProducts.php");
     }
+    else{
+      //echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
+      echo "failed";
+    }
+
   }
+  else{
+    header("Location: MyProducts.php");
+  }
+}
 }
 ?>
 
@@ -213,15 +216,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     </div>
 
     <div id="modal-delete" class="modal">
-      <form class="modal-content animate" action="" method="post">
-      <div class="container">
+      <form class="modal-content animate" action="" method="post" >
         <p>Confirm Deletion</p>
-        <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
+        <span onclick="document.getElementById('modal-wrapper').style.display='none' " class="close" title="Close PopUp">&times;</span>
+        <br>
         <input type="checkbox" name="deleteConfirmation" value="yes">Yes
         <input type="checkbox" name="deleteConfirmation" value="no">No<br>
-        <input type="hidden" id="prodIds" name="prodId">
+        <input type="hidden" id="prodIds" name="prodIds">
         <input type="submit" value="Delete">
-        </div>
+
       </form>
     </div>
 
@@ -240,25 +243,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           document.getElementById(choice).style.display = "inline";
           evt.currentTarget.className += " active";
         }
-
         function resell(pid){
           document.getElementById("modal-wrapper").style.display="block";
           document.getElementById("prodId").value=pid;
          // productid.innerHTML="Value= "+"'"+pid+"'";
         }
-
+      
         var modal = document.getElementById('modal-wrapper');
         window.onclick = function(at) {
         if (at.target == modal) {
         modal.style.display = "none";
         }
         }
-
+       
         function deletes(pid){
           document.getElementById("modal-delete").style.display="block";
           document.getElementById("prodIds").value=pid;
         }
-        
       </script>
 </body>
 </html>

@@ -231,7 +231,7 @@ if ($user ==""){
           echo "
           <div class=\"auctionBox grid-item\">
             <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
-            <img src=\"http://localhost/Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+            <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
             <center>Rs $currentPrice</center>
             <center>Ends at $end_time</center>
             <center>Click on product name to bid</center>
@@ -241,7 +241,7 @@ if ($user ==""){
           echo "
           <div class=\"auctionBox grid-item\">
             <center>$name</center>
-            <img src=\"http://localhost/Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+            <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
             <center>Rs $currentPrice</center>
             </div>";
         }
