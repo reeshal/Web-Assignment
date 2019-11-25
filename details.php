@@ -157,7 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 			echo "  <div class=\"grid-container\">
 				  <div class=\"grid-item\">
 				    <h1>$name</h1><br>
-				    <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"500px\" height=\"500px\"/>
+				    <img src=\"http://localhost/Assignment/images/$imageName\" width=\"500px\" height=\"500px\"/>
 				  </div>
 
 				  <div class=\"grid-item\" style=\"padding-top:75px;\">
@@ -229,32 +229,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		var days = Math.floor(t / (1000 * 60 * 60 * 24)); 
 		var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60)); 
 		var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)); 
-		var seconds = Math.floor((t % (1000 * 60)) / 1000); 
+    var seconds = Math.floor((t % (1000 * 60)) / 1000);
+     
 		if(days == 0){
 			document.getElementById("demo").innerHTML = hours + ":" + minutes + ":" + seconds ; 
 		}
-		else{
+		else if(days == 1){
 			document.getElementById("demo").innerHTML = days + " day "  
 			+ hours + ":" + minutes + ":" + seconds ; 
-		}
+    }
+    else{
+      document.getElementById("demo").innerHTML = days + " days "  
+			+ hours + ":" + minutes + ":" + seconds ; 
+    }
+
     document.getElementById("demo").style.color = "red";
     
-    setTimeout("location.reload(true);",5000);
-      /* var productId = "<?php echo $id ?>";
-       console.log("productId : " , productId);
-       var xhttp = new XMLHttpRequest();
-       xhttp.open("GET", "test.php?id="+productId, true);
-       xhttp.send();*/
+   
+   var productId = "<?php echo $id ?>";
+   var xhttp = new XMLHttpRequest();
+  
+   xhttp.onload = function() {
+    console.log("responseText : " , this.responseText);
+
+    var currentPriceShown = document.getElementById("price").value;
+    console.log("currentPriceShown : " , currentPriceShown);
+
+    var actualBiddingPrice = JSON.parse(this.responseText);
+    console.log("actualBiddingPrice : " , actualBiddingPrice);
+
+    if(currentPriceShown != actualBiddingPrice){
+      setTimeout("location.reload(true);",2000);
+    }
+   
+  };
+
+  xhttp.open("GET", "UpdateAuction.php?id="+productId, true);
+  xhttp.send(); 
+   
 		
 		    if (t < 0) { 
           clearInterval(x); 
           document.getElementById("demo").innerHTML = "EXPIRED"; 
           var productId = "<?php echo $id ?>";
           console.log("productId : " , productId);
+
+          var isBid = "<?php echo $isBid ?>";
+
+          if(!isBid){
+            alert("Congratulations !! You are now the owner of this product");
+          }
+          else{
+            alert("This product has a new owner");
+          }
     
          var xhttp = new XMLHttpRequest();
          xhttp.open("GET", "result.php?id="+productId, true);
-         xhttp.send();  
+         xhttp.send(); 
+         
+         
          return false;
 		    } 
 		}, 1000); 
