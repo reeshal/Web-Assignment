@@ -157,7 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 			echo "  <div class=\"grid-container\">
 				  <div class=\"grid-item\">
 				    <h1>$name</h1><br>
-				    <img src=\"http://localhost/Assignment/images/$imageName\" width=\"500px\" height=\"500px\"/>
+				    <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"500px\" height=\"500px\"/>
 				  </div>
 
 				  <div class=\"grid-item\" style=\"padding-top:75px;\">

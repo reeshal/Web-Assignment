@@ -14,10 +14,14 @@
             
             </head>
     <body>
-        <div class="row">
-            <div class=colum>
-
-            </div>
-        </div>
+            <form class="modal-content animate" action="" method="post" name="delete">
+                    <p>Confirm Deletion</p>
+                    <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
+                    <input type="checkbox" name="deleteConfirmation" value="yes">Yes
+                    <input type="checkbox" name="deleteConfirmation" value="yes">No<br>
+                    <input type="hidden" id="prodIds" name="prodId">
+                    <input type="submit" value="Delete">
+            
+                  </form>
     </body>
 </html>
