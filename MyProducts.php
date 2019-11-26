@@ -1,10 +1,8 @@
 <?php
 session_start();
 $user=$_SESSION['username'];
-
 require_once "includes/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
 function test_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
@@ -16,10 +14,8 @@ function dateformatter($date){
 	$newDate = date("Y-m-d", strtotime($date));
 	return $newDate;
 }
-
 $start_price=$start_time=$duration="";
 $deleteConfirmation="";
-
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
   
   $start_price = test_input($_POST["start_price"]);
@@ -30,12 +26,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
   
   if($start_price!="" && $duration!=""){
     $the_time = date('Y-m-d H:i:s');
-    $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' days',strtotime($the_time)));
+    $duration += 3; //Timezone
+    $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' hours',strtotime($the_time)));
     $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
                               start_price=$start_price
                           WHERE current_owner='$user'
                           AND productId=$pid ";
-
     $Result =$conn->exec($update) ;
     header("Location: MyProducts.php");
   }
@@ -166,24 +162,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 AND p.is_Sold=0";
         $data  =$conn->query($query) ;
         $result = $data->fetchAll(PDO::FETCH_ASSOC);
-
         foreach($result as $output) {
             $name =  $output["name"];
             $price = $output["start_price"];
             $date = $output["start_time"];
             $imageName = $output["imageName"];
             $pid=$output['productId'];
-
             $currentPriceQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
                                                            FROM Bidding
                                                            WHERE productId = '$pid'")->fetch();
                                                            
             $currentPrice = $currentPriceQuery['price_bidded'];
-
             if(empty($currentPrice)){
               $currentPrice = $price;
             }
-
             echo "
             <div class=\"auctionBox grid-item\">
               <center>$name</center>
@@ -204,8 +196,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         <div class="container">
           <h3>Reselling Product</h3>
           <span onclick="document.getElementById('modal-wrapper').style.display='none' " class="close" title="Close PopUp">&times;</span>
-          <input type="number" class="form-control" name="start_price" value="" placeholder="Starting Price" maxlength="20">
-          <input type="number" class="form-control" name="duration" value="" placeholder="Duration" maxlength="20">
+          <input type="number" class="form-control" name="start_price" value="" placeholder="Starting Price" min="1" maxlength="20">
+          <input type="number" class="form-control" name="duration" value="" placeholder="Duration(hours)" min="1" maxlength="20">
           <input type="hidden" id="prodId" name="prodId">
           <input type="submit" value="Confirm Resale">
         </div>
@@ -240,20 +232,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           document.getElementById(choice).style.display = "inline";
           evt.currentTarget.className += " active";
         }
-
         function resell(pid){
           document.getElementById("modal-wrapper").style.display="block";
           document.getElementById("prodId").value=pid;
          // productid.innerHTML="Value= "+"'"+pid+"'";
         }
-
         var modal = document.getElementById('modal-wrapper');
         window.onclick = function(at) {
         if (at.target == modal) {
         modal.style.display = "none";
         }
         }
-
         function deletes(pid){
           document.getElementById("modal-delete").style.display="block";
           document.getElementById("prodIds").value=pid;

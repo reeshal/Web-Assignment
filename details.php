@@ -202,10 +202,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
               ";
               
               if($isBid){
-                echo "<center><input id=\"bid\" type=\"submit\" class=\"gridbtn btn-success\" value=\"Bid\" style=\"display:none;\"></center>";
+                echo "<center><input id=\"bid\" type=\"submit\" class=\"gridbtn btn-success\" value=\"Bid\" style=\"display:none;\"</center>";
               }
               else{
-                echo "<center><input type=\"submit\"  class=\"gridbtn btn-danger\" value=\"Cancel Bid\" ></center>";
+                echo "<center><input id=\"cancelbid\" type=\"submit\"  class=\"gridbtn btn-danger\" value=\"Cancel Bid\" ></center>";
               }
          
               echo "</form>
@@ -249,7 +249,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
    var productId = "<?php echo $id ?>";
    var xhttp = new XMLHttpRequest();
   
-   xhttp.onload = function() {
+   xhttp.onreadystatechange = function() {
     console.log("responseText : " , this.responseText);
 
     var currentPriceShown = document.getElementById("price").value;
@@ -271,23 +271,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		    if (t < 0) { 
           clearInterval(x); 
           document.getElementById("demo").innerHTML = "EXPIRED"; 
+          
           var productId = "<?php echo $id ?>";
           console.log("productId : " , productId);
 
           var isBid = "<?php echo $isBid ?>";
 
           if(!isBid){
+            document.getElementById("cancelbid").style.display = 'none';
             alert("Congratulations !! You are now the owner of this product");
+            setTimeout("location.href = 'http://localhost/Web-Assignment/MyProducts.php';",1000);
           }
           else{
-            alert("This product has a new owner");
+            document.getElementById("bid").style.display = 'none';
+            alert("The auction for this product is over");
+            setTimeout("location.href = 'http://localhost/Web-Assignment/ProductsNew.php?referer=login';",1000);
           }
+
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("GET", "result.php?id="+productId, true);
+          xhttp.send(); 
     
-         var xhttp = new XMLHttpRequest();
-         xhttp.open("GET", "result.php?id="+productId, true);
-         xhttp.send(); 
-         
-         
+
          return false;
 		    } 
 		}, 1000); 

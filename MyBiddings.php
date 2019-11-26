@@ -176,21 +176,38 @@
 			  }
 			$data  =$conn->query($query) ;
 			$result = $data->fetchAll(PDO::FETCH_ASSOC);
-				
-			foreach($result as $output) {
-				$name =  $output["name"];
-				$start_price = $output["start_price"];
-				$start_time = $output["start_time"];
-				$end_time = $output["end_time"];
-				$prodId = $output["productId"];
-				$imageName = $output["imageName"];
-				echo "
-				<div class=\"auctionBox grid-item\">
-				  <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
-				  <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
-				  <center>Rs $start_price</center>
-				  </div>";
+
+			if($data->rowCount() > 0){
+				foreach($result as $output) {
+					$name =  $output["name"];
+					$start_time = $output["start_time"];
+					$end_time = $output["end_time"];
+					$prodId = $output["productId"];
+					$imageName = $output["imageName"];
+	
+					$currentPriceQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
+															   FROM Bidding
+															   WHERE productId = '$prodId'")->fetch();
+															   
+					$currentPrice = $currentPriceQuery['price_bidded'];
+	
+					if(empty($currentPrice)){
+						$currentPrice = $output["start_price"];
+					}
+	
+					echo "
+					<div class=\"auctionBox grid-item\">
+					  <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
+					  <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+					  <center>Rs $currentPrice</center>
+					  </div>";
+				}
 			}
+			else{
+				echo "<h2 style=\"color : red;\">You have not bidded on any products yet</h2>";
+			}
+				
+			
 		?>
 	</div>
 

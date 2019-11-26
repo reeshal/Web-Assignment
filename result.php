@@ -20,38 +20,38 @@ $user=$_SESSION['username'];
     $currentOwner = $currentOwnerQuery['username'];
     $amountPaid = $currentOwnerQuery['price_bidded'];
 
-    $insert = "INSERT INTO AuctionDetail (current_owner, previous_owner, productId, amount_paid, date) 
-               VALUES (". $conn->quote($currentOwner) .", ". $conn->quote($previousOwner) .",
-               ". $conn->quote($productId) .", ". $conn->quote($amountPaid) .", current_timestamp()) ";
+    if($currentOwnerQuery){ //Checking if anyone has bidded on product first
 
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
-    $Result =$conn->exec($insert) ;
+      //Insert into auction detail
+      $insert = "INSERT INTO AuctionDetail (current_owner, previous_owner, productId, amount_paid, date) 
+      VALUES (". $conn->quote($currentOwner) .", ". $conn->quote($previousOwner) .",
+      ". $conn->quote($productId) .", ". $conn->quote($amountPaid) .", current_timestamp()) ";
 
-    //Update owner of product
-    $update = "UPDATE Product
-              SET is_sold = 1, current_owner = ". $conn->quote($currentOwner) ."
-              WHERE productId = '$productId'";
+      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+      $Result =$conn->exec($insert) ;
 
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
-    $Result =$conn->exec($update) ;
+      //Update owner of product
+      $update = "UPDATE Product
+          SET is_sold = 1, current_owner = ". $conn->quote($currentOwner) ."
+          WHERE productId = '$productId'";
 
-    if($user == $currentOwner){
-        echo "<script>alert('Congratulations !! You have won this auction');</script>";
+      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+      $Result =$conn->exec($update) ;
+
+      $delete = "DELETE FROM Bidding WHERE productId = '$productId'";
+      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+      $Result =$conn->exec($delete) ;
+      
+    }
+    else{
+      //Product is not sold and is removed from auction
+      $update = "UPDATE Product
+      SET is_sold = 1
+      WHERE productId = '$productId'";
+
+      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+      $Result =$conn->exec($update) ;
+
     }
 
-    header("Location: ProductsNew.php"); 
 ?>
-
-<script>
-    var user = "<?php echo $user ?>";
-    var winner = "<?php echo $currentOwner ?>";
-
-    console.log("user : " , user);
-    console.log("winner : " , winner);
-
-    if(user == winner){
-        console.log("Displaying message");
-        alert("Congratulations !! You have won this auction");
-    }
-    location.href = 'http://localhost/Assignment/ProductsNew.php?referer=login';
-</script>
