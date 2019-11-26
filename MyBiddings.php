@@ -15,6 +15,9 @@
 	
 		  $category=$_POST["category"];
 	}
+
+	require_once "SellerNotif.php";
+
 ?>
 
 <html>

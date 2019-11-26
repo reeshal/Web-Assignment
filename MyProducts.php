@@ -1,6 +1,8 @@
 <?php
 session_start();
 $user=$_SESSION['username'];
+require_once "SellerNotif.php";
+
 require_once "includes/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 function test_input($data) {

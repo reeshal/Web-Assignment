@@ -10,6 +10,26 @@ $user=$_SESSION['username'];
     $previousOwnerQuery = $conn->query("SELECT current_owner FROM Product WHERE productId = '$productId'")->fetch();
     $previousOwner = $previousOwnerQuery['current_owner'];
 
+    //Getting current value of soldNotif
+    $soldNotifQuery = $conn->query("SELECT soldNotif FROM Users WHERE username = '$previousOwner'")->fetch();
+    $soldNotif = $soldNotifQuery['soldNotif'];
+
+    //Setting value of soldNotif
+    if(empty($soldNotif)){
+      $soldNotif = $productId;
+    }
+    else{
+      $soldNotif = $soldNotif . ',' . $productId;
+    }
+
+    //Adding id of product to sold notif field in seller to notify seller that bidding of product is over
+    $update = "UPDATE Users
+               SET soldNotif = '$soldNotif'
+               WHERE username = '$previousOwner'";
+
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+    $Result =$conn->exec($update) ;
+
     //Get new owner of product
     $currentOwnerQuery = $conn->query("SELECT username, price_bidded
                                        FROM Bidding 
@@ -38,6 +58,7 @@ $user=$_SESSION['username'];
       $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
       $Result =$conn->exec($update) ;
 
+      //Delete bidding records of product
       $delete = "DELETE FROM Bidding WHERE productId = '$productId'";
       $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
       $Result =$conn->exec($delete) ;

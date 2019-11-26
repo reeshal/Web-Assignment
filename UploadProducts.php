@@ -2,6 +2,8 @@
 session_start();
 //$user="Username"; //to display the name of the user for the dropdown box
 $user=$_SESSION['username'];
+require_once "SellerNotif.php";
+
 ?>
 <?php
 function test_input($data) {

@@ -8,6 +8,8 @@ if(isset($_GET['referer'])){
     $user=$_SESSION['username'];
   }//end if
 }
+require_once "SellerNotif.php";
+
 function test_input($data) {
   $data = trim($data);
   $data = stripslashes($data);
@@ -251,31 +253,8 @@ if ($user ==""){
       </div>
     
 </div>
-<script type="text/javascript"> 
-	//function timer(prodId){
-		var end_time = "<?php echo $end_time ?>";
-		var deadline = new Date(end_time).getTime(); 
-		var x = setInterval(function() { 
-		var now = new Date().getTime(); 
-		var t = deadline - now; 
-		var days = Math.floor(t / (1000 * 60 * 60 * 24)); 
-		var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60)); 
-		var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)); 
-		var seconds = Math.floor((t % (1000 * 60)) / 1000); 
-		if(days == 0){
-			document.getElementById("demo").innerHTML = hours + ":" + minutes + ":" + seconds ; 
-		}
-		else{
-			document.getElementById("demo").innerHTML = days + " day "  
-			+ hours + ":" + minutes + ":" + seconds ; 
-		}
-		
-		    if (t < 0) { 
-			clearInterval(x); 
-			document.getElementById("demo").innerHTML = "EXPIRED"; 
-		    } 
-		}, 1000); 
-</script> 
+
+
 
   <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/jquery-migrate-3.0.1.min.js"></script>
