@@ -137,20 +137,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       </div>
       <div id="owned" class="tabcontent row">
         <?php
-          $query="SELECT a.date, MAX(a.amount_paid) AS pmax, p.name, s.imageName,p.productId
-                  FROM Product p, AuctionDetail a, ProductImage s
-                  WHERE a.productId=p.productId
-                  AND p.productId=s.prodID
+          $query="SELECT  p.name, s.imageName,p.productId
+                  FROM Product p,  ProductImage s
+                  WHERE p.productId=s.prodID
                   AND p.current_owner='$user'
                   AND p.is_Sold=1
-                  GROUP BY p.name";
+                  ";
           $data  =$conn->query($query) ;
           $result = $data->fetchAll(PDO::FETCH_ASSOC);
     
           foreach($result as $output) {
               $name =  $output["name"];
-              $price = $output["pmax"];
-              $date = $output["date"];
               $imageName = $output["imageName"];
               $pid=$output['productId'];
               echo "
@@ -210,7 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           <h3>Reselling Product</h3>
           <span onclick="document.getElementById('modal-wrapper').style.display='none' " class="close" title="Close PopUp">&times;</span>
           <input type="number" class="form-control" name="start_price" value="" placeholder="Starting Price" min="1" maxlength="20">
-          <input type="number" class="form-control" name="duration" value="" placeholder="Duration(days)" min="1" maxlength="20">
+          <input type="number" class="form-control" name="duration" value="" placeholder="Duration(hours)" min="1" maxlength="20">
           <input type="hidden" id="prodId" name="prodId">
           <input type="submit" value="Confirm Resale">
         </div>
