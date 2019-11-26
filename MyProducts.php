@@ -15,7 +15,7 @@ function dateformatter($date){
 	return $newDate;
 }
 $start_price=$start_time=$duration="";
-$deleteConfirmation="";
+$deleteConfirmation=$stopConfirmation="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
   
   $start_price = test_input($_POST["start_price"]);
@@ -23,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
   $pid=$_POST["prodId"];
   
   $deleteConfirmation=$_POST["deleteConfirmation"];
+  $stopConfirmation=$_POST["stopConfirmation"];
   
   if($start_price!="" && $duration!=""){
     $the_time = date('Y-m-d H:i:s');
@@ -35,8 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     $Result =$conn->exec($update) ;
     header("Location: MyProducts.php");
   }
-  else{
-    if($deleteConfirmation=="yes"){
+  else if($deleteConfirmation=="yes"){
       $query="SELECT username FROM Bidding WHERE productId=$pid";
       $Result =$conn->query($query);
       if(!empty($Result)){
@@ -48,11 +48,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         //echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
         echo "failed";
       }
-    }
-    else{
+  }
+  else if($stopConfirmation=="yes"){
+    $query="SELECT username FROM Bidding WHERE productId=$pid";
+    $Result =$conn->query($query);
+    if(!empty($Result)){
+      $update="UPDATE Product SET is_Sold=1 WHERE productId=$pid AND current_owner='$user'";
+      $answer =$conn->exec($update) ;
       header("Location: MyProducts.php");
     }
+    else{
+      //echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
+      echo "failed";
+    }
   }
+  else{
+    header("Location: MyProducts.php");
+  }
+  
 }
 ?>
 
@@ -144,10 +157,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
               <div class=\"auctionBox grid-item\">
                 <center>$name</center>
                 <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
-                <center>Amount Paid: Rs $price</center>
-                <center>Date bought: $date</center>
                 <button  onclick=\"resell('$pid')\">Resell</button>
                 <button>Leave Feedback</button>
+                <button onclick=\"deletes('$pid')\">Delete</button>
                 </div>";
             }
           
@@ -180,10 +192,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <div class=\"auctionBox grid-item\">
               <center>$name</center>
               <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
-              <center>Starting Price: Rs $price</center>
+              <!--<center>Starting Price: Rs $price</center>-->
               <center>Current Price: Rs $currentPrice</center>
               <center>Time Left: TO BE IMPLEMENTED</center>
               <button onclick=\"deletes('$pid')\">Delete</button>
+              <button onclick=\"stopAuction('$pid')\">Stop Auction</button>
               </div>";
           }
         ?>
@@ -197,7 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           <h3>Reselling Product</h3>
           <span onclick="document.getElementById('modal-wrapper').style.display='none' " class="close" title="Close PopUp">&times;</span>
           <input type="number" class="form-control" name="start_price" value="" placeholder="Starting Price" min="1" maxlength="20">
-          <input type="number" class="form-control" name="duration" value="" placeholder="Duration(hours)" min="1" maxlength="20">
+          <input type="number" class="form-control" name="duration" value="" placeholder="Duration(days)" min="1" maxlength="20">
           <input type="hidden" id="prodId" name="prodId">
           <input type="submit" value="Confirm Resale">
         </div>
@@ -213,6 +226,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         <input type="checkbox" name="deleteConfirmation" value="no">No<br>
         <input type="hidden" id="prodIds" name="prodId">
         <input type="submit" value="Delete">
+        </div>
+      </form>
+    </div>
+
+    <div id="modal-stop" class="modal">
+      <form class="modal-content animate" action="" method="post">
+      <div class="container">
+        <p>Confirm Stopping Auction</p>
+        <span onclick="document.getElementById('modal-stop').style.display='none' " class="close" title="Close PopUp">&times;</span>
+        <input type="checkbox" name="stopConfirmation" value="yes">Yes
+        <input type="checkbox" name="stopConfirmation" value="no">No<br>
+        <input type="hidden" id="prodIdstop" name="prodId">
+        <input type="submit" value="Stop">
         </div>
       </form>
     </div>
@@ -246,6 +272,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         function deletes(pid){
           document.getElementById("modal-delete").style.display="block";
           document.getElementById("prodIds").value=pid;
+        }
+        function stopAuction(pid){
+          document.getElementById("modal-stop").style.display="block";
+          document.getElementById("prodIdstop").value=pid;
         }
         
       </script>
