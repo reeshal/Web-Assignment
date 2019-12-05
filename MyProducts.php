@@ -41,27 +41,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
   else if($deleteConfirmation=="yes"){
       $query="SELECT username FROM Bidding WHERE productId=$pid";
       $Result =$conn->query($query);
-      if(!empty($Result)){
+      if(!$Result){
         $delQuery="DELETE FROM Product WHERE productId=$pid";
         $delResult =$conn->exec($delQuery) ;
         header("Location: MyProducts.php");
       }
       else{
-        //echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
-        echo "failed";
+        echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
+        //cho "failed";
       }
   }
   else if($stopConfirmation=="yes"){
     $query="SELECT username FROM Bidding WHERE productId=$pid";
     $Result =$conn->query($query);
-    if(!empty($Result)){
+    if(!$Result){
       $update="UPDATE Product SET is_Sold=1 WHERE productId=$pid AND current_owner='$user'";
       $answer =$conn->exec($update) ;
       header("Location: MyProducts.php");
     }
     else{
-      //echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
-      echo "failed";
+      echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
+      //echo "failed";
     }
   }
   else{
@@ -219,7 +219,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <div id="modal-delete" class="modal">
       <form class="modal-content animate" action="" method="post">
       <div class="container">
-        <p>Confirm Deletion</p>
+        <p>Confirm Deletion</pp>
         <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
         <input type="checkbox" name="deleteConfirmation" value="yes">Yes
         <input type="checkbox" name="deleteConfirmation" value="no">No<br>
