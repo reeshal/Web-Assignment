@@ -19,56 +19,49 @@ function dateformatter($date){
 $start_price=$start_time=$duration="";
 $deleteConfirmation=$stopConfirmation="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
+  
+  $start_price = test_input($_POST["start_price"]);
+  $duration = test_input($_POST["duration"]);
   $pid=$_POST["prodId"];
-
-  if(isset($_POST['resell'])){
-    $start_price = test_input($_POST["start_price"]);
-    $duration = test_input($_POST["duration"]);
-
-    if($start_price!="" && $duration!=""){
-      $the_time = date('Y-m-d H:i:s');
-      $duration += 3; //Timezone
-      $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' hours',strtotime($the_time)));
-      $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
-                                start_price=$start_price
-                            WHERE current_owner='$user'
-                            AND productId=$pid ";
-      $Result =$conn->exec($update) ;
-      header("Location: MyProducts.php");
-    } //else?
+  
+  $deleteConfirmation=$_POST["deleteConfirmation"];
+  $stopConfirmation=$_POST["stopConfirmation"];
+  
+  if($start_price!="" && $duration!=""){
+    $the_time = date('Y-m-d H:i:s');
+    $duration += 3; //Timezone
+    $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' hours',strtotime($the_time)));
+    $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
+                              start_price=$start_price
+                          WHERE current_owner='$user'
+                          AND productId=$pid ";
+    $Result =$conn->exec($update) ;
+    header("Location: MyProducts.php");
   }
-  else if (isset($_POST['delete'])){
-    $deleteConfirmation=$_POST["deleteConfirmation"];
-    if($deleteConfirmation=="yes"){
+  else if($deleteConfirmation=="yes"){
       $query="SELECT username FROM Bidding WHERE productId=$pid";
       $Result =$conn->query($query);
-      $row = $Result->fetch();
-      if(!$row){
+      if(!$Result){
         $delQuery="DELETE FROM Product WHERE productId=$pid";
         $delResult =$conn->exec($delQuery) ;
         header("Location: MyProducts.php");
       }
       else{
         echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
-        //echo "failed";
+        //cho "failed";
       }
-    }
   }
-  else if (isset($_POST['stop'])){
-    $stopConfirmation=$_POST["stopConfirmation"];
-    if($stopConfirmation=="yes"){
-      $query="SELECT username FROM Bidding WHERE productId=$pid";
-      $Result =$conn->query($query);
-      $row = $Result->fetch();
-      if(!$row){
-        $update="UPDATE Product SET is_Sold=1 WHERE productId=$pid AND current_owner='$user'";
-        $answer =$conn->exec($update) ;
-        header("Location: MyProducts.php");
-      }
-      else{
-        echo "<script type='text/javascript'>alert('Product cant be stopped. Someone has already bidded on it');</script>";
-        //echo "failed";
-      }
+  else if($stopConfirmation=="yes"){
+    $query="SELECT username FROM Bidding WHERE productId=$pid";
+    $Result =$conn->query($query);
+    if(!$Result){
+      $update="UPDATE Product SET is_Sold=1 WHERE productId=$pid AND current_owner='$user'";
+      $answer =$conn->exec($update) ;
+      header("Location: MyProducts.php");
+    }
+    else{
+      echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
+      //echo "failed";
     }
   }
   else{
@@ -90,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
 
-    <link rel="stylesheet" href="includes/products.css">
+    <link rel="stylesheet" href="includes/productsRishikesh.css">
     <link rel="stylesheet" href="includes/myproductsTab.css">
 
 </head>
@@ -138,32 +131,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     </header>
     <!--End of header-->
 
-    <!--Search Bar only-->
-	<div class="background-image" style="background-image: url(includes/coverproduct.png); "data-aos="fade"> 
-		<div class="container">
-			<p>.</p>
-			<div class="row align-items-center justify-content-center text-center" style="min-height:325px;">
-				<div class="col-md-10">
-					<div class="row justify-content-center mb-4">
-						<div class="col-md-8 text-center">
-							<h1 style="color:white;" data-aos="fade-up" >My Products</h1>
-						</div>
-					</div>
-          <div class="row justify-content-center mb-4">
-						<div class="col-md-8 text-center">
-            <button class="tablinks" onclick="switchTab(event, 'owned')">Items Owned</button>
-            <button class="tablinks" onclick="switchTab(event, 'inauction')">Items In Auction</button>
-						</div>
-					</div>		
-				</div>
-
-			</div>
-		</div>
-	</div>
-
 
     <div class="container" style="padding-left:70px; padding-top:75px">
-      
+      <div class="row tab">
+        <button class="tablinks" onclick="switchTab(event, 'owned')">Items Owned</button>
+        <button class="tablinks" onclick="switchTab(event, 'inauction')">Items In Auction</button>
+      </div>
       <div id="owned" class="tabcontent row">
         <?php
           $query="SELECT  p.name, s.imageName,p.productId
@@ -179,25 +152,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
               $name =  $output["name"];
               $imageName = $output["imageName"];
               $pid=$output['productId'];
-
               echo "
-                <div class=\"col-lg-4 col-md-6 mb-5\">
-                <div class=\"product-item\">
-                  <figure>
-                  <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
-                  </figure>
-                  <div class=\"px-4\">
-                      <h3>$name</h3>
-                  </div>
-                  <button  onclick=\"resell('$pid')\">Resell</button>
-                  <button>Leave Feedback</button>
-                  <button onclick=\"deletes('$pid')\">Delete</button>
-                  <div>
-                  <a href='details.php?id=".$output['productId']."' class=\"btn mr-1 rounded-3\">View</a>
-                  </div>
-                </div>
-                </div>
-              ";
+              <div class=\"auctionBox grid-item\">
+                <center>$name</center>
+                <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+                <button  onclick=\"resell('$pid')\">Resell</button>
+                <button>Leave Feedback</button>
+                <button onclick=\"deletes('$pid')\">Delete</button>
+                </div>";
             }
           
         ?>
@@ -225,32 +187,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             if(empty($currentPrice)){
               $currentPrice = $price;
             }
-              echo "
-                <div class=\"col-lg-4 col-md-6 mb-5\">
-                <div class=\"product-item\">
-                  <figure>
-                  <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
-                  </figure>
-                  <div class=\"px-4\">
-                      <h3>$name</h3>
-                      <p>Current Price: Rs $currentPrice</p>
-                      <p>Time Left: TO BE IMPLEMENTED</p>
-                  </div>
-                  <button onclick=\"deletes('$pid')\">Delete</button>
-                  <button onclick=\"stopAuction('$pid')\">Stop Auction</button>
-                  <div>
-                  <a href='details.php?id=".$output['productId']."' class=\"btn mr-1 rounded-3\">View</a>
-                  </div>
-                </div>
-                </div>
-              ";
+            echo "
+            <div class=\"auctionBox grid-item\">
+              <center>$name</center>
+              <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+              <!--<center>Starting Price: Rs $price</center>-->
+              <center>Current Price: Rs $currentPrice</center>
+              <center>Time Left: TO BE IMPLEMENTED</center>
+              <button onclick=\"deletes('$pid')\">Delete</button>
+              <button onclick=\"stopAuction('$pid')\">Stop Auction</button>
+              </div>";
           }
         ?>
       </div>
       
       
     </div>
-
     <div id="modal-wrapper" class="modal">
       <form class="modal-content animate" action="" method="post" >
         <div class="container">
@@ -259,7 +211,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           <input type="number" class="form-control" name="start_price" value="" placeholder="Starting Price" min="1" maxlength="20">
           <input type="number" class="form-control" name="duration" value="" placeholder="Duration(hours)" min="1" maxlength="20">
           <input type="hidden" id="prodId" name="prodId">
-          <input type="submit" value="Confirm Resale" name="resell">
+          <input type="submit" value="Confirm Resale">
         </div>
       </form>
     </div>
@@ -272,7 +224,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         <input type="checkbox" name="deleteConfirmation" value="yes">Yes
         <input type="checkbox" name="deleteConfirmation" value="no">No<br>
         <input type="hidden" id="prodIds" name="prodId">
-        <input type="submit" value="Delete" name="delete">
+        <input type="submit" value="Delete">
         </div>
       </form>
     </div>
@@ -285,7 +237,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         <input type="checkbox" name="stopConfirmation" value="yes">Yes
         <input type="checkbox" name="stopConfirmation" value="no">No<br>
         <input type="hidden" id="prodIdstop" name="prodId">
-        <input type="submit" value="Stop" name="stop">
+        <input type="submit" value="Stop">
         </div>
       </form>
     </div>
@@ -326,18 +278,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         }
         
       </script>
-      <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
-  <script src="js/jquery-ui.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/jquery.stellar.min.js"></script>
-  <script src="js/jquery.countdown.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/bootstrap-datepicker.min.js"></script>
-  <script src="js/aos.js"></script>
-  <script src="js/rangeslider.min.js"></script>
-  <script src="js/main.js"></script>
 </body>
 </html>

@@ -9,7 +9,6 @@ if(isset($_GET['referer'])){
   }//end if
 }
 require_once "SellerNotif.php";
-require_once "includes/db_connect.php";
 
 function test_input($data) {
   $data = trim($data);
@@ -24,9 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
   if (!empty($_POST["category"]))
     $category=test_input($_POST["category"]);
 }
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
 
-    <link rel="stylesheet" href="includes/products.css">
+    <link rel="stylesheet" href="includes/productsRishikesh.css">
 
 
 </head>
@@ -114,17 +110,17 @@ if ($user ==""){
 ?>
     </header>
     <!--End of header-->
-     
+
     <!--Search Bar only-->
-    <div class="background-image" style="background-image: url(includes/coverproduct.png); " data-aos="fade" > 
         <div class="container">
           <div class="row align-items-center justify-content-center text-center">
-            <div class="col-md-10 ">
+            <div class="col-md-10">
               <div class="form-search-wrap p-2" style="margin-top: 100px; margin-bottom: 50px">
                 <form method="post" action="<?php echo htmlspecialchars($_SERVER['HTTP_REFERER']);?>">
                   <div class="row ">
   
                     <div class="col-7 border-right">
+                      <!--met  echo value searched-->
                       <input type="text" name="tags"  class="form-control" placeholder="What are you looking for?" value="<?php echo $search;?>">
                     </div>
                     
@@ -132,15 +128,16 @@ if ($user ==""){
                       <div class="select-wrap">
                         <select class="form-control" name="category">
                           <option value="">All Categories</option>
-                          <?php
-                          $categoryQuery="SELECT categoryName FROM Category";
-                          $dataa  =$conn->query($categoryQuery) ;
-                          $results = $dataa->fetchAll(PDO::FETCH_ASSOC);
-                          foreach($results as $outputs) {
-                            $categoryOutput=$outputs["categoryName"];
-                            echo "<option value=\"$categoryOutput\">$categoryOutput</option>";
-                          }
-                          ?>
+                          <option value="Art">Art</option>
+                          <option value="Books and magazines">Books &amp; Magazines</option>
+                          <option value="Cellphones">Cellphones</option>
+                          <option value="Computers">Computers</option>
+                          <option value="Clothes">Clothes</option>
+                          <option value="Jewellery and Watches">Jewellery &amp; Watches</option>
+                          <option value="Music">Music</option>
+                          <option value="Movies">Movies</option>
+                          <option value="Health Care">Health Care</option>
+                          <option value="Vehicles">Vehicles</option>
                         </select>
                       </div>
                     </div>
@@ -157,21 +154,19 @@ if ($user ==""){
           </div>
         </div> 
         <!--End of Search bar only-->
-  </div>
-  <div >
-    <p>.</p>
-
-      <?php
       
+      <div class="row" style="padding-left:100px;">
+      <?php
+      require_once "includes/db_connect.php";
       if($search=="" && $category==""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time,p.description 
+        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time 
                   FROM Product p, ProductImage i 			
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
                   AND p.current_owner != '$user' ";
       }
       else if($search=="" && $category!=""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time,p.description  
+        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time 
                   FROM Product p, ProductImage i 			
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -179,7 +174,7 @@ if ($user ==""){
                   AND p.category='$category'";
       }
       else if($search!="" && $category==""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time,p.description 
+        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
                   FROM Product p, ProductImage i, ProductTag t			
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -188,7 +183,7 @@ if ($user ==""){
                   AND t.product_tags LIKE '%$search%'
                   
                   UNION
-                  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time,p.description 
+                  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
                   FROM Product p, ProductImage i		
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -196,7 +191,7 @@ if ($user ==""){
                   AND p.name LIKE '%$search%'";
       }
       else if($search!="" && $category!=""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time,p.description 
+        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
                   FROM Product p, ProductImage i, ProductTag t			
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -205,7 +200,7 @@ if ($user ==""){
                   AND t.product_tags LIKE '%$search%'
                   AND p.category='$category'
                   UNION
-                  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time,p.description 
+                  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
                   FROM Product p, ProductImage i		
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -216,15 +211,12 @@ if ($user ==""){
 	
       $data  =$conn->query($query) ;
       $result = $data->fetchAll(PDO::FETCH_ASSOC);
-      echo "<div class=\"container\">";
-      echo "<div class=\"row\">";
       foreach($result as $output) {
           $name =  $output["name"];
           $start_time = $output["start_time"];
           $end_time = $output["end_time"];
           $prodId = $output["productId"];
           $imageName = $output["imageName"];
-          $desc=$output["description"];
 
           $currentPriceQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
                                                            FROM Bidding
@@ -239,49 +231,27 @@ if ($user ==""){
           
         if($user!=""){
           echo "
-          <div class=\"col-lg-4 col-md-6 mb-5\">
-          <div class=\"product-item\">
-            <figure>
-            <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
-            </figure>
-            <div class=\"px-4\">
-                <h3>$name</h3>
-                <p>$desc</p>
-                <p>Rs $currentPrice</p>
-            </div>
-            <div>
-            <a href='details.php?id=".$output['productId']."' class=\"btn mr-1 rounded-3\">View</a>
-            </div>
-          </div>
-          </div>
-
-          ";
-          
+          <div class=\"auctionBox grid-item\">
+            <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
+            <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+            <center>Rs $currentPrice</center>
+            <center>Ends at $end_time</center>
+            <center>Click on product name to bid</center>
+            </div>";
         }
         else{
           echo "
-          <div class=\"col-lg-4 col-md-6 mb-5\">
-          <div class=\"product-item\">
-            <figure>
-            <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
-            </figure>
-            <div class=\"px-4\">
-                <h3>$name</h3>
-                <p>$desc</p>
-                <p>Rs $currentPrice</p>
-            </div>
-          </div>
-          </div>
-
-          ";
+          <div class=\"auctionBox grid-item\">
+            <center>$name</center>
+            <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
+            <center>Rs $currentPrice</center>
+            </div>";
         }
-      }
-      echo "</div>"; 
-      echo "</div>";  
+          }
+          echo "</div>";  
       ?>
-      
-
-        </div>
+      </div>
+    
 </div>
 
 

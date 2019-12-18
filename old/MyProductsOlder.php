@@ -19,56 +19,49 @@ function dateformatter($date){
 $start_price=$start_time=$duration="";
 $deleteConfirmation=$stopConfirmation="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
+  
+  $start_price = test_input($_POST["start_price"]);
+  $duration = test_input($_POST["duration"]);
   $pid=$_POST["prodId"];
-
-  if(isset($_POST['resell'])){
-    $start_price = test_input($_POST["start_price"]);
-    $duration = test_input($_POST["duration"]);
-
-    if($start_price!="" && $duration!=""){
-      $the_time = date('Y-m-d H:i:s');
-      $duration += 3; //Timezone
-      $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' hours',strtotime($the_time)));
-      $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
-                                start_price=$start_price
-                            WHERE current_owner='$user'
-                            AND productId=$pid ";
-      $Result =$conn->exec($update) ;
-      header("Location: MyProducts.php");
-    } //else?
+  
+  $deleteConfirmation=$_POST["deleteConfirmation"];
+  $stopConfirmation=$_POST["stopConfirmation"];
+  
+  if($start_price!="" && $duration!=""){
+    $the_time = date('Y-m-d H:i:s');
+    $duration += 3; //Timezone
+    $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' hours',strtotime($the_time)));
+    $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
+                              start_price=$start_price
+                          WHERE current_owner='$user'
+                          AND productId=$pid ";
+    $Result =$conn->exec($update) ;
+    header("Location: MyProducts.php");
   }
-  else if (isset($_POST['delete'])){
-    $deleteConfirmation=$_POST["deleteConfirmation"];
-    if($deleteConfirmation=="yes"){
+  else if($deleteConfirmation=="yes"){
       $query="SELECT username FROM Bidding WHERE productId=$pid";
       $Result =$conn->query($query);
-      $row = $Result->fetch();
-      if(!$row){
+      if(!$Result){
         $delQuery="DELETE FROM Product WHERE productId=$pid";
         $delResult =$conn->exec($delQuery) ;
         header("Location: MyProducts.php");
       }
       else{
         echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
-        //echo "failed";
+        //cho "failed";
       }
-    }
   }
-  else if (isset($_POST['stop'])){
-    $stopConfirmation=$_POST["stopConfirmation"];
-    if($stopConfirmation=="yes"){
-      $query="SELECT username FROM Bidding WHERE productId=$pid";
-      $Result =$conn->query($query);
-      $row = $Result->fetch();
-      if(!$row){
-        $update="UPDATE Product SET is_Sold=1 WHERE productId=$pid AND current_owner='$user'";
-        $answer =$conn->exec($update) ;
-        header("Location: MyProducts.php");
-      }
-      else{
-        echo "<script type='text/javascript'>alert('Product cant be stopped. Someone has already bidded on it');</script>";
-        //echo "failed";
-      }
+  else if($stopConfirmation=="yes"){
+    $query="SELECT username FROM Bidding WHERE productId=$pid";
+    $Result =$conn->query($query);
+    if(!$Result){
+      $update="UPDATE Product SET is_Sold=1 WHERE productId=$pid AND current_owner='$user'";
+      $answer =$conn->exec($update) ;
+      header("Location: MyProducts.php");
+    }
+    else{
+      echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
+      //echo "failed";
     }
   }
   else{
@@ -250,7 +243,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       
       
     </div>
-
     <div id="modal-wrapper" class="modal">
       <form class="modal-content animate" action="" method="post" >
         <div class="container">
@@ -259,7 +251,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           <input type="number" class="form-control" name="start_price" value="" placeholder="Starting Price" min="1" maxlength="20">
           <input type="number" class="form-control" name="duration" value="" placeholder="Duration(hours)" min="1" maxlength="20">
           <input type="hidden" id="prodId" name="prodId">
-          <input type="submit" value="Confirm Resale" name="resell">
+          <input type="submit" value="Confirm Resale">
         </div>
       </form>
     </div>
@@ -272,7 +264,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         <input type="checkbox" name="deleteConfirmation" value="yes">Yes
         <input type="checkbox" name="deleteConfirmation" value="no">No<br>
         <input type="hidden" id="prodIds" name="prodId">
-        <input type="submit" value="Delete" name="delete">
+        <input type="submit" value="Delete">
         </div>
       </form>
     </div>
@@ -285,7 +277,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         <input type="checkbox" name="stopConfirmation" value="yes">Yes
         <input type="checkbox" name="stopConfirmation" value="no">No<br>
         <input type="hidden" id="prodIdstop" name="prodId">
-        <input type="submit" value="Stop" name="stop">
+        <input type="submit" value="Stop">
         </div>
       </form>
     </div>

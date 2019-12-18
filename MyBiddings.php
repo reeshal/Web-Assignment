@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
 
-    <link rel="stylesheet" href="includes/productsRishikesh.css">
+    <link rel="stylesheet" href="includes/products.css">
 
 </head>
 
@@ -73,50 +73,28 @@
 	<!--End of header-->
 
 	<!--Search Bar only-->
-	<div class="container">
-          <div class="row align-items-center justify-content-center text-center">
-            <div class="col-md-10">
-              <div class="form-search-wrap p-2" style="margin-top: 100px; margin-bottom: 50px">
-                <form method="post" action="">
-                  <div class="row ">
-  
-                    <div class="col-7 border-right">
-                      <!--met  echo value searched-->
-                      <input type="text" name="tags"  class="form-control" placeholder="What are you looking for?" value="<?php echo $search;?>">
-                    </div>
-                    
-                    <div class="col-3">
-                      <div class="select-wrap">
-                        <select class="form-control" name="category">
-                          <option value="">All Categories</option>
-                          <option value="Art">Art</option>
-                          <option value="Books and magazines">Books &amp; Magazines</option>
-                          <option value="Cellphones">Cellphones</option>
-                          <option value="Computers">Computers</option>
-                          <option value="Clothes">Clothes</option>
-                          <option value="Jewellery and Watches">Jewellery &amp; Watches</option>
-                          <option value="Music">Music</option>
-                          <option value="Movies">Movies</option>
-                          <option value="Health Care">Health Care</option>
-                          <option value="Vehicles">Vehicles</option>
-                        </select>
-                      </div>
-                    </div>
-  
-                    <div class="col-2 text-right">
-                      <input type="submit" class="btn btn-primary" value="Search">
-                    </div>
-                    
-                  </div>
-                </form>
-              </div>
-  
-            </div>
-          </div>
-        </div> 
-        <!--End of Search bar only-->
+	<div class="background-image" style="background-image: url(includes/hero_1.jpg); "data-aos="fade"> 
+		<div class="container">
+			<p>.</p>
+			<div class="row align-items-center justify-content-center text-center" style="min-height:325px;">
+				<div class="col-md-10">
+					<div class="row justify-content-center mb-4">
+						<div class="col-md-8 text-center">
+							<h1 style="color:black;" data-aos="fade-up" >My Biddings</h1>
+						</div>
+					</div>	
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+			<!--End of Search bar only-->
 	
-	<div class="row" style="padding-left:100px;">
+	
+<div>
+<p>.</p>
 		<?php 
 			require_once "includes/db_connect.php";
 			if($search=="" && $category==""){
@@ -179,8 +157,10 @@
 			  }
 			$data  =$conn->query($query) ;
 			$result = $data->fetchAll(PDO::FETCH_ASSOC);
-
+			
 			if($data->rowCount() > 0){
+				echo "<div class=\"container\">";
+      			echo "<div class=\"row\">";  
 				foreach($result as $output) {
 					$name =  $output["name"];
 					$start_time = $output["start_time"];
@@ -199,22 +179,49 @@
 					}
 	
 					echo "
-					<div class=\"auctionBox grid-item\">
-					  <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
-					  <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
-					  <center>Rs $currentPrice</center>
-					  </div>";
+					<div class=\"col-lg-4 col-md-6 mb-5\">
+					<div class=\"product-item\">
+						<figure>
+						<img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
+						</figure>
+						<div class=\"px-4\">
+							<h3>$name</h3>
+							<p>$end_time</p>
+							<p>Rs $currentPrice</p>
+						</div>
+						<div>
+						<a href='details.php?id=".$output['productId']."' class=\"btn mr-1 rounded-3\">View</a>
+						</div>
+					</div>
+					</div>
+					";
 				}
+				echo "</div>"; 
+      			echo "</div>"; 
 			}
 			else{
 				echo "<h2 style=\"color : red;\">You have not bidded on any products yet</h2>";
 			}
-				
-			
+
 		?>
 	</div>
 
 	</div>
 
+
 </body>
+<script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.stellar.min.js"></script>
+  <script src="js/jquery.countdown.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/bootstrap-datepicker.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/rangeslider.min.js"></script>
+  <script src="js/main.js"></script>
+
 </html>
