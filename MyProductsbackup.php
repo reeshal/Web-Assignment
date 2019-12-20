@@ -150,12 +150,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 						</div>
 					</div>
           <div class="row justify-content-center mb-4">
-						<div class="col-md-3 ">
-            <ul class="tab">
-              <li><a href="#" class="tablinks" data-aos="fade-up" onclick="switchTab(event, 'owned')">Owned</a></li>
-              <li><a href="#" class="tablinks" data-aos="fade-up" onclick="switchTab(event, 'inauction')">In Auction</a></li>
-            </ul>
-            </div>
+						<div class="col-md-8 text-center">
+            <button class="tablinks" data-aos="fade-up" onclick="switchTab(event, 'owned')">Items Owned</button>
+            <button class="tablinks" data-aos="fade-up" onclick="switchTab(event, 'inauction')">Items In Auction</button>
+						</div>
 					</div>		
 				</div>
 
@@ -164,10 +162,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	</div>
 
 
-    <div class="container" style="padding-left:30px; padding-top:25px">
+    <div class="container" style="padding-left:70px; padding-top:75px">
       
       <div id="owned" class="tabcontent row">
-
         <?php
           $query="SELECT  p.name, s.imageName,p.productId
                   FROM Product p,  ProductImage s
@@ -192,10 +189,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                   <div class=\"px-4\">
                       <h3>$name</h3>
                   </div>
+                  <button  onclick=\"resell('$pid')\">Resell</button>
+                  <button>Leave Feedback</button>
+                  <button onclick=\"deletes('$pid')\">Delete</button>
                   <div>
-                  <p class=\"btn mr-1 rounded-3\" onclick=\"resell('$pid')\">Resell</p>
-                  <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>
-                  <p class=\"btn mr-1 rounded-3\" >Leave Feedback</p>
+                  <a href='details.php?id=".$output['productId']."' class=\"btn mr-1 rounded-3\">View</a>
                   </div>
                 </div>
                 </div>
@@ -238,9 +236,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                       <p>Current Price: Rs $currentPrice</p>
                       <p>Time Left: TO BE IMPLEMENTED</p>
                   </div>
+                  <button onclick=\"deletes('$pid')\">Delete</button>
+                  <button onclick=\"stopAuction('$pid')\">Stop Auction</button>
                   <div>
-                  <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>
-                  <p class=\"btn mr-1 rounded-3\" onclick=\"stopAuction('$pid')\">Stop Auction</p>
+                  <a href='details.php?id=".$output['productId']."' class=\"btn mr-1 rounded-3\">View</a>
                   </div>
                 </div>
                 </div>
