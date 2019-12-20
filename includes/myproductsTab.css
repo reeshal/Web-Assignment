@@ -3,7 +3,6 @@ ul.tab {
     margin: 0;
     padding: 0;
     overflow: hidden;
-
     background-color: transparent;
 }  
 ul.tab li{

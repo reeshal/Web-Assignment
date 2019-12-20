@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           <nav class="site-navigation position-relative text-right" role="navigation">
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
-                <li class="active"><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
+                <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="blog.html"><span>FAQ</span></a></li>
                 <li><a href="#contact-section"><span>Contact</span></a></li>
@@ -163,10 +163,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		</div>
 	</div>
 
-
-    <div class="container" style="padding-left:30px; padding-top:25px">
-      
-      <div id="owned" class="tabcontent row">
+  <div style="padding-left:25px; padding-top:25px">
+    <div class="container">    
+    <div id="owned" class="tabcontent">
 
         <?php
           $query="SELECT  p.name, s.imageName,p.productId
@@ -177,34 +176,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                   ";
           $data  =$conn->query($query) ;
           $result = $data->fetchAll(PDO::FETCH_ASSOC);
-    
-          foreach($result as $output) {
-              $name =  $output["name"];
-              $imageName = $output["imageName"];
-              $pid=$output['productId'];
+          echo "<div class=\"row\">";
+          if(!$result){
+            echo "
+            <div class=\"col-lg-4 col-md-6 mb-5\">
+            None
+            </div>
+            ";
+          }
+          else{
+            foreach($result as $output) {
+                $name =  $output["name"];
+                $imageName = $output["imageName"];
+                $pid=$output['productId'];
 
-              echo "
-                <div class=\"col-lg-4 col-md-6 mb-5\">
-                <div class=\"product-item\">
-                  <figure>
-                  <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
-                  </figure>
-                  <div class=\"px-4\">
-                      <h3>$name</h3>
+                echo "
+                  <div class=\"col-lg-4 col-md-6 mb-5\">
+                  <div class=\"product-item\">
+                    <figure>
+                    <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
+                    </figure>
+                    <div class=\"px-4\">
+                        <h3>$name</h3>
+                    </div>
+                    <div>
+                    <p class=\"btn mr-1 rounded-3\" onclick=\"resell('$pid')\">Resell</p>
+                    <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>
+                    <p class=\"btn mr-1 rounded-3\" >Leave Feedback</p>
+                    </div>
                   </div>
-                  <div>
-                  <p class=\"btn mr-1 rounded-3\" onclick=\"resell('$pid')\">Resell</p>
-                  <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>
-                  <p class=\"btn mr-1 rounded-3\" >Leave Feedback</p>
                   </div>
-                </div>
-                </div>
-              ";
-            }
-          
+                ";
+              }
+          } 
         ?>
-      </div>
-      <div id="inauction" class="tabcontent row">
+    </div>
+    </div>
+
+    <div class="container">   
+    <div id="inauction" class="tabcontent">
+
         <?php
         $query="SELECT p.start_time, p.start_price, p.name, s.imageName,p.productId
                 FROM Product p, ProductImage s
@@ -213,44 +224,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 AND p.is_Sold=0";
         $data  =$conn->query($query) ;
         $result = $data->fetchAll(PDO::FETCH_ASSOC);
-        foreach($result as $output) {
-            $name =  $output["name"];
-            $price = $output["start_price"];
-            $date = $output["start_time"];
-            $imageName = $output["imageName"];
-            $pid=$output['productId'];
-            $currentPriceQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
-                                                           FROM Bidding
-                                                           WHERE productId = '$pid'")->fetch();
-                                                           
-            $currentPrice = $currentPriceQuery['price_bidded'];
-            if(empty($currentPrice)){
-              $currentPrice = $price;
+
+        echo "<div class=\"row\">";
+        if(!$result){
+          echo "
+          <div class=\"col-lg-4 col-md-6 mb-5\">
+          None
+          </div>
+          ";
+        }
+        else{
+          foreach($result as $output) {
+              $name =  $output["name"];
+              $price = $output["start_price"];
+              $date = $output["start_time"];
+              $imageName = $output["imageName"];
+              $pid=$output['productId'];
+              $currentPriceQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
+                                                            FROM Bidding
+                                                            WHERE productId = '$pid'")->fetch();
+                                                            
+              $currentPrice = $currentPriceQuery['price_bidded'];
+              if(empty($currentPrice)){
+                $currentPrice = $price;
+              }
+                echo "
+                  <div class=\"col-lg-4 col-md-6 mb-5\">
+                  <div class=\"product-item\">
+                    <figure>
+                    <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
+                    </figure>
+                    <div class=\"px-4\">
+                        <h3>$name</h3>
+                        <p>Current Price: Rs $currentPrice</p>
+                        <p>Time Left: TO BE IMPLEMENTED</p>
+                    </div>
+                    <div>
+                    <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>
+                    <p class=\"btn mr-1 rounded-3\" onclick=\"stopAuction('$pid')\">Stop Auction</p>
+                    </div>
+                  </div>
+                  </div>
+                ";
             }
-              echo "
-                <div class=\"col-lg-4 col-md-6 mb-5\">
-                <div class=\"product-item\">
-                  <figure>
-                  <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
-                  </figure>
-                  <div class=\"px-4\">
-                      <h3>$name</h3>
-                      <p>Current Price: Rs $currentPrice</p>
-                      <p>Time Left: TO BE IMPLEMENTED</p>
-                  </div>
-                  <div>
-                  <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>
-                  <p class=\"btn mr-1 rounded-3\" onclick=\"stopAuction('$pid')\">Stop Auction</p>
-                  </div>
-                </div>
-                </div>
-              ";
           }
         ?>
-      </div>
-      
-      
     </div>
+    </div>
+      
+      
+  </div>
 
     <div id="modal-wrapper" class="modal">
       <form class="modal-content animate" action="" method="post" >
