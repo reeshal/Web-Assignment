@@ -63,7 +63,7 @@
                 <li class="active"><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="blog.html"><span>FAQ</span></a></li>
-                <li><a href="#contact-section"><span>Contact</span></a></li>
+                <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
               </ul>
             </nav>
           </div>
@@ -72,7 +72,7 @@
     </header>
 	<!--End of header-->
 
-	<!--Search Bar only-->
+	<!--Pic only-->
 	<div class="background-image" style="background-image: url(includes/hero_1.jpg); "data-aos="fade"> 
 		<div class="container">
 			<p>.</p>
@@ -88,9 +88,7 @@
 			</div>
 		</div>
 	</div>
-
-
-			<!--End of Search bar only-->
+	<!--End of Pic only-->
 	
 	
 <div>

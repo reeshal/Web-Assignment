@@ -59,7 +59,7 @@ if ($user ==""){
                 <li><a href="ProductsNew.php"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="blog.html"><span>FAQ</span></a></li>
-                <li><a href="#contact-section"><span>Contact</span></a></li>
+                <li><a href="ContactUs.php"><span>Contact</span></a></li>
               </ul>
             </nav>
           </div>
@@ -91,7 +91,7 @@ if ($user ==""){
                 <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="blog.html"><span>FAQ</span></a></li>
-                <li><a href="#contact-section"><span>Contact</span></a></li>
+                <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
               </ul>
             </nav>
           </div>
@@ -185,37 +185,7 @@ if ($user ==""){
         </div>
       </div>
     </div>
- <!--Contact Us-->  
-    <div class="site-section bg-light" id="contact-section">
-      <div class="container">
-        <div class="row">
-            <div class="col-md-5"  data-aos="fade" data-aos-delay="100">
-            
-                <div class="p-4 mb-3 bg-white">
-                  <p class="mb-0 font-weight-bold">Address</p>
-                  <p class="mb-4">203 Fake St. Mountain View, San Francisco, California, USA</p>
-    
-                  <p class="mb-0 font-weight-bold">Phone</p>
-                  <p class="mb-4"><a href="#">+1 232 3235 324</a></p>
-    
-                  <p class="mb-0 font-weight-bold">Email Address</p>
-                  <p class="mb-0"><a href="#">youremail@domain.com</a></p>
-                </div>
-            </div>
-            <div class="col-md-5"  data-aos="fade" data-aos-delay="100"></div>
-                
-                <div class="p-4 mb-3 bg-white">
-                  <h3 class="h5 text-black mb-3">More Info</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa ad iure porro mollitia architecto hic consequuntur. Distinctio nisi perferendis dolore, ipsa consectetur? Fugiat quaerat eos qui, libero neque sed nulla.</p>
-                  <p><a href="#" class="btn btn-primary px-4 py-2 text-white">Learn More</a></p>
-                </div>
-                </div>
-    
-              
-
-        </div>
-      </div>
-    </div>
+ 
     
  
 
