@@ -61,9 +61,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li><a href="adminhomepage.php"><span>Home</span></a></li>
                 <li><a href="#products"><span>View all Products</span></a></li>
-                <li><a href="#problems"><span>Problems</span></a></li>
+                <li><a href="adminviewreports.php"><span>Problems</span></a></li>
                 <li><a href="#charts"><span>Charts</span></a></li>
-                <li><a href=""><span>Other data</span></a></li>
+                <li><a href="#others"><span>Other Tools</span></a></li>
               </ul>
             </nav>
           </div>
@@ -118,6 +118,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
     <!--charts-->
     <div class="site-section " id="charts" >
+        <div class="container">
+            <p>TO BE IMPLEMENTED</p>
+        </div>
+    </div>
+
+    <!--others-->
+    <div class="site-section " id="others" >
         <div class="container">
             <p>TO BE IMPLEMENTED</p>
         </div>
