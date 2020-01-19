@@ -59,3 +59,10 @@ function checkRadioSetClickedByName(radio_names, message)
  	}
  	
 }//end function checkRadioSetClicked(radio_names, message)
+
+function setDefaultValue(obj_id){
+    if($("#" + obj_id).val().length ==0)
+	    return false;
+    else
+	    return true;
+}

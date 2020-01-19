@@ -1,12 +1,7 @@
 <?php 
 	session_start();
+	require_once "includes/phpFunctions.php";
 	$user=$_SESSION['username'];
-	function test_input($data) {
-		$data = trim($data);
-		$data = stripslashes($data);
-		$data = htmlspecialchars($data);
-		return $data;
-	}
 	  
 	$search=$category=$query="";
 	if ($_SERVER["REQUEST_METHOD"] == "POST"){
