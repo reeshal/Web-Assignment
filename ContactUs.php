@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once "includes/phpFunctions.php";
 $user=""; //to display the name of the user for the dropdown box
 if(isset($_GET['referer'])){
   if($_GET['referer'] == 'login')
@@ -8,13 +9,6 @@ if(isset($_GET['referer'])){
   }//end if
 }
 require_once "SellerNotif.php";
-
-function test_input($data) {
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
-}
 
 $subject=$description=$errorsubject=$errordescription="";
 

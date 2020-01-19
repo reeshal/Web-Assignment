@@ -1,17 +1,7 @@
 <?php 
 session_start();
-
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-function dateformatter($date){
-    $date = str_replace('/', '-', $date );
-    $newDate = date("Y-m-d", strtotime($date));
-    return $newDate;
-}
+require_once "includes/db_connect.php";
+require_once "includes/phpFunctions.php";
 
 //defining variables
 $firstname=$lastname=$address=$date=$username=$password=$confirmpassword=$email=$gender=$currency="";
@@ -65,7 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     } else {
     $gender = test_input($_POST["gender"]);
     }
-
     if (empty($_POST["currency"])) {
         $errorcurrency = "Currency is required";
     } else {
@@ -84,13 +73,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     //inserting in database
     if($errorfirstname == "" && $errorlastname == "" && $erroraddress == "" && $errordate == "" && $errorusername == "" && $errorpassword == "" && $errorconfirmpassword == "" && $erroremail =="" && $errorgender == "" && $errorcurrency == ""){
         $hashed_password = password_hash($confirmedpassword,PASSWORD_DEFAULT);
-        require_once "includes/db_connect.php";
+        
         //$insertUser="INSERT INTO LoginHistory(username,login_time) VALUES(".$conn-> quote($_SESSION['username']).$conn->time().")";
 
         $sInsert = "INSERT INTO Users(Username,password,firstname,lastname,gender,email,address,dob,currency)
               VALUES(" . $conn->quote($username) ."," . $conn->quote($hashed_password) ."," . $conn->quote($firstname) ."," . $conn->quote($lastname) ."," . $conn->quote($gender) ."," . $conn->quote($email) ."," . $conn->quote($address) ."," . $conn->quote($date) .",". $conn->quote($currency) .")";
-
-        
+         
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
         $Result =$conn->exec($sInsert) ;
         if($Result ){	
@@ -125,6 +113,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             return false;
         if(!checkTextBlankById('dob','Date of birth'))
             return false;
+        if(!checkRadioSetClickedByName('gender', 'Gender'))
+		    return false;	
         if(!checkTextBlankById('username','Username'))
             return false;
         if(!checkTextBlankById('password','Password'))
@@ -133,11 +123,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             return false;
         if(!checkTextBlankById('email','Email'))
             return false;
-        if(!checkDropDownListById('currency', '' , 'Please select a Currency '))
- 		    return false;
+        if(!setDefaultValue('currency'))  //if value is empty it is set to US dollars
+            $("#currency").val("US Dollars");
+
     }
     </script>
-
 </head>
 <body>
 <?php
@@ -172,19 +162,20 @@ else{
         <div class="containerCurrency">
             Currency<br>
             <div class="select">
-                <select name="currency" id="currency">
-                    <option value="US Dollars" selected="selected" <?php if($currency == "US Dollars") {echo "selected";}?>>US Dollars</option>
-                    <option value="Euro"<?php if($currency == "Euro") {echo "selected";}?>>Euro</option>
-                    <option value="Mauritian Rupees"<?php if($currency == "Mauritian Rupees") {echo "selected";}?>>Mauritian Rupees</option>
-                    <!-- 
-                    <option value="Rand"<?php //if($currency == "Dollars") {echo "selected";}?>>Rand</option>
-                    <option value="Yen"<?php //if($currency == "Dollars") {echo "selected";}?>>Yen</option>
-                    <option value="Indian Rupee"<?php //if($currency == "Dollars") {echo "selected";}?>>Indian Rupee</option>
-                    <option value="British Pound"<?php //if($currency == "Dollars") {echo "selected";}?>>British Pound</option> -->
-                </select>
+            <select name="currency" id="currency">
+            <?php
+            $currencyquery="SELECT currency FROM Currency";
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $dataa =$conn->query($currencyquery) ;
+            $results = $dataa->fetchAll(PDO::FETCH_ASSOC);
+            foreach($results as $outputs) {
+                $currencyOutput=$outputs['currency'];
+                echo "<option value=\"$currencyOutput\">$currencyOutput</option>";
+              }
+            ?>
+            </select>
             </div>
         </div>
-                <!--<span class="error"> <?php //echo $errorcurrency;?></span>-->
              
         <input type="text" name="user_name" value="<?php echo $username;?>" placeholder="Username" maxlength="15" id="username"><br>
         <span class="error"> <?php echo $errorusername;?></span>

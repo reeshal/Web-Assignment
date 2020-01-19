@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once "includes/phpFunctions.php";
 //$user="Username"; //to display the name of the user for the dropdown box
 $user="";
 if(isset($_GET['referer'])){
@@ -11,12 +12,6 @@ if(isset($_GET['referer'])){
 require_once "SellerNotif.php";
 require_once "includes/db_connect.php";
 
-function test_input($data) {
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
-}
 $search=$category=$query="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
   if (!empty($_POST["tags"]))

@@ -2,20 +2,10 @@
 session_start();
 $user=$_SESSION['username'];
 require_once "SellerNotif.php";
-
+require_once "includes/phpFunctions.php";
 require_once "includes/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-function dateformatter($date){
-	$date = str_replace('/', '-', $date );
-	$newDate = date("Y-m-d", strtotime($date));
-	return $newDate;
-}
+
 $start_price=$start_time=$duration="";
 $deleteConfirmation=$stopConfirmation="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -129,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="blog.html"><span>FAQ</span></a></li>
-                <li><a href="#contact-section"><span>Contact</span></a></li>
+                <li><a href="ContactUs.php?referer=login""><span>Contact</span></a></li>
               </ul>
             </nav>
           </div>
