@@ -7,9 +7,7 @@ if(isset($_GET['referer'])){
     $user=$_SESSION['username'];
   }//end if
 }
-
 require_once "SellerNotif.php";
-
 ?>
 
 
@@ -133,16 +131,15 @@ if ($user ==""){
                     <div class="select-wrap">
                       <select class="form-control" name="category">
                         <option value="all">All Categories</option>
-                        <option value="Art">Art</option>
-                        <option value="Books and magazines">Books &amp; Magazines</option>
-                        <option value="Cellphones">Cellphones</option>
-                        <option value="Computers">Computers</option>
-                        <option value="Clothes">Clothes</option>
-                        <option value="Jewellery and Watches">Jewellery &amp; Watches</option>
-                        <option value="Music">Music</option>
-                        <option value="Movies">Movies</option>
-                        <option value="Health Care">Health Care</option>
-                        <option value="Vehicles">Vehicles</option>
+                        <?php
+                          $categoryQuery="SELECT categoryName FROM Category";
+                          $dataa  =$conn->query($categoryQuery) ;
+                          $results = $dataa->fetchAll(PDO::FETCH_ASSOC);
+                          foreach($results as $outputs) {
+                            $categoryOutput=$outputs["categoryName"];
+                            echo "<option value=\"$categoryOutput\">$categoryOutput</option>";
+                          }
+                        ?>
                       </select>
                     </div>
                   </div>
@@ -202,6 +199,7 @@ if ($user ==""){
   <script src="js/aos.js"></script>
   <script src="js/rangeslider.min.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/dataValidation.js"></script>
     
 </body>
 </html>
