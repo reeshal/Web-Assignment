@@ -1,6 +1,5 @@
 <?php
 session_start();
-$user="admin";
 $user=$_SESSION['username'];
 require_once "../includes/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -51,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                   <span><?php echo $user?></span>
                   <ul class="dropdown">
                       <li><a href="">My Profile</a></li>
-                      <li><a href="homepage.php">Logout</a></li>
+                      <li><a href="adminlogout.php">Logout</a></li>
                   </ul>
                 </li>
                 </ul>
