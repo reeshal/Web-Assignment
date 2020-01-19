@@ -182,12 +182,12 @@ $_SERVER['HTTP_REFERER']="ContactUs.php?referer=login";  //used to redirect the 
 <?php
 if ($user ==""){
 ?>
-          <h2 class="text-center">If you got any issues <br>please login to report them</h2>
+          <h3 class="text-center">If you got any issues <br>please login to report them</h3>
           <br/>
 <?php
 }else{
 ?>
-          <h2 class="text-center">If you got any issues <br>please do not hesitate to report them below</h2>
+          <h3 class="text-center">If you got any issues <br>please do not hesitate to report them below</h3>
           <br/>
           <!--Report from-->
           <form method="post" action="<?php echo htmlspecialchars($_SERVER["HTTP_REFERER"]);?>" class="bg-light p-5 contact-form">

@@ -80,12 +80,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     }
 
     $date=dateformatter($date);
-
-    /*Verifying variables after submission
-    echo $firstname;echo $lastname;echo $address;echo $date;echo $username;echo $password;echo $confirmpassword;echo $email;echo $gender;echo $currency;
-    echo "\n";
-    echo $errorfirstname;echo $errorlastname;echo $erroraddress;echo $errordate;echo $errorusername;echo $errorpassword;echo $errorconfirmpassword;echo $erroremail;echo $errorgender;echo $errorcurrency;
-    */      
     
     //inserting in database
     if($errorfirstname == "" && $errorlastname == "" && $erroraddress == "" && $errordate == "" && $errorusername == "" && $errorpassword == "" && $errorconfirmpassword == "" && $erroremail =="" && $errorgender == "" && $errorcurrency == ""){
@@ -117,6 +111,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 <head>
     <title>Signup Page</title>
     <link href="includes/sign_in.css" type="text/css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/dataValidation.js"></script>
+
+    <script>
+    function validateForm(){
+        if(!checkTextIllegalCharactersById('first_name', 'First Name field'))
+            return false;
+        if(!checkTextIllegalCharactersById('last_name', 'Last Name field'))
+            return false;
+        if(!checkTextIllegalCharactersById('address', 'Address field'))
+            return false;
+        if(!checkTextBlankById('dob','Date of birth'))
+            return false;
+        if(!checkTextBlankById('username','Username'))
+            return false;
+        if(!checkTextBlankById('password','Password'))
+            return false;
+        if(!checkTextBlankById('passwordverify','Password'))
+            return false;
+        if(!checkTextBlankById('email','Email'))
+            return false;
+        if(!checkDropDownListById('currency', '' , 'Please select a Currency '))
+ 		    return false;
+    }
+    </script>
+
 </head>
 <body>
 <?php
@@ -127,17 +148,18 @@ else{
 ?> 
     <div class="signupBox">
         <h3 >Please fill in the form below to register</h3>
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        <input type="text" name="first_name" value="<?php echo $firstname;?>" placeholder="Firstname" maxlength="20" ><br>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
+
+        <input type="text" name="first_name" value="<?php echo $firstname;?>" placeholder="Firstname" maxlength="20" id="first_name"><br>
         <span class="error"> <?php echo $errorfirstname;?></span>
 
-        <input type="text" name="last_name" value="<?php echo $lastname;?>" placeholder="Lastname" maxlength="20" ><br>
+        <input type="text" name="last_name" value="<?php echo $lastname;?>" placeholder="Lastname" maxlength="20" id="last_name" ><br>
         <span class="error"> <?php echo $errorlastname;?></span>
 
-        <input type="text" name="address" value="<?php echo $address;?>" placeholder="Address" maxlength="50" ><br>
+        <input type="text" name="address" value="<?php echo $address;?>" placeholder="Address" maxlength="50" id="address"><br>
         <span class="error"> <?php echo $erroraddress;?></span>
         
-        <input type="date" name="dob"><br>
+        <input type="date" name="dob" id="dob"><br>
         <span class="error"> <?php echo $errordate;?></span>
 
         <div class="container">           
@@ -150,7 +172,7 @@ else{
         <div class="containerCurrency">
             Currency<br>
             <div class="select">
-                <select name="currency">
+                <select name="currency" id="currency">
                     <option value="US Dollars" selected="selected" <?php if($currency == "US Dollars") {echo "selected";}?>>US Dollars</option>
                     <option value="Euro"<?php if($currency == "Euro") {echo "selected";}?>>Euro</option>
                     <option value="Mauritian Rupees"<?php if($currency == "Mauritian Rupees") {echo "selected";}?>>Mauritian Rupees</option>
@@ -164,16 +186,16 @@ else{
         </div>
                 <!--<span class="error"> <?php //echo $errorcurrency;?></span>-->
              
-        <input type="text" name="user_name" value="<?php echo $username;?>" placeholder="Username" maxlength="15" ><br>
+        <input type="text" name="user_name" value="<?php echo $username;?>" placeholder="Username" maxlength="15" id="username"><br>
         <span class="error"> <?php echo $errorusername;?></span>
 
-        <input type="password" name="passwords" placeholder="Password"><br>
+        <input type="password" name="passwords" placeholder="Password" id="password"><br>
         <span class="error"> <?php echo $errorpassword;?></span>
 
-        <input type="password" name="confirmpassword" placeholder="Confirm your password"><br>
+        <input type="password" name="confirmpassword" placeholder="Confirm your password" id="passwordverify"><br>
         <span class="error"> <?php echo $errorconfirmpassword;?></span>
 
-        <input type="email" name="emails" value="<?php echo $email;?>" placeholder="Email"><br>
+        <input type="email" name="emails" value="<?php echo $email;?>" placeholder="Email" id="email"><br>
         <span class="error"> <?php echo $erroremail;?></span>
 
         <input type="submit" value="Register">
