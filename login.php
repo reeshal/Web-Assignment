@@ -18,7 +18,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
     if($username_err == "" && $password_err == "" ){
         require_once "includes/db_connect.php";
-        $sQuery = "SELECT username,password FROM Users WHERE username = '$username'  ";
+        $sQuery = "SELECT username,password, accountType FROM Users WHERE username = '$username'  ";
 
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
@@ -40,7 +40,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                               VALUES(".$conn->quote($username).",".$conn->quote($datetime).")";
                 $a=$conn->exec($insertLogin) ;
 
-                header("Location: homepage.php?referer=login");
+                $type=$userResults['accountType'];
+                if(strcmp($type,"normal")==0)
+                    header("Location: homepage.php?referer=login");
+                else
+                    header("Location: admin/adminhomepage.php?referer=login");
+
             }
             else{
                 $password_err = "Wrong password";
@@ -69,15 +74,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </script>
 </head>
 <body>
-    
-<?php
-if(isset($_SESSION['username'])){ 
-    //echo "<h3 style=\"color:red\">You are already logged in</h3>";
-    header("Location: homepage.php?referer=login");  //upon trying to login , you go directly to home
-}//end if
-else{	  
-?>
-    
+
     <div class="signUpBox">
     <h2>Login</h2>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
@@ -95,9 +92,6 @@ else{
 
     </form>
     </div>
-<?php
-  }//end else
-?>    
-  
+
 </body>
 </html>
