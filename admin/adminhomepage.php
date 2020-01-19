@@ -1,8 +1,8 @@
 <?php
 session_start();
 $user="admin";
-//$user=$_SESSION['username'];
-require_once "includes/db_connect.php";
+$user=$_SESSION['username'];
+require_once "../includes/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $reason=$deleteConfirmation=$pid="";
@@ -31,11 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <title>Admin Page</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="includes/table.css">
-    <link rel="stylesheet" href="includes/myproductsTab.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../includes/table.css">
+    <link rel="stylesheet" href="../includes/myproductsTab.css">
 <meta name="robots" content="noindex">
 </head>
 <body>
