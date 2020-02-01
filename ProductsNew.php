@@ -159,14 +159,14 @@ if ($user ==""){
       <?php
       
       if($search=="" && $category==""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time,p.description 
+        $query = "SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName, p.is_sold, p.category,p.start_time, p.end_time,p.description 
                   FROM Product p, ProductImage i 			
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
                   AND p.current_owner != '$user' ";
       }
       else if($search=="" && $category!=""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time,p.description  
+        $query = "SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category,p.start_time, p.end_time,p.description  
                   FROM Product p, ProductImage i 			
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -174,7 +174,7 @@ if ($user ==""){
                   AND p.category='$category'";
       }
       else if($search!="" && $category==""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time,p.description 
+        $query = "SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time,p.description 
                   FROM Product p, ProductImage i, ProductTag t			
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -183,7 +183,7 @@ if ($user ==""){
                   AND t.product_tags LIKE '%$search%'
                   
                   UNION
-                  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time,p.description 
+                  SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time,p.description 
                   FROM Product p, ProductImage i		
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -191,7 +191,7 @@ if ($user ==""){
                   AND p.name LIKE '%$search%'";
       }
       else if($search!="" && $category!=""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time,p.description 
+        $query = "SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time,p.description 
                   FROM Product p, ProductImage i, ProductTag t			
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -200,7 +200,7 @@ if ($user ==""){
                   AND t.product_tags LIKE '%$search%'
                   AND p.category='$category'
                   UNION
-                  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time,p.description 
+                  SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time,p.description 
                   FROM Product p, ProductImage i		
                   where p.productId = i.prodId
                   AND  p.is_sold = 0	
@@ -218,6 +218,7 @@ if ($user ==""){
           $start_time = $output["start_time"];
           $end_time = $output["end_time"];
           $prodId = $output["productId"];
+          $imageId = $output["imageId"];
           $imageName = $output["imageName"];
           $desc=$output["description"];
 

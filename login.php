@@ -79,7 +79,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <h2>Login</h2>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
         <i class="fa fa-user"></i>
-        <input style="width:90%" type="text" name="username" placeholder="Username" value="<?php echo $username;?> " id="username">
+        <input style="width:90%" type="text" name="username" placeholder="Username"  id="username">
         <span class="error"> <?php echo $username_err;?></span><br>
 
         <i class="fa fa-lock"></i>

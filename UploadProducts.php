@@ -80,6 +80,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		}
 	
 		//Inserting image of product in database
+		$target_dir = "images/";
+		$target_file = $target_dir . basename($_FILES["image"]["name"]);
+		move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
+
 		$imagename = $_FILES["image"]["name"]; 
 		$insert = "INSERT INTO ProductImage(prodId, imageName)
 					VALUES($productid, " . $conn->quote($imagename) .")";
