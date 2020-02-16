@@ -79,7 +79,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
-
     <link rel="stylesheet" href="includes/products.css">
     <link rel="stylesheet" href="includes/myproductsTab.css">
 

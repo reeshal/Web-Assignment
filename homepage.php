@@ -56,7 +56,7 @@ if ($user ==""){
                 <li class="active"><a><span>Home</span></a></li>
                 <li><a href="ProductsNew.php"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
-                <li><a href="blog.html"><span>FAQ</span></a></li>
+                <li><a href="faq.php"><span>FAQ</span></a></li>
                 <li><a href="ContactUs.php"><span>Contact</span></a></li>
               </ul>
             </nav>
@@ -88,7 +88,7 @@ if ($user ==""){
                 <li class="active"><a><span>Home</span></a></li>
                 <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
-                <li><a href="blog.html"><span>FAQ</span></a></li>
+                <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
                 <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
               </ul>
             </nav>

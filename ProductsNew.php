@@ -65,7 +65,7 @@ if ($user ==""){
                 <li><a href="homepage.php"><span>Home</span></a></li>
                 <li class="active"><a href="ProductsNew.php"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
-                <li><a href="blog.html"><span>FAQ</span></a></li>
+                <li><a href="faq.php"><span>FAQ</span></a></li>
                 <li><a href="ContactUs.php"><span>Contact</span></a></li>
               </ul>
             </nav>
@@ -97,7 +97,7 @@ if ($user ==""){
                 <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
                 <li class="active"><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
-                <li><a href="blog.html"><span>FAQ</span></a></li>
+                <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
                 <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
               </ul>
             </nav>
@@ -155,62 +155,24 @@ if ($user ==""){
   </div>
   <div >
     <p>.</p>
-
-      <?php
       
-      if($search=="" && $category==""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName, p.is_sold, p.category,p.start_time, p.end_time,p.description 
-                  FROM Product p, ProductImage i 			
-                  where p.productId = i.prodId
-                  AND  p.is_sold = 0	
-                  AND p.current_owner != '$user' ";
-      }
-      else if($search=="" && $category!=""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category,p.start_time, p.end_time,p.description  
-                  FROM Product p, ProductImage i 			
-                  where p.productId = i.prodId
-                  AND  p.is_sold = 0	
-                  AND p.current_owner != '$user'
-                  AND p.category='$category'";
-      }
-      else if($search!="" && $category==""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time,p.description 
-                  FROM Product p, ProductImage i, ProductTag t			
-                  where p.productId = i.prodId
-                  AND  p.is_sold = 0	
-                  AND p.current_owner != '$user'
-                  AND p.productId = t.productId
-                  AND t.product_tags LIKE '%$search%'
-                  
-                  UNION
-                  SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time,p.description 
-                  FROM Product p, ProductImage i		
-                  where p.productId = i.prodId
-                  AND  p.is_sold = 0	
-                  AND p.current_owner != '$user'
-                  AND p.name LIKE '%$search%'";
-      }
-      else if($search!="" && $category!=""){
-        $query = "SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time,p.description 
-                  FROM Product p, ProductImage i, ProductTag t			
-                  where p.productId = i.prodId
-                  AND  p.is_sold = 0	
-                  AND p.current_owner != '$user'
-                  AND p.productId = t.productId
-                  AND t.product_tags LIKE '%$search%'
-                  AND p.category='$category'
-                  UNION
-                  SELECT p.productId, p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time,p.description 
-                  FROM Product p, ProductImage i		
-                  where p.productId = i.prodId
-                  AND  p.is_sold = 0	
-                  AND p.current_owner != '$user'
-                  AND p.name LIKE '%$search%'
-                  AND p.category='$category'";
-      }
-	
+      <?php
+      $query = "SELECT DISTINCT(p.productId), p.name, p.start_price, i.imageId, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time,p.description 
+                FROM Product p, ProductImage i, ProductTag t			
+                where p.productId = i.prodId
+                AND  p.is_sold = 0	
+                AND p.current_owner != '$user'
+                AND p.productId = t.productId
+                AND p.category LIKE  '%$category%'
+                AND (t.product_tags LIKE '%$search%'
+                OR p.name LIKE '%$search%')";
+
       $data  =$conn->query($query) ;
       $result = $data->fetchAll(PDO::FETCH_ASSOC);
+
+      if(!$result)
+        echo "<h2 style=text-align:center>Sorry. No results found</h2>";
+      else{
       echo "<div class=\"container\">";
       echo "<div class=\"row\">";
       foreach($result as $output) {
@@ -274,6 +236,7 @@ if ($user ==""){
       }
       echo "</div>"; 
       echo "</div>";  
+    }
       ?>
       
 
