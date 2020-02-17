@@ -5,20 +5,39 @@ require_once "../includes/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $reason=$deleteConfirmation=$pid="";
+$question=$category=$solution="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
-    $deleteConfirmation=$_POST["deleteConfirmation"];
-    $reason=$_POST["reason"];
-    $pid=$_POST['prodId'];
-    $email=$_POST['email'];
-    if($deleteConfirmation=="yes"){
-        mail($email, "Why we deleted your product", $reason, "From: reeshalnew@gmail.com");
 
-        $delQuery="DELETE FROM Product WHERE productId=$pid";
-        $delResult =$conn->exec($delQuery) ;
-        header("Location: admin.php");
+    if(isset($_POST["deleteproduct"])){
+        $deleteConfirmation=$_POST["deleteConfirmation"];
+        $reason=$_POST["reason"];
+        $pid=$_POST['prodId'];
+        $email=$_POST['email'];
+        if($deleteConfirmation=="yes"){
+            mail($email, "Why we deleted your product", $reason, "From: reeshalnew@gmail.com");
+
+            $delQuery="DELETE FROM Product WHERE productId=$pid";
+            $delResult =$conn->exec($delQuery) ;
+            header("Location: adminhomepage.php?referer=login");
+        }
+        else{
+            header("Location: adminhomepage.php?referer=login");
+        }
     }
-    else{
-        header("Location: admin.php");
+
+    if(isset($_POST["insertquestion"])){
+        $question=$_POST["question"];
+        $category=$_POST["category"];
+        $solution=$_POST["solution"];
+        $insertquery="INSERT INTO FAQ(question,answer,category)
+                      VALUES('$question','$category','$solution')";
+        $resultinsert=$conn->exec($insertquery);
+        if($resultinsert){
+            header("Location: adminhomepage.php?referer=login");
+        }
+        else{
+            echo "<script>alert('failed')</script>";
+        }
     }
 }
 ?>
@@ -73,6 +92,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("div#viewfaqs").fadeOut();
                 $("#viewreport").addClass("active");
                 $("div#viewreports").css("display","block");
+             })
+
+             $("button.deletequestion").click(function(){
+                 var el=this;
+                 var questionId=$(this).attr('id');
+                 $.post("delete.php",{faqId: questionid}, function(status){
+                    if(status==1){
+                        $(el).closest('tr').css('background','tomato');
+                        $(el).closest('tr').fadeOut(800,function(){
+                            $(this).remove();
+                        });
+                    }
+                    else{
+                        alert("failed");
+                    }
+                 })
              })
          });
     </script>
@@ -151,7 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                         echo "<td>".$rows['question']."</td>";
                         echo "<td>".$rows['answer']."</td>";
                         echo "<td>".$rows['category']."</td>";
-                        echo "<td><button class=\"btn\" onclick=\"deleteCategory('$faqid')\">Delete Question</button></td>";
+                        echo "<td><button class=\"btn deletequestion\" id=\"'$faqid'\">Delete Question</button></td>";
                         echo "</tr>";
                     }
                     ?>
@@ -171,7 +206,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                         <textarea cols="30" rows="7" class="form-control" placeholder="Solution" name="solution" ></textarea>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Insert Question" class="btn btn-primary py-2 px-4" >
+                        <input type="submit" value="Insert Question" class="btn btn-primary py-2 px-4" name="insertquestion">
                     </div>
                 </form>
                 </div>
