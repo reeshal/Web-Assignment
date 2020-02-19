@@ -66,7 +66,7 @@ $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         <textarea  rows="5" cols="45" name="reason"></textarea><br/>
         <input type="hidden" id="prodIds" name="prodId">
         <input type="hidden" id="email" name="email">
-        <input type="submit" value="Delete">
+        <input type="submit" value="Delete" name="deleteproduct">
         </div>
       </form>
     </div>
@@ -75,10 +75,6 @@ $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
           document.getElementById("modal-delete").style.display="block";
           $("#prodIds").val(pid);
           $("#email").val(email);
-
-          //document.getElementById("prodIds").value=pid;
-          //document.getElementById("email").value=email;
-
         }
 </script>
 </body>

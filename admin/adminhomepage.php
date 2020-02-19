@@ -5,20 +5,78 @@ require_once "../includes/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $reason=$deleteConfirmation=$pid="";
+$question=$category=$solution="";
+$deleteConfirmationFaq="";
+$deleteuser="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
-    $deleteConfirmation=$_POST["deleteConfirmation"];
-    $reason=$_POST["reason"];
-    $pid=$_POST['prodId'];
-    $email=$_POST['email'];
-    if($deleteConfirmation=="yes"){
-        mail($email, "Why we deleted your product", $reason, "From: reeshalnew@gmail.com");
 
-        $delQuery="DELETE FROM Product WHERE productId=$pid";
-        $delResult =$conn->exec($delQuery) ;
-        header("Location: admin.php");
+    if(isset($_POST["deleteproduct"])){
+        $deleteConfirmation=$_POST["deleteConfirmation"];
+        $reason=$_POST["reason"];
+        $pid=$_POST['prodId'];
+        $email=$_POST['email'];
+        if($deleteConfirmation=="yes"){
+            mail($email, "Why we deleted your product", $reason, "From: reeshalnew@gmail.com");
+
+            $delQuery="DELETE FROM Product WHERE productId=$pid";
+            $delResult =$conn->exec($delQuery) ;
+            header("Location: adminhomepage.php?referer=login");
+        }
+        else{
+            header("Location: adminhomepage.php?referer=login");
+        }
     }
-    else{
-        header("Location: admin.php");
+
+    if(isset($_POST["insertquestion"])){
+        $question=$_POST["question"];
+        $category=$_POST["category"];
+        $solution=$_POST["solution"];
+        $insertquery="INSERT INTO FAQ(question,answer,category)
+                      VALUES('$question','$category','$solution')";
+        $resultinsert=$conn->exec($insertquery);
+        if($resultinsert){
+            header("Location: adminhomepage.php?referer=login");
+        }
+        else{
+            echo "<script>alert('failed')</script>";
+        }
+    }
+
+    if(isset($_POST["deletefaq"])){
+        $deleteConfirmationFaq=$_POST["deleteConfirmationfaq"];
+        $faqId=$_POST["faqId"];
+        if($deleteConfirmationFaq=="yes"){
+            $delStm="DELETE FROM FAQ WHERE faqId=$faqId";
+            $delresult=$conn->exec($delStm);
+            if($delresult){
+                header("Location: adminhomepage.php?referer=login");
+            }
+            else{
+                echo "<script>alert('failed');</script>";  
+            }
+        }
+        else{
+            header("Location: adminhomepage.php?referer=login");
+        }    
+    }
+
+    if(isset($_POST["deleteuser"])){
+        $deleteuser=$_POST["deleteConfirmationuser"];
+        $email=$_POST["emailuser"];
+        $userdelete=$_POST["usernamedel"];
+        if($deleteuser=="yes"){
+            $delStm="DELETE FROM Users WHERE username='$userdelete'";
+            $delresult=$conn->exec($delStm);
+            if($delresult){
+                header("Location: adminhomepage.php?referer=login");
+            }
+            else{
+                echo "<script>alert('failed');</script>";  
+            }
+        }
+        else{
+            header("Location: adminhomepage.php?referer=login");
+        } 
     }
 }
 ?>
@@ -30,6 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="../includes/table.css">
+    <link rel="stylesheet" href="../includes/myproductsTab.css">
     <meta name="robots" content="noindex">
     <script>
          $(document).ready(function () {
@@ -74,6 +133,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("#viewreport").addClass("active");
                 $("div#viewreports").css("display","block");
              })
+
+             $('.deletequestion').click(function(){
+                 var questionId=$(this).attr('id');
+                 $("#modal-delete-question").css("display","block");
+                 $("#faqIdmodal").val(questionId);
+             });
+
+             
          });
     </script>
 </head>
@@ -147,19 +214,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                     $Resultfaq = $conn->query($queryfaq);         
                     while ($rows = $Resultfaq->fetch()) {
                         $faqid=$rows['faqId'];
-                        echo "<tr>";	
-                        echo "<td>".$rows['question']."</td>";
-                        echo "<td>".$rows['answer']."</td>";
-                        echo "<td>".$rows['category']."</td>";
-                        echo "<td><button class=\"btn\" onclick=\"deleteCategory('$faqid')\">Delete Question</button></td>";
-                        echo "</tr>";
+                    ?>
+                        <tr>	
+                        <td><?php echo $rows['question']?></td>
+                        <td><?php echo $rows['answer']?></td>
+                        <td><?php echo $rows['category']?></td>
+                        <td><button class="btn deletequestion" id=<?php echo $faqid?>>Delete Question</button></td>
+                        </tr>
+                    <?php
                     }
                     ?>
                     </table>
                 </div>
                 </br></br>
                 <div class="container">    
-                    <form method="post" action="<?php echo htmlspecialchars($_SERVER["HTTP_REFERER"]);?>" class="bg-light p-5 contact-form">
+                    <form method="post" action="" class="bg-light p-5 contact-form">
                     <h3 class="text-center">Insert a new Frequently Asked Question</h3></br>
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Question" name="question">
@@ -171,7 +240,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                         <textarea cols="30" rows="7" class="form-control" placeholder="Solution" name="solution" ></textarea>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Insert Question" class="btn btn-primary py-2 px-4" >
+                        <input type="submit" value="Insert Question" class="btn btn-primary py-2 px-4" name="insertquestion">
                     </div>
                 </form>
                 </div>
@@ -200,8 +269,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 </table>
             </div>
             </div>
-                    
 
+        <div id="modal-delete-question" class="modal">
+            <form class="modal-content animate" action="" method="post">
+            <div class="container">
+            <p>Confirm Deletion</p>
+            <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
+            <input type="checkbox" name="deleteConfirmationfaq" value="yes">Yes
+            <input type="checkbox" name="deleteConfirmationfaq" value="no">No
+            <input type="hidden" id="faqIdmodal" name="faqId">
+            <input type="submit" value="Delete" name="deletefaq">
+            </div>
+            </form>
+        </div>      
+        
+        <div id="modal-delete-user" class="modal">
+            <form class="modal-content animate" action="" method="post">
+            <div class="container">
+                <p>Confirm Deletion</p>
+                <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
+                <input type="checkbox" name="deleteConfirmationuser" value="yes">Yes
+                <input type="checkbox" name="deleteConfirmationuser" value="no">No
+                <p>Give a reason why you are deleting this user</p>
+                <textarea  rows="5" cols="45" name="reason"></textarea><br/>
+                <input type="hidden" id="usernamedel" name="usernamedel">
+                <input type="hidden" id="emailuser" name="emailuser">
+                <input type="submit" value="Remove User" name="deleteuser">
+                </div>
+            </form>
+        </div>           
+        <script>
+        function deleteUser(username, email){
+                $("#modal-delete-user").css("display","block");
+                $("#usernamedel").val(username);
+                $("#emailuser").val(email);
+                }
+        </script>
 </div>
 </body>
 </html>
