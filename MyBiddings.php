@@ -12,6 +12,7 @@
 	}
 
 	require_once "SellerNotif.php";
+	require_once "feedback.php";
 
 ?>
 

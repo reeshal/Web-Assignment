@@ -9,6 +9,7 @@ if(isset($_GET['referer'])){
   }//end if
 }
 require_once "SellerNotif.php";
+require_once "feedback.php";
 
 $subject=$description=$errorsubject=$errordescription="";
 

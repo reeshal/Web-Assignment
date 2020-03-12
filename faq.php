@@ -2,6 +2,7 @@
 session_start();
 $user=$_SESSION['username'];
 require_once "SellerNotif.php";
+require_once "feedback.php";
 require_once "includes/db_connect.php";
 
 ?>

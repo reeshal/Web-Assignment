@@ -5,6 +5,7 @@ require_once "includes/db_connect.php";
 //$user="Username"; //to display the name of the user for the dropdown box
 $user=$_SESSION['username'];
 require_once "SellerNotif.php";
+require_once "feedback.php";
 
 ?>
 <?php
