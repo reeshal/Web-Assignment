@@ -3,14 +3,12 @@ session_start();
 $username=$_SESSION['username'];
 
 require_once "includes/db_connect.php";
-$productId = $_REQUEST['id'];//Get product id
+//$productId = $_REQUEST['id'];
+$productId = $_POST['id'];//Get product id
 
-$biddingQuery = $conn->query("SELECT price_bidded
+$biddingQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
                               FROM Bidding 
-                              WHERE productId = '$productId'
-                              AND price_bidded = (SELECT MAX(price_bidded)
-                                                  FROM Bidding
-                                                  WHERE productId = '$productId') ")->fetch();
+                              WHERE productId = '$productId'")->fetch();
 
 $price_bidded = $biddingQuery['price_bidded'];
 
