@@ -99,6 +99,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("div#viewfaqs").fadeOut(); 
                 $("div#viewusers").fadeOut(); 
                 $("div#viewreports").fadeOut(); 
+                $("#viewchart").removeClass("active");
+                $("#viewuser").removeClass("active");
+                $("#viewfaq").removeClass("active");
+                $("#viewreport").removeClass("active");
              })
 
              $("#viewchart").click(function(){
@@ -108,6 +112,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("div#viewfaqs").fadeOut(); 
                 $("div#viewusers").fadeOut(); 
                 $("div#viewreports").fadeOut();
+                $("#viewproduct").removeClass("active");
+                $("#viewuser").removeClass("active");
+                $("#viewfaq").removeClass("active");
+                $("#viewreport").removeClass("active");
              })
 
              $("#viewuser").click(function(){
@@ -116,6 +124,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("div#viewreports").fadeOut();
                 $("#viewuser").addClass("active");
                 $("div#viewusers").css("display","block");
+                $("#viewproduct").removeClass("active");
+                $("#viewchart").removeClass("active");
+                $("#viewfaq").removeClass("active");
+                $("#viewreport").removeClass("active");
              })
 
              $("#viewfaq").click(function(){
@@ -124,6 +136,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("div#viewreports").fadeOut();
                 $("#viewfaq").addClass("active");
                 $("div#viewfaqs").css("display","block");
+                $("#viewproduct").removeClass("active");
+                $("#viewchart").removeClass("active");
+                $("#viewuser").removeClass("active");
+                $("#viewreport").removeClass("active");
              })
 
              $("#viewreport").click(function(){
@@ -132,6 +148,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("div#viewfaqs").fadeOut();
                 $("#viewreport").addClass("active");
                 $("div#viewreports").css("display","block");
+                $("#viewproduct").removeClass("active");
+                $("#viewchart").removeClass("active");
+                $("#viewuser").removeClass("active");
+                $("#viewfaq").removeClass("active");
              })
 
              $('.deletequestion').click(function(){

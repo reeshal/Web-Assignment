@@ -1,6 +1,6 @@
 <?php
 require_once "includes/db_connect.php";
-
+if($user !=""){
 //Getting value of feedbackNotif
 $feedbackNotifQuery = $conn->query("SELECT feedbackNotif FROM Users WHERE username = '$user'")->fetch();
 $feedbackNotif = $feedbackNotifQuery['feedbackNotif'];
@@ -34,5 +34,5 @@ if(!empty($feedbackNotif)){//Checking if a feedback is received
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
     $Result =$conn->exec($update) ;
 }
-
+}
 ?>

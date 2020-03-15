@@ -3,6 +3,7 @@
 $username=$_SESSION['username'];*/
 require_once "includes/db_connect.php";
 
+if($user !=""){
 //Getting value of soldNotif
 $soldNotifQuery = $conn->query("SELECT soldNotif FROM Users WHERE username = '$user'")->fetch();
 $soldNotif = $soldNotifQuery['soldNotif'];
@@ -31,5 +32,5 @@ if(!empty($soldNotif)){//Checking if the bidding of a product is over
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
     $Result =$conn->exec($update) ;
 }
-
+}
 ?>

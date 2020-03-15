@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once "includes/phpFunctions.php";
 //$user="Username"; //to display the name of the user for the dropdown box
 $user="";
@@ -20,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     $category=test_input($_POST["category"]);
 }
 
-
+require_once "feedback.php";
 
 ?>
 
