@@ -92,6 +92,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
     <link rel="stylesheet" href="includes/productsRishikesh.css">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 </head>
 
 <body>
@@ -247,7 +249,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     
    
    var productId = "<?php echo $id ?>";
-   var xhttp = new XMLHttpRequest();
+ /*  var xhttp = new XMLHttpRequest();
   
    xhttp.onreadystatechange = function() {
     console.log("responseText : " , this.responseText);
@@ -265,7 +267,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
   };
 
   xhttp.open("GET", "UpdateAuction.php?id="+productId, true);
-  xhttp.send(); 
+  xhttp.send(); */
+
+  $(document).ready(function(){
+    $.ajax({
+			url:"UpdateAuction.php", 
+			data: {id: productId}, 
+			cache: false,
+			method: "POST", 
+			success:function(result){
+          console.log("result : " , result);
+    			var currentPriceShown = document.getElementById("price").value;
+          console.log("currentPriceShown : " , currentPriceShown);
+
+          var actualBiddingPrice = JSON.parse(result);
+          console.log("actualBiddingPrice : " , actualBiddingPrice);
+
+          if(currentPriceShown != actualBiddingPrice){
+            setTimeout("location.reload(true);",2000);
+          }
+    		},
+    		error: function(xhr){
+      			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+    		}
+  		
+  		});
+  });
    
 		
 		    if (t < 0) { 
@@ -288,9 +315,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             setTimeout("location.href = 'http://localhost/Web-Assignment/ProductsNew.php?referer=login';",1000);
           }
 
-          var xhttp = new XMLHttpRequest();
+       /*   var xhttp = new XMLHttpRequest();
           xhttp.open("GET", "result.php?id="+productId, true);
-          xhttp.send(); 
+          xhttp.send(); */
+
+          $(document).ready(function(){
+            $.ajax({
+              url:"result.php", 
+              data: {id: productId}, 
+              cache: false,
+              method: "POST", 
+              success:function(result){
+                 
+                },
+                error: function(xhr){
+                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                }
+              
+              });
+  });
     
 
          return false;

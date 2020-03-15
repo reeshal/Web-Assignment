@@ -9,6 +9,7 @@ if(isset($_GET['referer'])){
   }//end if
 }
 require_once "SellerNotif.php";
+require_once "feedback.php";
 
 $subject=$description=$errorsubject=$errordescription="";
 
@@ -84,7 +85,7 @@ $_SERVER['HTTP_REFERER']="ContactUs.php";  //used to redirect the form to this p
             <li><a href="homepage.php"><span>Home</span></a></li>
             <li><a href="ProductsNew.php"><span>Products</span></a></li>
             <li><a href="#about-section"><span>About Us</span></a></li>
-            <li><a href="blog.html"><span>FAQ</span></a></li>
+            <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
             <li class="active"><a><span>Contact</span></a></li>
           </ul>
         </nav>
@@ -116,7 +117,7 @@ $_SERVER['HTTP_REFERER']="ContactUs.php?referer=login";  //used to redirect the 
             <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
             <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
             <li><a href="#about-section"><span>About Us</span></a></li>
-            <li><a href="blog.html"><span>FAQ</span></a></li>
+            <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
             <li class="active"><a><span>Contact</span></a></li>
           </ul>
         </nav>

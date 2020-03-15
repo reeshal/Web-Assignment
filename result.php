@@ -4,7 +4,8 @@ $user=$_SESSION['username'];
 
     require_once "includes/db_connect.php";
     //Insert into auction detail
-    $productId = $_GET['id'];
+   // $productId = $_GET['id'];
+   $productId = $_POST['id'];//Get product id
 
     //Get previous owner of product
     $previousOwnerQuery = $conn->query("SELECT current_owner FROM Product WHERE productId = '$productId'")->fetch();
@@ -31,12 +32,10 @@ $user=$_SESSION['username'];
     $Result =$conn->exec($update) ;
 
     //Get new owner of product
-    $currentOwnerQuery = $conn->query("SELECT username, price_bidded
+    $currentOwnerQuery = $conn->query("SELECT username, MAX(price_bidded) as price_bidded
                                        FROM Bidding 
-                                       WHERE productId = '$productId'
-                                       AND price_bidded = (SELECT MAX(price_bidded)
-                                                           FROM Bidding
-                                                           WHERE productId = '$productId')")->fetch();
+                                       WHERE productId = '$productId'")->fetch();
+
     $currentOwner = $currentOwnerQuery['username'];
     $amountPaid = $currentOwnerQuery['price_bidded'];
 

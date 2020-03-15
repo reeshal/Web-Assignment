@@ -2,6 +2,7 @@
 session_start();
 $user=$_SESSION['username'];
 require_once "SellerNotif.php";
+require_once "feedback.php";
 require_once "includes/phpFunctions.php";
 require_once "includes/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -44,6 +45,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       }
     }
   }
+  else if(isset($_POST['leavefeedback'])){
+    //Getting feedback value
+    $feedback = test_input($_POST["feedback"]);
+
+    //Updating feedback value of product
+    $update = "UPDATE Product
+               SET feedback = '$feedback'
+               WHERE productId = '$pid'";
+
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+    $Result =$conn->exec($update);
+
+    //Getting current owner of product
+    $auctionDetailQuery = $conn->query("SELECT * 
+                                        FROM AuctionDetail
+                                        WHERE productId = '$pid'
+                                        ORDER BY date DESC
+                                        LIMIT 1")->fetch();
+    $previous_owner = $auctionDetailQuery['previous_owner'];
+
+    //Getting current value of feedbackNotif of User
+    $feedbackNotifQuery = $conn->query("SELECT feedbackNotif FROM Users WHERE username = '$previous_owner'")->fetch();
+    $feedbackNotif = $feedbackNotifQuery['feedbackNotif'];
+
+    //Setting value of feedbackNotifQuery
+    if(empty($feedbackNotif)){
+      $feedbackNotif = $pid;
+    }
+    else{
+      $feedbackNotif = $feedbackNotif . ',' . $pid;
+    }
+
+    //Adding id of product to feedbackNotif field in current_owner to notify current_owner of feedback received
+    $update = "UPDATE Users
+               SET feedbackNotif = '$feedbackNotif'
+               WHERE username = '$previous_owner'";
+
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+    $Result =$conn->exec($update) ;
+
+    header("Location: MyProducts.php");
+  }
+
   else if (isset($_POST['stop'])){
     $stopConfirmation=$_POST["stopConfirmation"];
     if($stopConfirmation=="yes"){
@@ -79,6 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
+
     <link rel="stylesheet" href="includes/products.css">
     <link rel="stylesheet" href="includes/myproductsTab.css">
 
@@ -117,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
                 <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
-                <li><a href="blog.html"><span>FAQ</span></a></li>
+                <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
                 <li><a href="ContactUs.php?referer=login""><span>Contact</span></a></li>
               </ul>
             </nav>
@@ -179,6 +224,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $imageName = $output["imageName"];
                 $pid=$output['productId'];
 
+                $auctionDetailQuery = $conn->query("SELECT * FROM AuctionDetail WHERE productId = '$pid' LIMIT 1")->fetch();
+                $auctionDetail = $auctionDetailQuery['productId'];
+
                 echo "
                   <div class=\"col-lg-4 col-md-6 mb-5\">
                   <div class=\"product-item\">
@@ -190,9 +238,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                     </div>
                     <div>
                     <p class=\"btn mr-1 rounded-3\" onclick=\"resell('$pid')\">Resell</p>
-                    <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>
-                    <p class=\"btn mr-1 rounded-3\" >Leave Feedback</p>
-                    </div>
+                    <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>";
+                    if($auctionDetail){
+                     echo "<p class=\"btn mr-1 rounded-3\" onclick=\"leaveFeedback('$pid')\">Leave Feedback</p>";
+                    }
+                    
+                echo"    </div>
                   </div>
                   </div>
                 ";
@@ -280,12 +331,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <div id="modal-delete" class="modal">
       <form class="modal-content animate" action="" method="post">
       <div class="container">
-        <p>Confirm Deletion</pp>
+        <p>Confirm Deletion</p>
         <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
         <input type="checkbox" name="deleteConfirmation" value="yes">Yes
         <input type="checkbox" name="deleteConfirmation" value="no">No<br>
         <input type="hidden" id="prodIds" name="prodId">
         <input type="submit" value="Delete" name="delete">
+        </div>
+      </form>
+    </div>
+
+    <div id="modal-feedback" class="modal">
+      <form class="modal-content animate" action="" method="post" >
+        <div class="container">
+          <h3>Leave Feedback</h3>
+          <span onclick="document.getElementById('modal-feedback').style.display='none' " class="close" title="Close PopUp">&times;</span>
+          <input type="text" class="form-control" name="feedback" value="" placeholder="Feedback">
+          <input type="hidden" id="prodIdFeedback" name="prodId">
+          <input type="submit" value="Leave Feedback" name="leavefeedback">
         </div>
       </form>
     </div>
@@ -319,10 +382,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           document.getElementById(choice).style.display = "inline";
           evt.currentTarget.className += " active";
         }
+
         function resell(pid){
           document.getElementById("modal-wrapper").style.display="block";
           document.getElementById("prodId").value=pid;
         }
+
         var modal = document.getElementById('modal-wrapper');
         window.onclick = function(at) {
         if (at.target == modal) {
@@ -333,6 +398,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           document.getElementById("modal-delete").style.display="block";
           document.getElementById("prodIds").value=pid;
         }
+
+        function leaveFeedback(pid){
+          document.getElementById("modal-feedback").style.display="block";
+          document.getElementById("prodIdFeedback").value=pid;
+        }
+
         function stopAuction(pid){
           document.getElementById("modal-stop").style.display="block";
           document.getElementById("prodIdstop").value=pid;
