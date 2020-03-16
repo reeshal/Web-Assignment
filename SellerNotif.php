@@ -15,11 +15,18 @@ if(!empty($soldNotif)){//Checking if the bidding of a product is over
         $productQuery = $conn->query("SELECT name, current_owner FROM Product WHERE productId = '$id'")->fetch();
         $name = $productQuery['name'];
         $current_owner = $productQuery['current_owner'];
-
+        
         if($current_owner == $user){ //Product not sold
             echo "<script>alert(\"The product $name has not been sold\");</script>";
         }
         else{ //Product sold
+
+            //storing the selling notiff in Notification table so that user can view all later
+            $notiffdetail="The product $name has been sold";
+            $insertStmt= "INSERT INTO Notifications(notiffDetails,username)
+                        VALUES('$notiffdetail','$user')";
+            $resultnotiff=$conn->exec($insertStmt);
+
             echo "<script>alert(\"The product $name has been sold\");</script>";
         }
     }

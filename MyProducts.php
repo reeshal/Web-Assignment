@@ -81,10 +81,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     $update = "UPDATE Users
                SET feedbackNotif = '$feedbackNotif'
                WHERE username = '$previous_owner'";
-
+    
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
     $Result =$conn->exec($update) ;
 
+    //storing the feedback in Notification table so that user can view all later
+    $notiffdetail="Feedback of product $pid: $feedback";
+    $insertStmt= "INSERT INTO Notifications(notiffDetails,username)
+                  VALUES('$notiffdetail','$previous_owner')";
+    $resultnotiff=$conn->exec($insertStmt);
+    
     header("Location: MyProducts.php");
   }
 

@@ -13,15 +13,6 @@ if(!empty($feedbackNotif)){//Checking if a feedback is received
         $name = $productQuery['name'];
         $feedback = $productQuery['feedback'];
 
-      /*  echo "<div id=\"modal\" class=\"modal\">
-          <div class=\"container\">
-            <h3>You got a feedback of product $name that you sold</h3>
-            <span onclick=\"document.getElementById('modal-feedback').style.display='none' \" class=\"close\" title=\"Close PopUp\">&times;</span>
-            <p class=\"form-control\">$feedback</p>
-            <input type=\"submit\" value=\"Ok\" name=\"ok\"/>
-          </div>
-      </div>";*/
-
       echo "<script>alert(\"You got a feedback of product $name that you sold. $feedback\");</script>";
        
     }

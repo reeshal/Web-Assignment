@@ -12,13 +12,18 @@ if(isset($_GET['referer'])){
 }
 require_once "SellerNotif.php";
 require_once "includes/db_connect.php";
-
+$min = 0;
+$max = 10000;
 $search=$category=$query="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
   if (!empty($_POST["tags"]))
     $search=test_input($_POST["tags"]);
   if (!empty($_POST["category"]))
     $category=test_input($_POST["category"]);
+  if (! empty($_POST['min_price']))
+      $min = $_POST['min_price'];
+  if (! empty($_POST['max_price'])) 
+      $max = $_POST['max_price'];
 }
 
 require_once "feedback.php";
@@ -36,9 +41,58 @@ require_once "feedback.php";
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="includes/products.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  
 
+<script type="text/javascript">
+  $(function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 0,
+      max: 10000,
+      values: [ <?php echo $min; ?>, <?php echo $max; ?> ],
+      slide: function( event, ui ) {
+        $( "#amount" ).html( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+		$( "#min" ).val(ui.values[ 0 ]);
+		$( "#max" ).val(ui.values[ 1 ]);
+      }
+      });
+    $( "#amount" ).html( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+     " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+  });
+  </script>
+
+  <style>
+  .form-price-range-filter {
+      text-align: center;
+  }
+
+  #min {
+    float: left;
+    width: 65px;
+    height:35px;
+    padding: 5px 10px;
+    margin-right: 14px;
+    border-radius:10px;
+  }
+
+  #slider-range {
+    width: 75%;
+    float: left;
+    margin: 5px 0px 5px 0px;
+  }
+
+  #max {
+    float: right;
+    width: 65px;
+    height:35px;
+    padding: 5px 10px;
+    margin-right: 14px;
+    border-radius:10px;
+  }
+  </style>
 
 </head>
 <body>
@@ -78,7 +132,7 @@ if ($user ==""){
   $_SERVER['HTTP_REFERER']="ProductsNew.php?referer=login"; 
 ?>
     <div class="col-3">
-            <nav class="site-navigation position-relative text-left " style="margin-left: -100px" role="navigation">
+            <nav class="site-navigation position-relative text-sleft " style="margin-left: -100px" role="navigation">
                <ul class="site-menu js-clone-nav ">
                 <li class="has-children">
                   <span><?php echo $user?></span>
@@ -100,6 +154,26 @@ if ($user ==""){
                 <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
                 <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="images/notification.png"></a>
+                  <ul class="dropdown-menu" >
+                  <?php
+                  $query="SELECT notiffDetails FROM Notifications WHERE username='$user'";
+                  $data  =$conn->query($query) ;
+                  $result = $data->fetchAll(PDO::FETCH_ASSOC);
+                  if(!$result){
+                      echo "<li>No notification</li>";
+                  }
+                  else{
+                      foreach($result as $output) {
+                          $notif = $output["notiffDetails"];
+                          echo "<li >$notif<hr></li>";
+                      }
+                  }
+                  ?>
+                  <li class="btn" id="clearbtn">Clear</li>
+                  </ul>                  
+                </li>
               </ul>
             </nav>
           </div>
@@ -146,6 +220,16 @@ if ($user ==""){
                     </div>
                     
                   </div>
+                  <div class="row">
+                  <div class="col-1"></div>
+                  <div class="col-10">
+                    <div class="form-price-range-filter">
+                        <input type="" id="min" name="min_price" value="<?php echo $min; ?>">
+                        <div id="slider-range"></div>
+                        <input type="" id="max" name="max_price" value="<?php echo $max; ?>">
+                    </div>
+                  </div>
+                  </div>
                 </form>
               </div>
   
@@ -164,6 +248,7 @@ if ($user ==""){
                 AND  p.is_sold = 0	
                 AND p.current_owner != '$user'
                 AND p.productId = t.productId
+                AND p.start_price BETWEEN $min AND $max
                 AND p.category LIKE  '%$category%'
                 AND (t.product_tags LIKE '%$search%'
                 OR p.name LIKE '%$search%')";

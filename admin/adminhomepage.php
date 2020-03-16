@@ -16,11 +16,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $pid=$_POST['prodId'];
         $email=$_POST['email'];
         if($deleteConfirmation=="yes"){
-            mail($email, "Why we deleted your product", $reason, "From: reeshalnew@gmail.com");
-
-            $delQuery="DELETE FROM Product WHERE productId=$pid";
-            $delResult =$conn->exec($delQuery) ;
-            header("Location: adminhomepage.php?referer=login");
+            if(mail($email, "Why we deleted your product", $reason)){
+                $delQuery="DELETE FROM Product WHERE productId=$pid";
+                $delResult =$conn->exec($delQuery) ;
+                header("Location: adminhomepage.php?referer=login");
+            }
+            else{
+                echo "<script>alert('Email not sent');</script>";
+            }    
         }
         else{
             header("Location: adminhomepage.php?referer=login");
