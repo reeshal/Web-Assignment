@@ -107,64 +107,13 @@
 <p>.</p>
 		<?php 
 			require_once "PhpFunctions/db_connect.php";
-			if($search=="" && $category==""){
-				$query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time 
-						  FROM Product p, ProductImage i, Bidding b 			
-						  where p.productId = i.prodId
-						  AND p.productId = b.productId
-						  AND b.username = '$user'
-						  AND  p.is_sold = 0";
-						  
-						   
-			  }
-			  else if($search=="" && $category!=""){
-				$query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time 
-						  FROM Product p, ProductImage i, Bidding b 			
-						  where p.productId = i.prodId
-						  AND p.productId = b.productId
-						  AND b.username = '$user'
-						  AND p.category='$category'
-						  AND  p.is_sold = 0";
-			  }
-			  else if($search!="" && $category==""){
-				$query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
-						  FROM Product p, ProductImage i, ProductTag t, Bidding b 		
-						  where p.productId = i.prodId
-						  AND p.productId = b.productId
-						  AND b.username = '$user'
-						  AND p.productId = t.productId
-						  AND  p.is_sold = 0
-						  AND t.product_tags LIKE '%$search%'
-						  
-						  UNION
-						  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
-						  FROM Product p, ProductImage i, Bidding b 	
-						  where p.productId = i.prodId
-						  AND p.productId = b.productId
-						  AND b.username = '$user'
-						  AND  p.is_sold = 0	
-						  AND p.name LIKE '%$search%'";
-			  }
-			  else if($search!="" && $category!=""){
-				$query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
-						  FROM Product p, ProductImage i, ProductTag t, Bidding b 		
-						  where p.productId = i.prodId
-						  AND p.productId = b.productId
-						  AND b.username = '$user'
-						  AND p.productId = t.productId
-						  AND t.product_tags LIKE '%$search%'
-						  AND p.category='$category'
-						  AND  p.is_sold = 0	
-						  UNION
-						  SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category ,p.start_time, p.end_time
-						  FROM Product p, ProductImage i, Bidding b 		
-						  where p.productId = i.prodId
-						  AND p.productId = b.productId
-						  AND b.username = '$user'
-						  AND p.name LIKE '%$search%'
-						  AND p.category='$category'
-						  AND  p.is_sold = 0	";
-			  }
+			$query = "SELECT DISTINCT(p.productId), p.name, p.start_price, i.imageName,  p.is_sold, p.category ,p.start_time, p.end_time 
+                FROM Product p, ProductImage i, Bidding b 			
+                where p.productId = i.prodId
+				AND p.productId = b.productId
+                AND  p.is_sold = 0	
+				AND b.username = '$user'";
+						
 			$data  =$conn->query($query) ;
 			$result = $data->fetchAll(PDO::FETCH_ASSOC);
 			
@@ -212,13 +161,9 @@
 			else{
 				echo "<h2 style=\"color : red;\">You have not bidded on any products yet</h2>";
 			}
-
 		?>
 	</div>
-
 	</div>
-
-
 </body>
 <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/jquery-ui.js"></script>
