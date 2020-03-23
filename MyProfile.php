@@ -1,10 +1,10 @@
 <?php
 session_start();
 $user=$_SESSION['username'];
-require_once "SellerNotif.php";
-require_once "feedback.php";
-require_once "includes/phpFunctions.php";
-require_once "includes/db_connect.php";
+require_once "PhpFunctions/SellerNotif.php";
+require_once "PhpFunctions/feedback.php";
+require_once "PhpFunctions/phpFunctions.php";
+require_once "PhpFunctions/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $detailquery="SELECT password,firstname,lastname,gender,email,address,dob,currency
@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 <head>
     <title>My Profile</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="includes/myprofile.css">
+    <link rel="stylesheet" type="text/css" href="css/myprofile.css">
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
@@ -147,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <div>
         edede
     </div>
-    <div class="containers" style="background:url('includes/myprofile.jpg'); background-size: cover; ">
+    <div class="containers" style="background:url('images/myprofile.jpg'); background-size: cover; ">
         <div class="detailsBox">
             <h3>My Profile</h3>
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data" onsubmit="return validateForm()">

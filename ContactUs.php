@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "includes/phpFunctions.php";
+require_once "PhpFunctions/phpFunctions.php";
 $user=""; //to display the name of the user for the dropdown box
 if(isset($_GET['referer'])){
   if($_GET['referer'] == 'login')
@@ -8,8 +8,8 @@ if(isset($_GET['referer'])){
     $user=$_SESSION['username'];
   }//end if
 }
-require_once "SellerNotif.php";
-require_once "feedback.php";
+require_once "PhpFunctions/SellerNotif.php";
+require_once "PhpFunctions/feedback.php";
 
 $subject=$description=$errorsubject=$errordescription="";
 
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
   }
 
   if($errordescription=="" && $errorsubject==""){
-    require_once "includes/db_connect.php";
+    require_once "PhpFunctions/db_connect.php";
     $Insert= "INSERT INTO Problem(description,username,subject)
               VALUES('$description','$user','$subject')";
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
@@ -51,8 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/aos.css">   
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/icomoon.css">
-
-    <link rel="stylesheet" href="includes/contactus.css">
+    <link rel="stylesheet" href="css/contactus.css">
     
 </head>
 <body>
@@ -146,7 +145,7 @@ $_SERVER['HTTP_REFERER']="ContactUs.php?referer=login";  //used to redirect the 
 <!--End of header-->
 
 <!--Pic only-->
-<div class="background-image" style="background-image: url(includes/contactus.jpg); "data-aos="fade-up"> 
+<div class="background-image" style="background-image: url(images/contactus.jpg); "data-aos="fade-up"> 
 		<div class="container">
 			<p>.</p>
 			<div class="row align-items-center justify-content-center text-center" style="min-height:325px;">

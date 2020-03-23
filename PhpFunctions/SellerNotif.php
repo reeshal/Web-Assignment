@@ -1,7 +1,7 @@
 <?php
 /*session_start();
 $username=$_SESSION['username'];*/
-require_once "includes/db_connect.php";
+require_once "db_connect.php";
 
 if($user !=""){
 //Getting value of soldNotif

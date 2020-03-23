@@ -2,7 +2,7 @@
 session_start();
 $user=$_SESSION['username'];
 
-require_once "includes/db_connect.php";
+require_once "PhpFunctions/db_connect.php";
 $productId = $_GET['id'];//Get product id
 $username =$user; 
 
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       $isBid = false;
 
       //Insert bidding
-      require_once "includes/db_connect.php";
+      require_once "PhpFunctions/db_connect.php";
       
       //query bidded price
       $newBid  = $_POST["BiddingPrice"];
@@ -88,8 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
-
-    <link rel="stylesheet" href="includes/productsRishikesh.css">
+    <link rel="stylesheet" href="css/productsRishikesh.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -135,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
 	<div class="row" style="padding-left:100px; padding-top:75px;">
 		<?php
-		require_once "includes/db_connect.php";
+		require_once "PhpFunctions/db_connect.php";
 		$id = $_GET['id'];
 		$query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category, p.start_time, p.end_time
 		          FROM Product p, ProductImage i 			
@@ -270,7 +269,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
   $(document).ready(function(){
     $.ajax({
-			url:"UpdateAuction.php", 
+			url:"PhpFunctions/UpdateAuction.php", 
 			data: {id: productId}, 
 			cache: false,
 			method: "POST", 

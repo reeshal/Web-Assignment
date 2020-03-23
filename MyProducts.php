@@ -1,10 +1,10 @@
 <?php
 session_start();
 $user=$_SESSION['username'];
-require_once "SellerNotif.php";
-require_once "feedback.php";
-require_once "includes/phpFunctions.php";
-require_once "includes/db_connect.php";
+require_once "PhpFunctions/SellerNotif.php";
+require_once "PhpFunctions/feedback.php";
+require_once "PhpFunctions/phpFunctions.php";
+require_once "PhpFunctions/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $start_price=$start_time=$duration="";
@@ -128,9 +128,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
-
-    <link rel="stylesheet" href="includes/products.css">
-    <link rel="stylesheet" href="includes/myproductsTab.css">
+    <link rel="stylesheet" href="css/products.css">
+    <link rel="stylesheet" href="css/myproductsTab.css">
 
 </head>
 <body>
@@ -197,7 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <!--End of header-->
 
     <!--Search Bar only-->
-	<div class="background-image" style="background-image: url(includes/coverproduct.png); "data-aos="fade"> 
+	<div class="background-image" style="background-image: url(images/coverproduct.png); "data-aos="fade"> 
 		<div class="container">
 			<p>.</p>
 			<div class="row align-items-center justify-content-center text-center" style="min-height:325px;">

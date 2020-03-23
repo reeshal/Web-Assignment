@@ -1,7 +1,7 @@
 <?php
 session_start();
 $user=$_SESSION['username'];
-require_once "../includes/db_connect.php";
+require_once "../PhpFunctions/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 ?>

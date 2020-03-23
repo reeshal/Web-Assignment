@@ -1,7 +1,7 @@
 <?php 
 session_start();
-require_once "../includes/db_connect.php";
-require_once "../includes/phpFunctions.php";
+require_once "../PhpFunctions/db_connect.php";
+require_once "../PhpFunctions/phpFunctions.php";
 
 //defining variables
 $username=$password=$confirmpassword=$email="";
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 <html>
 <head>
     <title>Admin Login Page</title>
-    <link href="../includes/sign_in.css" type="text/css" rel="stylesheet" />
+    <link href="../css/signIn.css" type="text/css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/dataValidation.js"></script>
@@ -81,6 +81,7 @@ if(isset($_SESSION['login'])){
 }//end if
 else{	  
 ?> 
+<div class="containers" style="background:url('../images/signup2.jpg'); background-size: cover;">
     <div class="signupBox">
         <h3 >Please fill in the form below to register as Admin</h3>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
@@ -101,6 +102,7 @@ else{
         <input type="reset" value="Clear form">
         </form>
     </div>  
+</div>
 <?php
 }//end else
 ?>

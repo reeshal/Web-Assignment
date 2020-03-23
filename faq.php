@@ -7,9 +7,9 @@ if(isset($_GET['referer'])){
     $user=$_SESSION['username'];
   }//end if
 }
-require_once "SellerNotif.php";
-require_once "feedback.php";
-require_once "includes/db_connect.php";
+require_once "PhpFunctions/SellerNotif.php";
+require_once "PhpFunctions/feedback.php";
+require_once "PhpFunctions/db_connect.php";
 
 ?>
 <html lang="en">
@@ -22,7 +22,7 @@ require_once "includes/db_connect.php";
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="includes/faq.css">
+    <link rel="stylesheet" href="css/faq.css">
     
 </head>
 <body>
@@ -114,7 +114,7 @@ if ($user ==""){
     <!--End of header--> 
     
       <!--Search Bar only-->
-	<div class="background-image" style="background-image: url(includes/coverproduct.png); "data-aos="fade"> 
+	<div class="background-image" style="background-image: url(images/coverproduct.png); "data-aos="fade"> 
 		<div class="container">
 			<p>.</p>
 			<div class="row align-items-center justify-content-center text-center" style="min-height:325px;">
