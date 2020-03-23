@@ -1,6 +1,8 @@
 <?php
 session_start();
+//$_SESSION['username']='nawsheen';
 $user=""; //to display the name of the user for the dropdown box
+
 if(isset($_GET['referer'])){
   if($_GET['referer'] == 'login')
   {
@@ -18,15 +20,11 @@ require_once "feedback.php";
     <title>Homepage</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="fonts/icomoon/style.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/magnific-popup.css">
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
     <link rel="stylesheet" href="css/aos.css">   
-    <link rel="stylesheet" href="css/rangeslider.css">
     <link rel="stylesheet" href="css/style.css">
     
 </head>
@@ -73,7 +71,7 @@ if ($user ==""){
                 <li class="has-children">
                   <span><?php echo $user?></span>
                   <ul class="dropdown">
-                      <li><a href="MyProfile.html">My Profile</a></li>
+                      <li><a href="MyProfile.php">My Profile</a></li>
                       <li><a href="MyProducts.php">My Products</a></li>
                       <li><a href="MyBiddings.php">My Biddings</a></li>
                       <li><a href="homepage.php">Logout</a></li>
@@ -202,21 +200,11 @@ if ($user ==""){
       </div>
     </div>
  
-    
- 
-
   <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
   <script src="js/jquery-ui.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/jquery.stellar.min.js"></script>
-  <script src="js/jquery.countdown.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/bootstrap-datepicker.min.js"></script>
   <script src="js/aos.js"></script>
-  <script src="js/rangeslider.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/dataValidation.js"></script>
     
