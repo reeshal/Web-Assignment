@@ -57,9 +57,28 @@
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
                 <li class="active"><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
-                <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
-                <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
+				<li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
+				<li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="images/notification.png"></a>
+                  <ul class="dropdown-menu" >
+                  <?php
+                  $query="SELECT notiffId,notiffDetails FROM Notifications WHERE username='$user'LIMIT 5 ";
+                  $data  =$conn->query($query) ;
+                  $result = $data->fetchAll(PDO::FETCH_ASSOC);
+                  if(!$result){
+                      echo "<li>No notification</li>";
+                  }
+                  else{
+                      foreach($result as $output) {
+                          $notif = $output["notiffDetails"];
+                          echo "<li >$notif<hr></li>";
+                      }
+                  }
+                  ?>
+                  <li class="btn" id="clearbtn">Clear</li>
+                  </ul>                  
+                </li>
               </ul>
             </nav>
           </div>

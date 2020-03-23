@@ -60,7 +60,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <html>
 <head>
     <title>Login Page</title>
-    <link href="includes/sign_in.css" type="text/css" rel="stylesheet" />
+    <link href="includes/signIn.css" type="text/css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/dataValidation.js"></script>
@@ -74,7 +74,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </script>
 </head>
 <body>
-
+<div class="containers" style="background:url('includes/login.jpg'); background-size: cover; height: 100%">
     <div class="signUpBox">
     <h2>Login</h2>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
@@ -93,5 +93,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </form>
     </div>
 
+</div>
 </body>
 </html>

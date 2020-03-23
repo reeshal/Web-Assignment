@@ -81,10 +81,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     $update = "UPDATE Users
                SET feedbackNotif = '$feedbackNotif'
                WHERE username = '$previous_owner'";
-
+    
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
     $Result =$conn->exec($update) ;
 
+    //storing the feedback in Notification table so that user can view all later
+    $notiffdetail="Feedback of product $pid: $feedback";
+    $insertStmt= "INSERT INTO Notifications(notiffDetails,username)
+                  VALUES('$notiffdetail','$previous_owner')";
+    $resultnotiff=$conn->exec($insertStmt);
+    
     header("Location: MyProducts.php");
   }
 
@@ -161,9 +167,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
                 <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
-                <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
-                <li><a href="ContactUs.php?referer=login""><span>Contact</span></a></li>
+                <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="images/notification.png"></a>
+                  <ul class="dropdown-menu" >
+                  <?php
+                  $query="SELECT notiffId,notiffDetails FROM Notifications WHERE username='$user'LIMIT 5 ";
+                  $data  =$conn->query($query) ;
+                  $result = $data->fetchAll(PDO::FETCH_ASSOC);
+                  if(!$result){
+                      echo "<li>No notification</li>";
+                  }
+                  else{
+                      foreach($result as $output) {
+                          $notif = $output["notiffDetails"];
+                          echo "<li >$notif<hr></li>";
+                      }
+                  }
+                  ?>
+                  <li class="btn" id="clearbtn">Clear</li>
+                  </ul>                  
+                </li>
               </ul>
             </nav>
           </div>

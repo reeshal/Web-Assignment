@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 19, 2020 at 04:16 PM
+-- Generation Time: Mar 15, 2020 at 10:58 AM
 -- Server version: 10.4.6-MariaDB
 -- PHP Version: 7.3.8
 
@@ -42,10 +42,9 @@ CREATE TABLE `AuctionDetail` (
 --
 
 INSERT INTO `AuctionDetail` (`current_owner`, `previous_owner`, `productId`, `amount_paid`, `date`, `auctionId`) VALUES
-('reeshal', 'nawsheen', 51, 601, '2019-12-18 18:56:42', 95),
-('nawsheen', 'reeshal', 51, 20, '2019-12-20 11:01:01', 96),
-('reeshal', 'nawsheen', 52, 97, '2019-12-20 11:06:37', 97),
-('reeshal', 'nawsheen', 57, 90010, '2019-12-20 14:01:03', 98);
+('reeshal', 'nawsheen', 57, 90010, '2019-12-20 14:01:03', 98),
+('reeshal', 'nawsheen', 58, 101, '2020-03-15 09:53:11', 99),
+('nawsheen', 'reeshal', 58, 29, '2020-03-15 09:56:59', 100);
 
 -- --------------------------------------------------------
 
@@ -66,10 +65,9 @@ CREATE TABLE `Bidding` (
 
 INSERT INTO `Bidding` (`username`, `productId`, `price_bidded`, `time_bidded`) VALUES
 ('nawsheen', 53, 37, '2019-12-18 19:39:15'),
-('nawsheen', 56, 90008, '2019-12-20 12:23:24'),
+('nawsheen', 59, 21, '2020-03-15 07:38:55'),
 ('nawsheen', 60, 29, '2019-12-20 12:23:35'),
-('reeshal', 59, 32, '2019-12-20 12:23:02'),
-('rishi', 58, 100, '2019-12-20 12:21:45');
+('reeshal', 59, 22, '2020-03-15 07:39:03');
 
 -- --------------------------------------------------------
 
@@ -128,8 +126,19 @@ INSERT INTO `Currency` (`currency`, `conversion_rate`) VALUES
 CREATE TABLE `FAQ` (
   `faqId` int(11) NOT NULL,
   `question` longtext NOT NULL,
-  `answer` longtext NOT NULL
+  `answer` longtext NOT NULL,
+  `category` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `FAQ`
+--
+
+INSERT INTO `FAQ` (`faqId`, `question`, `answer`, `category`) VALUES
+(1, 'How to sell goods?', 'Go to Products duhewkujfunoefh ervcre', 'selling'),
+(7, 'efwrf', 'ewfd4wfg', 'wegtedmuewi xieji xjewoijxwo\r\n'),
+(8, 'fcetger', 'gergreg', 'ergergre'),
+(9, 'ferfrf', 'rfrfrfr', 'frfrfrr');
 
 -- --------------------------------------------------------
 
@@ -263,7 +272,44 @@ INSERT INTO `LoginHistory` (`loginSessionNo`, `login_time`, `username`) VALUES
 (114, '2020-01-19 00:12:54', 'rishi'),
 (115, '2020-01-19 00:13:07', 'reeshal'),
 (116, '2020-01-19 00:13:28', 'reeshal'),
-(117, '2020-01-19 00:13:37', 'rishi');
+(117, '2020-01-19 00:13:37', 'rishi'),
+(118, '2020-01-19 02:11:23', 'reeshaladmin'),
+(119, '2020-01-19 02:11:39', 'reeshaladmin'),
+(120, '2020-01-19 02:23:25', 'nawsheen'),
+(121, '2020-02-03 02:37:07', 'reeshaladmin'),
+(122, '2020-02-03 03:39:31', 'reeshal'),
+(123, '2020-02-04 04:20:36', 'reeshaladmin'),
+(124, '2020-02-05 01:19:22', 'reeshal'),
+(125, '2020-02-10 03:41:11', 'reeshal'),
+(126, '2020-02-13 01:36:27', 'reeshaladmin'),
+(127, '2020-02-13 01:40:16', 'reeshal'),
+(128, '2020-02-15 03:54:52', 'reeshal'),
+(129, '2020-02-16 01:39:17', 'reeshal'),
+(130, '2020-02-16 06:51:00', 'reeshal'),
+(131, '2020-02-16 08:09:43', 'reeshaladmin'),
+(132, '2020-02-16 08:24:16', 'reeshaladmin'),
+(133, '2020-02-15 21:19:42', 'reeshal'),
+(134, '2020-02-15 21:37:54', 'reeshaladmin'),
+(135, '2020-02-15 22:00:17', 'reeshaladmin'),
+(136, '2020-02-15 22:21:47', 'reeshaladmin'),
+(137, '2020-02-17 04:52:20', 'reeshal'),
+(138, '2020-02-18 01:47:48', 'reeshaladmin'),
+(139, '2020-02-18 01:54:10', 'reeshaladmin'),
+(140, '2020-02-18 03:18:23', 'reeshaladmin'),
+(141, '2020-03-15 04:29:51', 'reeshal'),
+(142, '2020-03-15 04:34:06', 'reeshaladmin'),
+(143, '2020-03-15 04:34:51', 'reeshal'),
+(144, '2020-03-15 04:35:38', 'nawsheen'),
+(145, '2020-03-15 04:44:59', 'reeshal'),
+(146, '2020-03-15 04:47:10', 'reeshal'),
+(147, '2020-03-15 04:48:51', 'reeshaladmin'),
+(148, '2020-03-15 06:44:52', 'reeshal'),
+(149, '2020-03-15 06:46:11', 'reeshal'),
+(150, '2020-03-15 06:46:48', 'rishi'),
+(151, '2020-03-15 06:47:19', 'rishikesh'),
+(152, '2020-03-15 06:47:42', 'nawsheen'),
+(153, '2020-03-15 06:48:13', 'reeshal'),
+(154, '2020-03-15 06:49:09', 'nawsheen');
 
 -- --------------------------------------------------------
 
@@ -277,6 +323,17 @@ CREATE TABLE `Problem` (
   `username` varchar(15) NOT NULL,
   `subject` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `Problem`
+--
+
+INSERT INTO `Problem` (`problemId`, `description`, `username`, `subject`) VALUES
+(9, 'sdgueidh eiodqededj owpsk sopksdoe cdh djkvdjndsl3985', 'nawsheen', 'shitty'),
+(10, 'sdxshiou pdwdo iwo dis ck hskjd soid', 'nawsheen', 'pokopdc'),
+(11, 'xegdyufgebwiu hiogh wirufh ewiohflekuwhvdj .cksdjvnushvliovhjcskvn dsivhfuvhufshv ldks vjsib', 'nawsheen', '48694guyws'),
+(12, 'cmowmcopr,ovpwrkcoi ewiodcm;elokcio wedjcoke', 'reeshal', 'deuowhocijdwc'),
+(13, 'jeipowkoxpcewl[lxe[d]c;e[lokcworvewcv', 'reeshal', 'dwsjwiodjiewjfioerwjf');
 
 -- --------------------------------------------------------
 
@@ -303,16 +360,12 @@ CREATE TABLE `Product` (
 --
 
 INSERT INTO `Product` (`productId`, `name`, `description`, `start_price`, `feedback`, `is_sold`, `category`, `start_time`, `end_time`, `duration`, `current_owner`) VALUES
-(51, 'red shirt', 'Beautiful light weight Cotton shirt', 10, NULL, 1, 'Clothes', '2019-12-20 11:01:01', '2019-12-20 11:01:01', 903, 'nawsheen'),
-(52, '50shades', 'erotic book', 96, NULL, 1, 'Books and Magazines', '2019-12-20 11:06:37', '2019-12-20 11:06:37', 5002, 'reeshal'),
 (53, 'food', 'revwrj iwocjl ioewj cioewj ciooruh eciujnewlkcjliw', 28, NULL, 0, 'Art', '2019-12-18 14:41:22', '2020-07-14 01:41:00', 5003, 'reeshal'),
 (55, 'Blue skirt', 'Cotton Dress 100% lightweight', 35, NULL, 0, 'Clothes', '2019-12-20 09:15:07', '2020-07-15 20:15:00', 5003, 'reeshal'),
-(56, 'Mona Lisa', 'Medieval Painting', 89999, NULL, 0, 'Art', '2019-12-20 09:17:31', '2020-07-15 20:17:00', 5003, 'reeshal'),
-(57, 'Michelangelo', 'Medieval Painting', 89999, NULL, 1, 'Art', '2019-12-20 14:01:03', '2019-12-20 14:01:03', 5003, 'reeshal'),
-(58, 'Lord of the Rings', 'books collection', 36, NULL, 0, 'Books and Magazines', '2019-12-20 09:18:57', '2020-07-15 20:18:00', 5003, 'nawsheen'),
+(57, 'Michelangelo', 'Medieval Painting', 630, NULL, 0, 'Art', '2020-03-15 04:36:44', '2020-04-21 09:36:00', 893, 'reeshal'),
+(58, 'Lord of the Rings', 'books collection', 28, 'interesting book', 1, 'Books and Magazines', '2020-03-15 09:56:59', '2020-03-15 09:56:59', 19, 'nawsheen'),
 (59, 'red bonnet', 'nigga wearing red bonnet', 18, NULL, 0, 'Clothes', '2019-12-20 09:20:14', '2020-07-15 20:20:00', 5003, 'rishi'),
-(60, 'Monitor LCD', 'lcd 24inch screen', 16, NULL, 0, 'Computers', '2019-12-20 09:21:06', '2020-07-15 20:21:00', 5003, 'rishi'),
-(61, 'Keyboard', 'wired keyboard', 11, NULL, 0, 'Computers', '2019-12-20 11:02:46', '2020-08-26 14:02:00', 6003, 'reeshal');
+(60, 'Monitor LCD', 'lcd 24inch screen', 16, NULL, 0, 'Computers', '2019-12-20 09:21:06', '2020-07-15 20:21:00', 5003, 'rishi');
 
 -- --------------------------------------------------------
 
@@ -331,16 +384,12 @@ CREATE TABLE `ProductImage` (
 --
 
 INSERT INTO `ProductImage` (`imageId`, `prodId`, `imageName`) VALUES
-(38, 51, 'redshirt.jpg'),
-(39, 52, 'fifty.jpg'),
 (40, 53, 'img_2.jpg'),
 (42, 55, 'blue-skirts-0661.jpg'),
-(43, 56, 'mona.jpg'),
 (44, 57, 'mich.jpg'),
 (45, 58, 'lotr.jpg'),
 (46, 59, 'person_2.jpg'),
-(47, 60, 'external-content.duckduckgo.com.jpeg'),
-(48, 61, 'keyboard.jpeg');
+(47, 60, 'external-content.duckduckgo.com.jpeg');
 
 -- --------------------------------------------------------
 
@@ -359,14 +408,8 @@ CREATE TABLE `ProductTag` (
 --
 
 INSERT INTO `ProductTag` (`tagID`, `productId`, `product_tags`) VALUES
-(86, 51, 'rvetvijo'),
-(87, 51, 'oriejclijrioc'),
-(88, 51, 'jerioji'),
-(89, 52, 'edce'),
-(90, 52, 'revr'),
-(91, 52, 'err'),
 (92, 53, 'rfe'),
-(93, 53, 'e'),
+(93, 53, 'red'),
 (94, 53, 'ge'),
 (95, 53, 'rb'),
 (96, 53, 'r'),
@@ -374,15 +417,12 @@ INSERT INTO `ProductTag` (`tagID`, `productId`, `product_tags`) VALUES
 (102, 55, 'skirt'),
 (103, 55, 'beautiful'),
 (104, 55, 'cloth'),
-(105, 56, 'mona'),
 (106, 57, 'art'),
 (107, 58, 'wow'),
 (108, 58, 'great'),
 (109, 59, 'red'),
 (110, 59, 'cloth'),
-(111, 60, 'monitor'),
-(112, 61, 'black'),
-(113, 61, 'pc');
+(111, 60, 'monitor');
 
 -- --------------------------------------------------------
 
@@ -401,6 +441,7 @@ CREATE TABLE `Users` (
   `dob` date NOT NULL,
   `currency` varchar(25) DEFAULT NULL,
   `soldNotif` text DEFAULT NULL,
+  `feedbackNotif` text DEFAULT NULL,
   `accountType` varchar(10) NOT NULL DEFAULT 'normal'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -408,13 +449,13 @@ CREATE TABLE `Users` (
 -- Dumping data for table `Users`
 --
 
-INSERT INTO `Users` (`username`, `password`, `firstname`, `lastname`, `gender`, `email`, `address`, `dob`, `currency`, `soldNotif`, `accountType`) VALUES
-('anwar', '$2y$10$iQBT8PahEcRNGI48.BgZzeq67bP.1zD6IqSZmptcmWPk3FAAVDLtG', 'anwar', 'chuttoo', 'male', 'red@gmail.com', 'vacoas', '2019-11-13', 'Mauritian Rupees', '44,47,47', 'normal'),
-('nawsheen', '$2y$10$TPB1J1On3zbDVa/wwrBVPO50gMdeKDxV8ckDhFt3wBsg6KbVKkMaS', 'eefwrgfw', 'efrfrw', 'female', 'ewfrwj@gmail.com', 'frwtggtw', '2019-11-26', 'Mauritian Rupees', '', 'normal'),
-('reeshal', '$2y$10$ilC/c8QroEXV1pF6vc1pWe5/CuyG.LUnKB/FweNLsOpcttPb9hcF6', 'Reeshal', 'Rittoo', 'male', 'rreeshal@gmail.com', 'Morc Terracine Souillac', '1999-08-18', 'US Dollars', '', 'normal'),
-('reeshalrittoo', '$2y$10$PwmJF3uRKWOpJIcF1QAhcObsF.Wl2lEg6JsqBoAswR5s8s3YMkaKm', 'Reeshal', 'Rittoo', 'male', 'rreeshal@gmail.com', 'Souillac', '1999-08-18', 'Mauritian Rupees', '', 'normal'),
-('rishi', '$2y$10$C.od5.vUeb14oKzd/WnhzekRSdEk.BGsAQbhfnHS7AueRjfXlLpHq', 'rishi', 'rwf', 'male', 'wcwr@gmail.com', 'vrevt', '2019-11-26', 'Euro', '', 'admin'),
-('rishikesh', '$2y$10$KKmG6JC8Ox/wIw1s1bWyGuf9z7KQhYGQiOWxoEHwCF9/dvixKBpQ.', 'rishikesh', 'doorgah', 'male', 's@gmail.com', 'sjh', '2019-11-14', 'US Dollars', '', 'normal');
+INSERT INTO `Users` (`username`, `password`, `firstname`, `lastname`, `gender`, `email`, `address`, `dob`, `currency`, `soldNotif`, `feedbackNotif`, `accountType`) VALUES
+('nawsheen', '$2y$10$TPB1J1On3zbDVa/wwrBVPO50gMdeKDxV8ckDhFt3wBsg6KbVKkMaS', 'eefwrgfw', 'efrfrw', 'female', 'ewfrwj@gmail.com', 'frwtggtw', '2019-11-26', 'Mauritian Rupees', '', '', 'normal'),
+('reeshal', '$2y$10$ilC/c8QroEXV1pF6vc1pWe5/CuyG.LUnKB/FweNLsOpcttPb9hcF6', 'Reeshal', 'Rittoo', 'male', 'rreeshal@gmail.com', 'Morc Terracine Souillac', '1999-08-18', 'US Dollars', '', NULL, 'normal'),
+('reeshaladmin', '$2y$10$/gwSFVncNkPuiKGJX3SH6ezAmcoN6d4pDLX/pkEbfgeYeELAblSQG', 'admin', 'admin', 'admin', 'rreeshal@gmail.com', 'admin', '2020-01-19', NULL, NULL, NULL, 'admin'),
+('reeshalrittoo', '$2y$10$PwmJF3uRKWOpJIcF1QAhcObsF.Wl2lEg6JsqBoAswR5s8s3YMkaKm', 'Reeshal', 'Rittoo', 'male', 'rreeshal@gmail.com', 'Souillac', '1999-08-18', 'Mauritian Rupees', '', NULL, 'normal'),
+('rishi', '$2y$10$C.od5.vUeb14oKzd/WnhzekRSdEk.BGsAQbhfnHS7AueRjfXlLpHq', 'rishi', 'rwf', 'male', 'wcwr@gmail.com', 'vrevt', '2019-11-26', 'Euro', '', NULL, 'admin'),
+('rishikesh', '$2y$10$KKmG6JC8Ox/wIw1s1bWyGuf9z7KQhYGQiOWxoEHwCF9/dvixKBpQ.', 'rishikesh', 'doorgah', 'male', 's@gmail.com', 'sjh', '2019-11-14', 'US Dollars', '', NULL, 'normal');
 
 --
 -- Indexes for dumped tables
@@ -504,7 +545,7 @@ ALTER TABLE `Users`
 -- AUTO_INCREMENT for table `AuctionDetail`
 --
 ALTER TABLE `AuctionDetail`
-  MODIFY `auctionId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `auctionId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
 -- AUTO_INCREMENT for table `Category`
@@ -516,19 +557,19 @@ ALTER TABLE `Category`
 -- AUTO_INCREMENT for table `FAQ`
 --
 ALTER TABLE `FAQ`
-  MODIFY `faqId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `faqId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `LoginHistory`
 --
 ALTER TABLE `LoginHistory`
-  MODIFY `loginSessionNo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+  MODIFY `loginSessionNo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=155;
 
 --
 -- AUTO_INCREMENT for table `Problem`
 --
 ALTER TABLE `Problem`
-  MODIFY `problemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `problemId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `Product`

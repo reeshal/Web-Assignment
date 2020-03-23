@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 <html>
 <head>
     <title>Signup Page</title>
-    <link href="includes/sign_in.css" type="text/css" rel="stylesheet" />
+    <link href="includes/signIn.css" type="text/css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/dataValidation.js"></script>
@@ -136,6 +136,7 @@ if(isset($_SESSION['login'])){
 }//end if
 else{	  
 ?> 
+<div class="containers" style="background:url('includes/signup2.jpg'); background-size: cover;">
     <div class="signupBox">
         <h3 >Please fill in the form below to register</h3>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
@@ -152,15 +153,15 @@ else{
         <input type="date" name="dob" id="dob"><br>
         <span class="error"> <?php echo $errordate;?></span>
 
-        <div class="container">           
+        <div class="containers" style="border-bottom: 1px solid ;border-bottom-color: #7971ea;">           
             Gender<br><input type="radio" name="gender" value="male">Male 
             <input type="radio" name="gender" value="female">Female
             <input type="radio" name="gender"value="others" >Others                 
         </div>
         <span class="error"> <?php echo $errorgender;?></span>
 
-        <div class="containerCurrency">
-            Currency<br>
+        <div class="containers" style="border-bottom: 1px solid ;border-bottom-color: #7971ea;">
+            Currency
             <div class="select">
             <select name="currency" id="currency">
             <?php
@@ -194,6 +195,7 @@ else{
                 <!--include button bck to login-->
         </form>
     </div>  
+  </div>
 <?php
 }//end else
 ?>
