@@ -1,6 +1,12 @@
 <?php
 session_start();
-$user=$_SESSION['username'];
+$user=""; //to display the name of the user for the dropdown box
+if(isset($_GET['referer'])){
+  if($_GET['referer'] == 'login')
+  {
+    $user=$_SESSION['username'];
+  }//end if
+}
 require_once "SellerNotif.php";
 require_once "feedback.php";
 require_once "includes/db_connect.php";
@@ -17,8 +23,6 @@ require_once "includes/db_connect.php";
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="includes/faq.css">
-    
-    
     
 </head>
 <body>
@@ -62,7 +66,7 @@ if ($user ==""){
                 <li class="has-children">
                   <span><?php echo $user?></span>
                   <ul class="dropdown">
-                      <li><a href="MyProfile.html">My Profile</a></li>
+                      <li><a href="MyProfile.php">My Profile</a></li>
                       <li><a href="MyProducts.php">My Products</a></li>
                       <li><a href="MyBiddings.php">My Biddings</a></li>
                       <li><a href="homepage.php">Logout</a></li>
@@ -163,7 +167,6 @@ if ($user ==""){
 </div>   
 
 <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
   <script src="js/jquery-ui.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>

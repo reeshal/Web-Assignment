@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 <li class="has-children">
                   <span><?php echo $user?></span>
                   <ul class="dropdown">
-                      <li><a href="MyProfile.html">My Profile</a></li>
+                      <li><a href="MyProfile.php">My Profile</a></li>
                       <li><a href="Biddings.php">My Biddings</a></li>
                       <li><a href="homepage.php">Logout</a></li>
                   </ul>
