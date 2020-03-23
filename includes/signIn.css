@@ -1,8 +1,6 @@
 @import "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
 
 body{
-    background:url('hero_1.jpg');
-    background-size: cover;
     font-family: Arial, Helvetica, sans-serif;
     font-size:14px;
 }
@@ -12,7 +10,7 @@ body{
 }
 
 .signupBox{
-    max-width: 350px;
+    max-width: 450px;
     border-radius: 20px;
     background: none;
     padding: 40px;
@@ -62,7 +60,7 @@ input[type=reset]{
 }
 
 /*Container  */
-.container{
+.containers{
     width:100%;
     box-sizing: border-box;
     padding: 12px 5px;
@@ -77,24 +75,3 @@ input[type=reset]{
     font-weight: bold;
 }
 
-.containerCurrency{
-    width:100%;
-    box-sizing: border-box;
-    padding: 12px 5px;
-    background: rgba(0,0,0, 0.1);
-    outline: none;
-    border:none;
-    border-bottom: 1px solid ;
-    border-bottom-color: #5bc220;
-    color:#dfd7d7;
-    border-radius: 5px;
-    margin:5px;
-    font-weight: bold;
-}
-.containerCurrency .select{
-    width: 10%;
-    opacity: 0.1;
-    background:url('arrow.png') no-repeat;
-    background-position:100% right;
-  }
-  

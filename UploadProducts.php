@@ -42,27 +42,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		//$conn->beginTransaction() ;
 		$Result =$conn->exec($insert) ;
-/*
-		if(!$Result){
-			$conn->rollBack();	
-			die();
-		}*/
-		/*Getting product id of recently created product 
-		li pa marC acz timezone problems
-		$query = "SELECT productId FROM Product ORDER BY start_time DESC limit 1";
-		$data  =$conn->query($query) ;
-		$result = $data->fetchAll(PDO::FETCH_ASSOC);
-		foreach($result as $output) {
-			$productid =  $output["productId"];
-		} */
+
 		$query = "SELECT MAX(productId) AS prodId FROM Product";
 		$data  =$conn->query($query) ;
 		$userResults = $data->fetch(PDO::FETCH_ASSOC);
-		//$result = $data->fetchAll(PDO::FETCH_ASSOC);
-		/*
-		foreach($data as $output) {
-			$productid =  $output["productId"];
-		} */
+		
 		$productid =  $userResults['prodId'];
 		//Inserting Product tags
 		if(!empty($_POST["product_tags"])){
@@ -102,13 +86,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 <head>
 <title>Sell Products</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="includes/sign_in.css">
+    <link rel="stylesheet" type="text/css" href="includes/signIn.css">
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/aos.css">
-
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/dataValidation.js"></script>
@@ -151,9 +133,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
                 <li class="active"><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
-                <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
-                <li><a href="#contact-section"><span>Contact</span></a></li>
+				<li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
+				<li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="images/notification.png"></a>
+                  <ul class="dropdown-menu" >
+                  <?php
+                  $query="SELECT notiffId,notiffDetails FROM Notifications WHERE username='$user'LIMIT 5 ";
+                  $data  =$conn->query($query) ;
+                  $result = $data->fetchAll(PDO::FETCH_ASSOC);
+                  if(!$result){
+                      echo "<li>No notification</li>";
+                  }
+                  else{
+                      foreach($result as $output) {
+                          $notif = $output["notiffDetails"];
+                          echo "<li >$notif<hr></li>";
+                      }
+                  }
+                  ?>
+                  <li class="btn" id="clearbtn">Clear</li>
+                  </ul>                  
+                </li>
               </ul>
             </nav>
           </div>
@@ -164,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	<div>
 		edede
 </div>
-	<div class="container">
+	<div class="containers" style="background:url('includes/hero_1.jpg'); background-size: cover;">
 	<div class="signupBox">
 		<h3>Create product to sell</h3>
 		<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data" onsubmit="return validateForm()">
@@ -198,14 +199,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
        		<input type="number" class="form-control" name="duration" value="<?php echo $duration;?>" placeholder="Duration(hours)" min="1" maxlength="20" id="duration">
 			<span class="error"> <?php echo $errorduration;?></span>
 
-			<input type="submit" value="Upload Product">
-            <input type="reset" value="Clear form">
+			<input type="submit" value="Upload Product" class="btn">
+            <input type="reset" value="Clear form" style="width:100px;">
 		</form>
 	</div>
 	</div>
 
 	
 
-
+<script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

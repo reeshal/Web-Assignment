@@ -45,7 +45,6 @@ if ($user ==""){
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li><a href="homepage.php"><span>Home</span></a></li>
                 <li ><a href="ProductsNew.php"><span>Products</span></a></li>
-                <li><a href="#about-section"><span>About Us</span></a></li>
                 <li class="active"><a><span>FAQ</span></a></li>
                 <li><a href="ContactUs.php"><span>Contact</span></a></li>
               </ul>
@@ -77,7 +76,6 @@ if ($user ==""){
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
                 <li ><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
-                <li><a href="#about-section"><span>About Us</span></a></li>
                 <li class="active"><a><span>FAQ</span></a></li>
                 <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
                 <li class="dropdown">

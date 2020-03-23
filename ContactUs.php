@@ -84,7 +84,6 @@ $_SERVER['HTTP_REFERER']="ContactUs.php";  //used to redirect the form to this p
           <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
             <li><a href="homepage.php"><span>Home</span></a></li>
             <li><a href="ProductsNew.php"><span>Products</span></a></li>
-            <li><a href="#about-section"><span>About Us</span></a></li>
             <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
             <li class="active"><a><span>Contact</span></a></li>
           </ul>
@@ -116,7 +115,6 @@ $_SERVER['HTTP_REFERER']="ContactUs.php?referer=login";  //used to redirect the 
           <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
             <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
             <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
-            <li><a href="#about-section"><span>About Us</span></a></li>
             <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
             <li class="active"><a><span>Contact</span></a></li>
             <li class="dropdown">
