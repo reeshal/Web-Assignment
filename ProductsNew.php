@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once "includes/phpFunctions.php";
+require_once "PhpFunctions/phpFunctions.php";
 //$user="Username"; //to display the name of the user for the dropdown box
 $user="";
 if(isset($_GET['referer'])){
@@ -10,8 +10,8 @@ if(isset($_GET['referer'])){
     $user=$_SESSION['username'];
   }//end if
 }
-require_once "SellerNotif.php";
-require_once "includes/db_connect.php";
+require_once "PhpFunctions/SellerNotif.php";
+require_once "PhpFunctions/db_connect.php";
 $min = 0;
 $max = 10000;
 $search=$category=$query="";
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       $max = $_POST['max_price'];
 }
 
-require_once "feedback.php";
+require_once "PhpFunctions/feedback.php";
 
 ?>
 
@@ -42,7 +42,7 @@ require_once "feedback.php";
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="includes/products.css">
+    <link rel="stylesheet" href="css/products.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   
 
@@ -184,7 +184,7 @@ if ($user ==""){
     <!--End of header-->
      
     <!--Search Bar only-->
-    <div class="background-image" style="background-image: url(includes/coverproduct.png); " data-aos="fade" > 
+    <div class="background-image" style="background-image: url(images/coverproduct.png); " data-aos="fade" > 
         <div class="container">
           <div class="row align-items-center justify-content-center text-center">
             <div class="col-md-10 ">

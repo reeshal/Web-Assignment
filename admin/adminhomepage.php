@@ -1,7 +1,7 @@
 <?php
 session_start();
 $user=$_SESSION['username'];
-require_once "../includes/db_connect.php";
+require_once "../PhpFunctions/db_connect.php";
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $reason=$deleteConfirmation=$pid="";
@@ -90,8 +90,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="../includes/table.css">
-    <link rel="stylesheet" href="../includes/myproductsTab.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link rel="stylesheet" href="../css/myproductsTab.css">
     <meta name="robots" content="noindex">
     <script>
          $(document).ready(function () {

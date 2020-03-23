@@ -1,6 +1,6 @@
 <?php 
 	session_start();
-	require_once "includes/phpFunctions.php";
+	require_once "PhpFunctions/phpFunctions.php";
 	$user=$_SESSION['username'];
 	  
 	$search=$category=$query="";
@@ -11,8 +11,8 @@
 		  $category=$_POST["category"];
 	}
 
-	require_once "SellerNotif.php";
-	require_once "feedback.php";
+	require_once "PhpFunctions/SellerNotif.php";
+	require_once "PhpFunctions/feedback.php";
 
 ?>
 
@@ -26,9 +26,7 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
-
-    <link rel="stylesheet" href="includes/products.css">
-
+    <link rel="stylesheet" href="css/products.css">
 </head>
 
 <body>
@@ -87,7 +85,7 @@
 	<!--End of header-->
 
 	<!--Pic only-->
-	<div class="background-image" style="background-image: url(includes/hero_1.jpg); "data-aos="fade"> 
+	<div class="background-image" style="background-image: url(images/hero_1.jpg); "data-aos="fade"> 
 		<div class="container">
 			<p>.</p>
 			<div class="row align-items-center justify-content-center text-center" style="min-height:325px;">
@@ -108,7 +106,7 @@
 <div>
 <p>.</p>
 		<?php 
-			require_once "includes/db_connect.php";
+			require_once "PhpFunctions/db_connect.php";
 			if($search=="" && $category==""){
 				$query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category,p.start_time, p.end_time 
 						  FROM Product p, ProductImage i, Bidding b 			

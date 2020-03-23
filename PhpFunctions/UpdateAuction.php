@@ -2,7 +2,7 @@
 session_start();
 $username=$_SESSION['username'];
 
-require_once "includes/db_connect.php";
+require_once "db_connect.php";
 //$productId = $_REQUEST['id'];
 $productId = $_POST['id'];//Get product id
 

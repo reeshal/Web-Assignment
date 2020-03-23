@@ -1,6 +1,5 @@
 <?php
 session_start();
-//$_SESSION['username']='nawsheen';
 $user=""; //to display the name of the user for the dropdown box
 
 if(isset($_GET['referer'])){
@@ -9,8 +8,8 @@ if(isset($_GET['referer'])){
     $user=$_SESSION['username'];
   }//end if
 }
-require_once "SellerNotif.php";
-require_once "feedback.php";
+require_once "PhpFunctions/SellerNotif.php";
+require_once "PhpFunctions/feedback.php";
 ?>
 
 

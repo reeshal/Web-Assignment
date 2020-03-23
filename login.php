@@ -1,7 +1,7 @@
 <?php
 // Initialize the session
 session_start();
-require_once "includes/phpFunctions.php";
+require_once "PhpFunctions/phpFunctions.php";
 
 $username = $passwords =$username_err = $password_err = "";
 
@@ -17,7 +17,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $passwords= test_input($_POST["password"]);
     }
     if($username_err == "" && $password_err == "" ){
-        require_once "includes/db_connect.php";
+        require_once "PhpFunctions/db_connect.php";
         $sQuery = "SELECT username,password, accountType FROM Users WHERE username = '$username'  ";
 
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -60,7 +60,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <html>
 <head>
     <title>Login Page</title>
-    <link href="includes/signIn.css" type="text/css" rel="stylesheet" />
+    <link href="css/signIn.css" type="text/css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/dataValidation.js"></script>
@@ -74,7 +74,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </script>
 </head>
 <body>
-<div class="containers" style="background:url('includes/login.jpg'); background-size: cover; height: 100%">
+<div class="containers" style="background:url('images/login.jpg'); background-size: cover; height: 100%">
     <div class="signUpBox">
     <h2>Login</h2>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">

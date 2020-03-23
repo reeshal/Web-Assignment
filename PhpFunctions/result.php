@@ -2,7 +2,7 @@
 session_start();
 $user=$_SESSION['username'];
 
-    require_once "includes/db_connect.php";
+    require_once "db_connect.php";
     //Insert into auction detail
    // $productId = $_GET['id'];
    $productId = $_POST['id'];//Get product id
