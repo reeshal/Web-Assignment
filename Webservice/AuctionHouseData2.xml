@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<categories>
+  <category>
+    <category_name>Art</category_name>
+    <products>
+      <product product_id="57">
+        <product_name>Michelangelo</product_name>
+        <description>Medieval Painting</description>
+        <start_price>630</start_price>
+        <highest_bidded_price>90010</highest_bidded_price>
+      </product>
+    </products>
+  </category>
+  <category>
+    <category_name>Books and magazines</category_name>
+    <products>
+      <product product_id="58">
+        <product_name>Lord of the Rings</product_name>
+        <description>books collection</description>
+        <start_price>28</start_price>
+        <highest_bidded_price>101</highest_bidded_price>
+      </product>
+      <product product_id="58">
+        <product_name>Lord of the Rings</product_name>
+        <description>books collection</description>
+        <start_price>28</start_price>
+        <highest_bidded_price>29</highest_bidded_price>
+      </product>
+    </products>
+  </category>
+  <category>
+    <category_name>Cellphones</category_name>
+    <products/>
+  </category>
+  <category>
+    <category_name>Computers</category_name>
+    <products/>
+  </category>
+  <category>
+    <category_name>Clothes</category_name>
+    <products/>
+  </category>
+  <category>
+    <category_name>Jewellery and Watches</category_name>
+    <products/>
+  </category>
+  <category>
+    <category_name>Music</category_name>
+    <products/>
+  </category>
+  <category>
+    <category_name>Movies</category_name>
+    <products/>
+  </category>
+  <category>
+    <category_name>Health Care</category_name>
+    <products/>
+  </category>
+  <category>
+    <category_name>Vehicles</category_name>
+    <products/>
+  </category>
+</categories>
