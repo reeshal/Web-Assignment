@@ -1,6 +1,6 @@
 <?php
 $url='http://localhost/Web-Assignment/Webservice/AuctionHouseData.xml';
-require_once "XMLErrorFunctions.php";
+require_once "../PhpFunctions/XMLErrorFunctions.php";
 
 $dom = new DOMDocument;
 $dom->preserveWhiteSpace = FALSE;
