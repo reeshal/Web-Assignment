@@ -44,5 +44,5 @@
         $dom->formatOutput = true;
         print $dom->save("AuctionHouseData.xml");
     }
-
+    
 ?>
