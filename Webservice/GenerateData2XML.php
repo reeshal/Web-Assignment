@@ -33,7 +33,7 @@
     );
 
     //validating
-    require_once "XMLErrorFunctions.php";
+    require_once "../PhpFunctions/XMLErrorFunctions.php";
     libxml_use_internal_errors(true);
     if (!$dom->schemaValidate('DataValidation.xsd')) {
         print '<b>DOMDocument::schemaValidate() Generated Errors!</b>';

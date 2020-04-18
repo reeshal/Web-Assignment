@@ -9,6 +9,18 @@
         <start_price>630</start_price>
         <highest_bidded_price>90010</highest_bidded_price>
       </product>
+      <product product_id="71">
+        <product_name>koala</product_name>
+        <description/>
+        <start_price>2</start_price>
+        <highest_bidded_price>4</highest_bidded_price>
+      </product>
+      <product product_id="53">
+        <product_name>food</product_name>
+        <description>revwrj iwocjl </description>
+        <start_price>28</start_price>
+        <highest_bidded_price>37</highest_bidded_price>
+      </product>
     </products>
   </category>
   <category>
@@ -29,35 +41,36 @@
     </products>
   </category>
   <category>
-    <category_name>Cellphones</category_name>
-    <products/>
-  </category>
-  <category>
     <category_name>Computers</category_name>
-    <products/>
+    <products>
+      <product product_id="66">
+        <product_name>red lamborghini</product_name>
+        <description/>
+        <start_price>89999</start_price>
+        <highest_bidded_price>89002</highest_bidded_price>
+      </product>
+    </products>
   </category>
   <category>
     <category_name>Clothes</category_name>
-    <products/>
-  </category>
-  <category>
-    <category_name>Jewellery and Watches</category_name>
-    <products/>
-  </category>
-  <category>
-    <category_name>Music</category_name>
-    <products/>
-  </category>
-  <category>
-    <category_name>Movies</category_name>
-    <products/>
-  </category>
-  <category>
-    <category_name>Health Care</category_name>
-    <products/>
+    <products>
+      <product product_id="69">
+        <product_name>red  blouse</product_name>
+        <description/>
+        <start_price>490</start_price>
+        <highest_bidded_price>492</highest_bidded_price>
+      </product>
+    </products>
   </category>
   <category>
     <category_name>Vehicles</category_name>
-    <products/>
+    <products>
+      <product product_id="70">
+        <product_name>red lambo</product_name>
+        <description/>
+        <start_price>3900</start_price>
+        <highest_bidded_price>8501</highest_bidded_price>
+      </product>
+    </products>
   </category>
 </categories>
