@@ -6,6 +6,15 @@ require_once "PhpFunctions/db_connect.php";
 $productId = $_GET['id'];//Get product id
 $username =$user; 
 
+//Getting FromCurrency of seller
+$FromCurrencyQuery = $conn->query("SELECT c.code as code
+FROM Users u, Product p, Currency c
+WHERE u.username = p.current_owner
+AND u.currency = c.currency
+AND p.productId = '$productId'")->fetch();
+               
+$FromCurrency = $FromCurrencyQuery['code'];
+
 $biddingQuery = $conn->query("SELECT username
                               FROM Bidding
                               WHERE productId = '$productId'
@@ -22,6 +31,19 @@ if(empty($biddingQuery) || $currentWinner != $username){
 else if($currentWinner == $username){
   $isBid = false; //to delete
 }
+
+//Getting currency of user
+$ToCurrencyQuery = $conn->query("SELECT c.code as code
+                                   FROM Users u, Currency c
+                                   WHERE u.currency = c.currency
+                                   AND username = '$user'")->fetch();
+                                                           
+  $ToCurrency = $ToCurrencyQuery['code'];
+
+  //Setting Currency Symbol
+  $locale='en-US'; //browser or user locale
+  $fmt = new NumberFormatter( $locale."@currency=$ToCurrency", NumberFormatter::CURRENCY );
+  $symbol = $fmt->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
 
 
 
@@ -44,6 +66,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       //querying if user already bidded
       $query = $conn->query("SELECT price_bidded FROM Bidding WHERE productId = '$productId' AND username = '$username'")->fetch();
       
+
+      if($FromCurrency != $ToCurrency) {
+        $FromCurrency = urlencode($FromCurrency);
+        $ToCurrency = urlencode($ToCurrency);	
+        $encode_amount = 1;
+        $url  = "https://www.google.com/search?q=".$ToCurrency."+to+".$FromCurrency;
+        $get = file_get_contents($url);
+        $data = preg_split('/\D\s(.*?)\s=\s/',$get);
+        $exhangeRate = (float) substr($data[1],0,7);
+        $newBid = $newBid*$exhangeRate;
+      }
 
       if(empty($query['price_bidded'])){
       $insert = "INSERT INTO Bidding(username, productId, price_bidded, time_bidded) 
@@ -74,6 +107,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
    header("Location: details.php?id=$productId"); 
 }
+
+
 
 ?>
 
@@ -153,7 +188,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
 			if(empty($biddingPrice)){
 				$biddingPrice = $start_price;
-			}
+      }
+
+
+      //Currency conversion if necessary
+      if($FromCurrency != $ToCurrency) {
+        $FromCurrency = urlencode($FromCurrency);
+        $ToCurrency = urlencode($ToCurrency);	
+        $encode_amount = 1;
+        $url  = "https://www.google.com/search?q=".$FromCurrency."+to+".$ToCurrency;
+        $get = file_get_contents($url);
+        $data = preg_split('/\D\s(.*?)\s=\s/',$get);
+        $exhangeRate = (float) substr($data[1],0,7);
+        $biddingPrice = $biddingPrice*$exhangeRate;
+        $biddingPrice = round($biddingPrice, 2);
+      }
+
 			echo "  <div class=\"grid-container\">
 				  <div class=\"grid-item\">
 				    <h1>$name</h1><br>
@@ -175,12 +225,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
                   <div class=\"grid-container\" > 
                     <div class=\"grid-item\" style=\"font-size : 30px;\">
-                      Rs
+                      $symbol
                     </div>
 
                     <div class=\"grid-item\" style=\"padding-top:10px;\">
                       <input id=\"price\"
                         type=\"number\"
+                        step=\"0.01\"
                         class=\"form-control\"
                         name=\"BiddingPrice\"
                         value=\"$biddingPrice\"
@@ -267,10 +318,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
   xhttp.open("GET", "UpdateAuction.php?id="+productId, true);
   xhttp.send(); */
 
+  var fromCurrency = "<?php echo $FromCurrency ?>";
+  var toCurrency = "<?php echo $ToCurrency ?>";
+
+  console.log("fromCurrency ; " , fromCurrency);
+  console.log("toCurrency ; " , toCurrency);
+
   $(document).ready(function(){
     $.ajax({
 			url:"PhpFunctions/UpdateAuction.php", 
-			data: {id: productId}, 
+			data: {id: productId, fromCurrency : fromCurrency, toCurrency : toCurrency}, 
 			cache: false,
 			method: "POST", 
 			success:function(result){
@@ -279,6 +336,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           console.log("currentPriceShown : " , currentPriceShown);
 
           var actualBiddingPrice = JSON.parse(result);
+          actualBiddingPrice = actualBiddingPrice.toFixed(2);
           console.log("actualBiddingPrice : " , actualBiddingPrice);
 
           if(currentPriceShown != actualBiddingPrice){
@@ -319,7 +377,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
           $(document).ready(function(){
             $.ajax({
-              url:"result.php", 
+              url:"PhpFunctions/result.php", 
               data: {id: productId}, 
               cache: false,
               method: "POST", 

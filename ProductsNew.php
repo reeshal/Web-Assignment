@@ -28,6 +28,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
 require_once "PhpFunctions/feedback.php";
 
+//Getting ToCurrency of user
+if($user != ""){
+  $ToCurrencyQuery = $conn->query("SELECT c.code as code
+                                   FROM Users u, Currency c
+                                   WHERE u.currency = c.currency
+                                   AND username = '$user'")->fetch();
+                                                           
+  $ToCurrency = $ToCurrencyQuery['code'];
+
+  //Setting Currency Symbol
+  $locale='en-US'; //browser or user locale
+  $fmt = new NumberFormatter( $locale."@currency=$ToCurrency", NumberFormatter::CURRENCY );
+  $symbol = $fmt->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -278,8 +293,39 @@ if ($user ==""){
           $currentPrice = $output["start_price"];
          }
 
-          
+         //Getting FromCurrency of seller
+         $FromCurrencyQuery = $conn->query("SELECT c.code as code
+                                            FROM Users u, Product p, Currency c
+                                            WHERE u.username = p.current_owner
+                                            AND u.currency = c.currency
+                                            AND p.productId = '$prodId'")->fetch();
+                                                           
+          $FromCurrency = $FromCurrencyQuery['code'];
+
         if($user!=""){
+          //Currency conversion if necessary
+          if($FromCurrency != $ToCurrency) {
+            $FromCurrency = urlencode($FromCurrency);
+            $ToCurrency = urlencode($ToCurrency);	
+            $encode_amount = 1;
+            $url  = "https://www.google.com/search?q=".$FromCurrency."+to+".$ToCurrency;
+
+           /* $curl_handle=curl_init();
+            curl_setopt($curl_handle, CURLOPT_URL, $url);
+            curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+            curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Auction House');
+            $get = curl_exec($curl_handle);
+            curl_close($curl_handle);*/
+
+            $get = file_get_contents($url);
+            $data = preg_split('/\D\s(.*?)\s=\s/',$get);
+           // if (!empty($data[1]))
+            $exhangeRate = (float) substr($data[1],0,7);
+            $currentPrice = $currentPrice*$exhangeRate;
+            $currentPrice = round($currentPrice, 2);
+          }
+
           echo "
           <div class=\"col-lg-4 col-md-6 mb-5\">
           <div class=\"product-item\">
@@ -289,7 +335,7 @@ if ($user ==""){
             <div class=\"px-4\">
                 <h3>$name</h3>
                 <p>$desc</p>
-                <p>Rs $currentPrice</p>
+                <p>$symbol $currentPrice</p>
             </div>
             <div>
             <a href='details.php?id=".$output['productId']."' class=\"btn mr-1 rounded-3\">View</a>
@@ -301,6 +347,11 @@ if ($user ==""){
           
         }
         else{
+          //Setting Currency Symbol of seller
+          $locale='en-US'; //browser or user locale
+          $fmt = new NumberFormatter( $locale."@currency=$FromCurrency", NumberFormatter::CURRENCY );
+          $symbol = $fmt->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+
           echo "
           <div class=\"col-lg-4 col-md-6 mb-5\">
           <div class=\"product-item\">
@@ -310,7 +361,7 @@ if ($user ==""){
             <div class=\"px-4\">
                 <h3>$name</h3>
                 <p>$desc</p>
-                <p>Rs $currentPrice</p>
+                <p>$symbol $currentPrice</p>
             </div>
           </div>
           </div>
