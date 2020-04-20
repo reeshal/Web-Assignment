@@ -25,7 +25,25 @@ require_once "PhpFunctions/feedback.php";
     <link rel="stylesheet" href="css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="css/aos.css">   
     <link rel="stylesheet" href="css/style.css">
-    
+    <script>
+      function clearNotif(){
+        var user=$("span#user").html();
+          $.ajax({
+            url:"PhpFunctions/clearNotifications.php",
+            data:{username:user},
+            method:"POST",
+            success:function(result){             
+              if(result=="Notifications Cleared"){
+                alert(result);
+                location.reload();
+              }             
+            },
+            error: function(a){
+              alert("Failed")
+            }
+          });  
+      }
+    </script>
 </head>
 <body>
 
@@ -68,7 +86,7 @@ if ($user ==""){
             <nav class="site-navigation position-relative text-left " style="margin-left: -100px" role="navigation">
                <ul class="site-menu js-clone-nav ">
                 <li class="has-children">
-                  <span><?php echo $user?></span>
+                  <span id="user"><?php echo $user?></span>
                   <ul class="dropdown">
                       <li><a href="MyProfile.php">My Profile</a></li>
                       <li><a href="MyProducts.php">My Products</a></li>
@@ -103,7 +121,7 @@ if ($user ==""){
                       }
                   }
                   ?>
-                  <li class="btn" id="clearbtn">Clear</li>
+                  <li class="btn btn-primary" onclick="clearNotif()">Clear Notifications</li>
                   </ul>                  
                 </li>
               </ul>
@@ -173,32 +191,6 @@ if ($user ==""){
       </div>
     </div>  
 
-    <!--TO EDIT LATER-->
-
-    <!--About us-->
-    <div class="site-section " id="about-section" >
-      <div class="container">
-        <div class="row mb-5">
-          <div class="col-md-8" >
-            <h3>About Us</h3>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-4 mx-auto">
-            <h3>Who We Are</h3>
-          </div>
-        </div>
-        <div class="row mb-5">
-          <div class="col-md-4 ml-auto">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam eveniet laudantium dignissimos atque labore excepturi perspiciatis ut fugit eius itaque iste quibusdam dolore consectetur reprehenderit. Illum molestiae nemo culpa optio.</p>
-          </div>
-          <div class="col-md-4">
-            <p>Similique neque facere cum! Et esse natus qui fugiat temporibus voluptate debitis similique eos illum pariatur suscipit placeat omnis perferendis ab enim quis eligendi minima explicabo aperiam. Eaque minus itaque?</p>
-          </div>
-        </div>
-      </div>
-    </div>
- 
   <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/jquery-ui.js"></script>
   <script src="js/popper.min.js"></script>

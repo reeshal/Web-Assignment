@@ -52,7 +52,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/contactus.css">
-    
+    <script>
+      function clearNotif(){
+        var user=$("span#user").html();
+          $.ajax({
+            url:"PhpFunctions/clearNotifications.php",
+            data:{username:user},
+            method:"POST",
+            success:function(result){             
+              if(result=="Notifications Cleared"){
+                alert(result);
+                location.reload();
+              }             
+            },
+            error: function(a){
+              alert("Failed")
+            }
+          });  
+      }
+    </script>
 </head>
 <body>
 
@@ -80,7 +98,7 @@ $_SERVER['HTTP_REFERER']="ContactUs.php";  //used to redirect the form to this p
           <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
             <li><a href="homepage.php"><span>Home</span></a></li>
             <li><a href="ProductsNew.php"><span>Products</span></a></li>
-            <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
+            <li><a href="faq.php"><span>FAQ</span></a></li>
             <li class="active"><a><span>Contact</span></a></li>
           </ul>
         </nav>
@@ -95,7 +113,7 @@ $_SERVER['HTTP_REFERER']="ContactUs.php?referer=login";  //used to redirect the 
         <nav class="site-navigation position-relative text-left " style="margin-left: -100px" role="navigation">
            <ul class="site-menu js-clone-nav ">
             <li class="has-children">
-              <span><?php echo $user?></span>
+              <span id="user"><?php echo $user?></span>
               <ul class="dropdown">
                   <li><a href="MyProfile.php">My Profile</a></li>
                   <li><a href="MyProducts.php">My Products</a></li>
@@ -130,7 +148,7 @@ $_SERVER['HTTP_REFERER']="ContactUs.php?referer=login";  //used to redirect the 
                       }
                   }
                   ?>
-                  <li class="btn" id="clearbtn">Clear</li>
+                  <li class="btn btn-primary" onclick="clearNotif()">Clear Notifications</li>
                   </ul>                  
                 </li>
           </ul>
@@ -166,21 +184,21 @@ $_SERVER['HTTP_REFERER']="ContactUs.php?referer=login";  //used to redirect the 
         	<div class="col-md-8">
         		<div class="row mb-5">
 		          <div class="col-md-4 text-center py-4">
-		          	<div class="icon">
+		          	<!-- <div class="icon">
 		          		<span class="icon-map-o"></span>
-		          	</div>
+		          	</div> -->
 		            <p><span>Address:</span> University of Mauritius</p>
 		          </div>
 		          <div class="col-md-4 text-center border-height py-4">
-		          	<div class="icon">
+		          	<!-- <div class="icon">
 		          		<span class="icon-mobile-phone"></span>
-		          	</div>
+		          	</div> -->
 		            <p><span>Phone:</span> <a>+230 5726358</a></p>
 		          </div>
 		          <div class="col-md-4 text-center py-4">
-		          	<div class="icon">
+		          	<!-- <div class="icon">
 		          		<span class="icon-envelope-o"></span>
-		          	</div>
+		          	</div> -->
 		            <p><span>Email:</span> <a>auctionhouse@gmail.com</a></p>
 		          </div>
 		        </div>
