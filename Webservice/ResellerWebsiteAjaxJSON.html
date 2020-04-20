@@ -1,0 +1,59 @@
+<html>
+<head>
+    <title>Reseller</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link rel="stylesheet" href="../css/signIn.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    
+    <script>
+        $(document).ready(function(){
+            $("button#loadProducts").click(function(){
+                var url="AuctionHouseData.json";
+                $.getJSON(url,function(data){
+                    $("div#detailPage").css("display","block");
+                    if(data.length==0){
+                        $("div#detailPage").html("JSON File is empty");
+                    }
+                    else{
+                        $.each(data,function(key,val){
+                            var code="<div class=\"row\">"+"<h2>"+val.category_name+"</h2>";
+                            code+="<div class=\"container table100 ver1 m-b-110\">"
+                            code +="<table><tr class=\"row100 head\"><th>Product Name</th><th>Description</th><th>Start Price</th><th>Highest Price</th></tr>";
+                            var totalsum=0;
+                            for(var i=0;i<val.products.length;i++){
+                                code+="<tr>";
+                                code+="<td>"+val.products[i].product_name+"</td>"
+                                code+="<td>"+val.products[i].description+"</td>"
+                                code+="<td>"+val.products[i].start_price+"</td>"
+                                code+="<td>"+val.products[i].highest_bidded_price+"</td>"
+                                code+="</tr>";
+                                totalsum+=val.products[i].highest_bidded_price;
+                            }
+                            code+="</table></div>";
+                            var avgprice=totalsum/(val.products.length);
+                            code+="<p style=\"text-align:right;\">Average Price:"+avgprice+"</p>"
+                            code+="</div>";
+                            $("div#detailPage").append(code);
+                        });
+
+                    }
+                });
+            });
+        });
+
+    </script>
+</head>
+<body>
+    <div style="background:url('../images/hero_1.jpg'); background-size: cover; ">
+        <div class="container" style="text-align:center;" >
+            <h1>Reseller Company</h1>
+            <h3>Using Ajax and JS only to consume JSON files</h3></br>
+            <button class="btn" id="loadProducts">JSON Ajax Call</button></br>
+        </div>
+        <div class="container signupBox" style="max-width:85%; display:none;" id="detailPage" >
+        </div>
+    </div>
+</body>
+</html>
