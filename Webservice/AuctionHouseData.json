@@ -1,0 +1,75 @@
+[
+    {
+        "category_name": "Art",
+        "products": [
+            {
+                "product_name": "Michelangelo",
+                "description": "Medieval Painting",
+                "start_price": 630,
+                "highest_bidded_price": 90010
+            },
+            {
+                "product_name": "koala",
+                "description": "",
+                "start_price": 2,
+                "highest_bidded_price": 4
+            },
+            {
+                "product_name": "food",
+                "description": "revwrj iwocjl ",
+                "start_price": 28,
+                "highest_bidded_price": 37
+            }
+        ]
+    },
+    {
+        "category_name": "Books and magazines",
+        "products": [
+            {
+                "product_name": "Lord of the Rings",
+                "description": "books collection",
+                "start_price": 28,
+                "highest_bidded_price": 101
+            },
+            {
+                "product_name": "Lord of the Rings",
+                "description": "books collection",
+                "start_price": 28,
+                "highest_bidded_price": 29
+            }
+        ]
+    },
+    {
+        "category_name": "Computers",
+        "products": [
+            {
+                "product_name": "red lamborghini",
+                "description": "",
+                "start_price": 89999,
+                "highest_bidded_price": 89002
+            }
+        ]
+    },
+    {
+        "category_name": "Clothes",
+        "products": [
+            {
+                "product_name": "red  blouse",
+                "description": "",
+                "start_price": 490,
+                "highest_bidded_price": 492
+            }
+        ]
+    },
+    {
+        "category_name": "Vehicles",
+        "products": [
+            {
+                "product_name": "red lambo",
+                "description": "",
+                "start_price": 3900,
+                "highest_bidded_price": 8501
+            }
+        ]
+    }
+]

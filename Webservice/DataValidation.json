@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://api.example.com/owner.json#",
+    "type": "array",
+	"minItems": 1, 
+	"uniqueitems": true,
+	"items": {
+        "type": "object",	
+		"properties": {
+            "category_name":{
+                "type":"string",
+                "pattern":"[a-zA-Z ]"
+            },
+            "products":{
+                "type":"array",
+                "minItems": 1,
+                "items":{
+                    "type":"object",
+                    "properties":{
+                        "product_name":{"type":"string"},
+                        "description":{"type":"string"},
+                        "start_price":{"type":"integer"},
+                        "highest_bidded_price":{"type":"integer"}
+                    },
+                    "required":["product_name","description","start_price","highest_bidded_price"],
+                    "additionalProperties" :false
+                } 
+            }
+        },
+        "additionalProperties" :false
+    },
+    "additionalProperties": false
+}

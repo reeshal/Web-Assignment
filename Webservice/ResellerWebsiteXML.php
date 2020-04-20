@@ -31,6 +31,8 @@ libxml_use_internal_errors(true);
                 $xmlstr = file_get_contents($url);
                 $categories = new SimpleXMLElement($xmlstr);
                 foreach($categories->category as $cat_node){
+                    $totalsum=0;
+                    $count=0;
                     echo "<div class=\"row\">";
                     echo "<h2>$cat_node->category_name</h2>"; ?>
                     <div class="container table100 ver1 m-b-110">
@@ -49,13 +51,16 @@ libxml_use_internal_errors(true);
                                     echo "<td>".$product_node->start_price."</td>";
                                     echo "<td>".$product_node->highest_bidded_price."</td>";
                                     echo "</tr>";
+                                    $totalsum+=$product_node->highest_bidded_price;
+                                    $count++;
                                 }
                             ?>
                         </table>
                     </div>
                     <?php          
                     echo "</div>";
-                    echo "</br>";
+                    $avgprice=$totalsum/$count;
+                    echo "<p style=\"text-align:right;\">Average Price:$avgprice</p>";
                 }
             }
         ?>
