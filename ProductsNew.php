@@ -60,6 +60,25 @@ if($user != ""){
     <link rel="stylesheet" href="css/products.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   
+    <script>
+      function clearNotif(){
+        var user=$("span#user").html();
+          $.ajax({
+            url:"PhpFunctions/clearNotifications.php",
+            data:{username:user},
+            method:"POST",
+            success:function(result){             
+              if(result=="Notifications Cleared"){
+                alert(result);
+                location.reload();
+              }             
+            },
+            error: function(a){
+              alert("Failed")
+            }
+          });  
+      }
+    </script>
 
 <script type="text/javascript">
   $(function() {
@@ -149,7 +168,7 @@ if ($user ==""){
             <nav class="site-navigation position-relative text-sleft " style="margin-left: -100px" role="navigation">
                <ul class="site-menu js-clone-nav ">
                 <li class="has-children">
-                  <span><?php echo $user?></span>
+                  <span id="user"><?php echo $user?></span>
                   <ul class="dropdown">
                       <li><a href="MyProfile.php">My Profile</a></li>
                       <li><a href="MyProducts.php">My Products</a></li>
@@ -184,7 +203,7 @@ if ($user ==""){
                       }
                   }
                   ?>
-                  <li class="btn" id="clearbtn">Clear</li>
+                  <li class="btn btn-primary" onclick="clearNotif()">Clear Notifications</li>
                   </ul>                  
                 </li>
               </ul>

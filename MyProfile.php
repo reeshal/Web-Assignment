@@ -90,6 +90,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             return false;
     }
     </script>
+    <script>
+      function clearNotif(){
+        var user=$("span#user").html();
+          $.ajax({
+            url:"PhpFunctions/clearNotifications.php",
+            data:{username:user},
+            method:"POST",
+            success:function(result){             
+              if(result=="Notifications Cleared"){
+                alert(result);
+                location.reload();
+              }             
+            },
+            error: function(a){
+              alert("Failed")
+            }
+          });  
+      }
+    </script>
 </head>
 <body>
 <!--Start of header-->
@@ -100,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <nav class="site-navigation position-relative text-left " style="margin-left: -100px" role="navigation">
                <ul class="site-menu js-clone-nav ">
                 <li class="has-children">
-                  <span><?php echo $user?></span>
+                <span id="user"><?php echo $user?></span>
                   <ul class="dropdown">
                       <li><a href="MyProducts.php">My Products</a></li>
                       <li><a href="Biddings.php">My Biddings</a></li>
@@ -134,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                       }
                   }
                   ?>
-                  <li class="btn" id="clearbtn">Clear</li>
+                  <li class="btn btn-primary" onclick="clearNotif()">Clear Notifications</li>
                   </ul>                  
                 </li>
               </ul>

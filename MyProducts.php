@@ -130,7 +130,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/products.css">
     <link rel="stylesheet" href="css/myproductsTab.css">
-
+    <script>
+      function clearNotif(){
+        var user=$("span#user").html();
+          $.ajax({
+            url:"PhpFunctions/clearNotifications.php",
+            data:{username:user},
+            method:"POST",
+            success:function(result){             
+              if(result=="Notifications Cleared"){
+                alert(result);
+                location.reload();
+              }             
+            },
+            error: function(a){
+              alert("Failed")
+            }
+          });  
+      }
+    </script>
 </head>
 <body>
 <div class="site-wrap">
@@ -142,7 +160,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <nav class="site-navigation position-relative text-left " style="margin-left: -100px" role="navigation">
                <ul class="site-menu js-clone-nav ">
                 <li class="has-children">
-                  <span><?php echo $user?></span>
+                  <span id="user"><?php echo $user?></span>
                   <ul class="dropdown">
                       <li><a href="MyProfile.php">My Profile</a></li>
                       <li><a href="MyBiddings.php">My Biddings</a></li>
@@ -184,7 +202,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                       }
                   }
                   ?>
-                  <li class="btn" id="clearbtn">Clear</li>
+                  <li class="btn btn-primary" onclick="clearNotif()">Clear Notifications</li>
                   </ul>                  
                 </li>
               </ul>
@@ -280,7 +298,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <div id="inauction" class="tabcontent">
 
         <?php
-        $query="SELECT p.start_time, p.start_price, p.name, s.imageName,p.productId
+        $query="SELECT p.start_price, p.name, s.imageName,p.productId, p.end_time
                 FROM Product p, ProductImage s
                 WHERE p.current_owner='$user'
                 AND p.productId=s.prodID
@@ -300,7 +318,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           foreach($result as $output) {
               $name =  $output["name"];
               $price = $output["start_price"];
-              $date = $output["start_time"];
+              $date = $output["end_time"];
               $imageName = $output["imageName"];
               $pid=$output['productId'];
               $currentPriceQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
@@ -320,7 +338,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                     <div class=\"px-4\">
                         <h3>$name</h3>
                         <p>Current Price: Rs $currentPrice</p>
-                        <p>Time Left: TO BE IMPLEMENTED</p>
+                        <p>End Time: $date</p>
                     </div>
                     <div>
                     <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>
@@ -391,7 +409,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
 </div>
 <script>
-        document.getElementsByClassName('tablinks')[0].click(); //to set default page first
+       document.getElementsByClassName('tablinks')[0].click(); //to set default page first
         function switchTab(evt,choice){
           var i, tabcontent, tablinks;
           tabcontent = document.getElementsByClassName("tabcontent");
@@ -406,10 +424,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           evt.currentTarget.className += " active";
         }
 
-        function resell(pid){
-          document.getElementById("modal-wrapper").style.display="block";
-          document.getElementById("prodId").value=pid;
-        }
+        
 
         var modal = document.getElementById('modal-wrapper');
         window.onclick = function(at) {
@@ -417,27 +432,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         modal.style.display = "none";
         }
         }
+
+        function resell(pid){
+          $("#modal-wrapper").css("display","block");
+          $("#prodId").val(pid);
+        }
+
         function deletes(pid){
-          document.getElementById("modal-delete").style.display="block";
-          document.getElementById("prodIds").value=pid;
+          $("#modal-delete").css("display","block");
+          $("#prodIds").val(pid);
         }
 
         function leaveFeedback(pid){
-          document.getElementById("modal-feedback").style.display="block";
-          document.getElementById("prodIdFeedback").value=pid;
+          $("#modal-feedback").css("display","block");
+          $("#prodIdFeedback").val(pid);
         }
 
         function stopAuction(pid){
-          document.getElementById("modal-stop").style.display="block";
-          document.getElementById("prodIdstop").value=pid;
+          $("#modal-stop").css("display","block");
+          $("#prodIdstop").val(pid);
         }
         
       </script>
       <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-ui.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/aos.js"></script>
-  <script src="js/main.js"></script>
+      <script src="js/jquery-ui.js"></script>
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script src="js/aos.js"></script>
+      <script src="js/main.js"></script>
 </body>
 </html>
