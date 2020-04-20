@@ -57,7 +57,7 @@ $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     </div>
     <div id="modal-delete" class="modal">
       <form class="modal-content animate" action="" method="post">
-      <div class="container">
+      <div class="container col-8">
         <p>Confirm Deletion</p>
         <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
         <input type="checkbox" name="deleteConfirmation" value="yes">Yes

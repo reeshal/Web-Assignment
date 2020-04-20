@@ -67,15 +67,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $deleteuser=$_POST["deleteConfirmationuser"];
         $email=$_POST["emailuser"];
         $userdelete=$_POST["usernamedel"];
+        $reason=$_POST["reason"];
         if($deleteuser=="yes"){
-            $delStm="DELETE FROM Users WHERE username='$userdelete'";
-            $delresult=$conn->exec($delStm);
-            if($delresult){
-                header("Location: adminhomepage.php?referer=login");
+            if(mail($email, "Why we deleted your account", $reason)){
+                $delStm="DELETE FROM Users WHERE username='$userdelete'";
+                $delresult=$conn->exec($delStm);
+                if($delresult){
+                    header("Location: adminhomepage.php?referer=login");
+                }
+                else{
+                    echo "<script>alert('failed');</script>";  
+                }
             }
             else{
-                echo "<script>alert('failed');</script>";  
-            }
+                echo "<script>alert('Email not sent');</script>";
+            }       
         }
         else{
             header("Location: adminhomepage.php?referer=login");
@@ -310,7 +316,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <form class="modal-content animate" action="" method="post">
             <div class="container">
                 <p>Confirm Deletion</p>
-                <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
+                <span onclick="document.getElementById('modal-delete-user').style.display='none' " class="close" title="Close PopUp">&times;</span>
                 <input type="checkbox" name="deleteConfirmationuser" value="yes">Yes
                 <input type="checkbox" name="deleteConfirmationuser" value="no">No
                 <p>Give a reason why you are deleting this user</p>
