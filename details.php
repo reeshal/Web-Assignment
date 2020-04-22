@@ -2,9 +2,18 @@
 session_start();
 $user=$_SESSION['username'];
 
-require_once "includes/db_connect.php";
+require_once "PhpFunctions/db_connect.php";
 $productId = $_GET['id'];//Get product id
 $username =$user; 
+
+//Getting FromCurrency of seller
+$FromCurrencyQuery = $conn->query("SELECT c.code as code
+FROM Users u, Product p, Currency c
+WHERE u.username = p.current_owner
+AND u.currency = c.currency
+AND p.productId = '$productId'")->fetch();
+               
+$FromCurrency = $FromCurrencyQuery['code'];
 
 $biddingQuery = $conn->query("SELECT username
                               FROM Bidding
@@ -23,6 +32,20 @@ else if($currentWinner == $username){
   $isBid = false; //to delete
 }
 
+//Getting currency of user
+$ToCurrencyQuery = $conn->query("SELECT c.code as code, c.conversion_rate as rate
+                                   FROM Users u, Currency c
+                                   WHERE u.currency = c.currency
+                                   AND username = '$user'")->fetch();
+                                                           
+  $ToCurrency = $ToCurrencyQuery['code'];
+  $rate = $ToCurrencyQuery['rate'];
+
+  //Setting Currency Symbol
+  $locale='en-US'; //browser or user locale
+  $fmt = new NumberFormatter( $locale."@currency=$ToCurrency", NumberFormatter::CURRENCY );
+  $symbol = $fmt->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -36,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       $isBid = false;
 
       //Insert bidding
-      require_once "includes/db_connect.php";
+      require_once "PhpFunctions/db_connect.php";
       
       //query bidded price
       $newBid  = $_POST["BiddingPrice"];
@@ -44,6 +67,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       //querying if user already bidded
       $query = $conn->query("SELECT price_bidded FROM Bidding WHERE productId = '$productId' AND username = '$username'")->fetch();
       
+
+      $newBid *= $rate; 
 
       if(empty($query['price_bidded'])){
       $insert = "INSERT INTO Bidding(username, productId, price_bidded, time_bidded) 
@@ -75,6 +100,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
    header("Location: details.php?id=$productId"); 
 }
 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -86,11 +113,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/jquery-ui.css">
-    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/productsRishikesh.css">
 
-    <link rel="stylesheet" href="includes/productsRishikesh.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 </head>
 
@@ -122,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 <li class="active"><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
                 <li><a href="#about-section"><span>About Us</span></a></li>
                 <li><a href="blog.html"><span>FAQ</span></a></li>
-                <li><a href="#contact-section"><span>Contact</span></a></li>
+                <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
               </ul>
             </nav>
           </div>
@@ -134,7 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
 	<div class="row" style="padding-left:100px; padding-top:75px;">
 		<?php
-		require_once "includes/db_connect.php";
+		require_once "PhpFunctions/db_connect.php";
 		$id = $_GET['id'];
 		$query = "SELECT p.productId, p.name, p.start_price, i.imageName, p.is_sold, p.category, p.start_time, p.end_time
 		          FROM Product p, ProductImage i 			
@@ -153,11 +180,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
 			if(empty($biddingPrice)){
 				$biddingPrice = $start_price;
-			}
+      }
+
+
+      $biddingPrice /= $rate;
+      $biddingPrice = round($biddingPrice, 2);
+
 			echo "  <div class=\"grid-container\">
 				  <div class=\"grid-item\">
 				    <h1>$name</h1><br>
-				    <img src=\"http://localhost/Assignment/images/$imageName\" width=\"500px\" height=\"500px\"/>
+				    <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"500px\" height=\"500px\"/>
 				  </div>
 
 				  <div class=\"grid-item\" style=\"padding-top:75px;\">
@@ -175,12 +207,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
                   <div class=\"grid-container\" > 
                     <div class=\"grid-item\" style=\"font-size : 30px;\">
-                      Rs
+                      $symbol
                     </div>
 
                     <div class=\"grid-item\" style=\"padding-top:10px;\">
                       <input id=\"price\"
                         type=\"number\"
+                        step=\"0.01\"
                         class=\"form-control\"
                         name=\"BiddingPrice\"
                         value=\"$biddingPrice\"
@@ -202,10 +235,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
               ";
               
               if($isBid){
-                echo "<center><input id=\"bid\" type=\"submit\" class=\"gridbtn btn-success\" value=\"Bid\" style=\"display:none;\"></center>";
+                echo "<center><input id=\"bid\" type=\"submit\" class=\"gridbtn btn-success\" value=\"Bid\" style=\"display:none;\"</center>";
               }
               else{
-                echo "<center><input type=\"submit\"  class=\"gridbtn btn-danger\" value=\"Cancel Bid\" ></center>";
+                echo "<center><input id=\"cancelbid\" type=\"submit\"  class=\"gridbtn btn-danger\" value=\"Cancel Bid\" ></center>";
               }
          
               echo "</form>
@@ -247,9 +280,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     
    
    var productId = "<?php echo $id ?>";
-   var xhttp = new XMLHttpRequest();
+ /*  var xhttp = new XMLHttpRequest();
   
-   xhttp.onload = function() {
+   xhttp.onreadystatechange = function() {
     console.log("responseText : " , this.responseText);
 
     var currentPriceShown = document.getElementById("price").value;
@@ -265,29 +298,80 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
   };
 
   xhttp.open("GET", "UpdateAuction.php?id="+productId, true);
-  xhttp.send(); 
+  xhttp.send(); */
+
+
+  var rate = "<?php echo $rate ?>";
+  console.log("rate ; " , rate);
+
+  $(document).ready(function(){
+    $.ajax({
+			url:"PhpFunctions/UpdateAuction.php", 
+			data: {id: productId, rate : rate}, 
+			cache: false,
+			method: "POST", 
+			success:function(result){
+          console.log("result : " , result);
+    			var currentPriceShown = document.getElementById("price").value;
+          console.log("currentPriceShown : " , currentPriceShown);
+
+          var actualBiddingPrice = JSON.parse(result);
+        //  actualBiddingPrice = actualBiddingPrice.toFixed(2);
+          console.log("actualBiddingPrice : " , actualBiddingPrice);
+
+          if(currentPriceShown != actualBiddingPrice){
+            setTimeout("location.reload(true);",2000);
+          }
+    		},
+    		error: function(xhr){
+      			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+    		}
+  		
+  		});
+  });
    
 		
 		    if (t < 0) { 
           clearInterval(x); 
           document.getElementById("demo").innerHTML = "EXPIRED"; 
+          
           var productId = "<?php echo $id ?>";
           console.log("productId : " , productId);
 
           var isBid = "<?php echo $isBid ?>";
 
           if(!isBid){
+            document.getElementById("cancelbid").style.display = 'none';
             alert("Congratulations !! You are now the owner of this product");
+            setTimeout("location.href = 'http://localhost/Web-Assignment/MyProducts.php';",1000);
           }
           else{
-            alert("This product has a new owner");
+            document.getElementById("bid").style.display = 'none';
+            alert("The auction for this product is over");
+            setTimeout("location.href = 'http://localhost/Web-Assignment/ProductsNew.php?referer=login';",1000);
           }
+
+       /*   var xhttp = new XMLHttpRequest();
+          xhttp.open("GET", "result.php?id="+productId, true);
+          xhttp.send(); */
+
+          $(document).ready(function(){
+            $.ajax({
+              url:"PhpFunctions/result.php", 
+              data: {id: productId}, 
+              cache: false,
+              method: "POST", 
+              success:function(result){
+                 
+                },
+                error: function(xhr){
+                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                }
+              
+              });
+  });
     
-         var xhttp = new XMLHttpRequest();
-         xhttp.open("GET", "result.php?id="+productId, true);
-         xhttp.send(); 
-         
-         
+
          return false;
 		    } 
 		}, 1000); 
@@ -312,20 +396,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
 </script>
 
-   
-
   <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
   <script src="js/jquery-ui.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/jquery.stellar.min.js"></script>
-  <script src="js/jquery.countdown.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/bootstrap-datepicker.min.js"></script>
   <script src="js/aos.js"></script>
-  <script src="js/rangeslider.min.js"></script>
   <script src="js/main.js"></script>
 
 <body>

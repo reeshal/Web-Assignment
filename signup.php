@@ -1,17 +1,7 @@
 <?php 
 session_start();
-
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-function dateformatter($date){
-    $date = str_replace('/', '-', $date );
-    $newDate = date("Y-m-d", strtotime($date));
-    return $newDate;
-}
+require_once "PhpFunctions/db_connect.php";
+require_once "PhpFunctions/phpFunctions.php";
 
 //defining variables
 $firstname=$lastname=$address=$date=$username=$password=$confirmpassword=$email=$gender=$currency="";
@@ -65,7 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     } else {
     $gender = test_input($_POST["gender"]);
     }
-
     if (empty($_POST["currency"])) {
         $errorcurrency = "Currency is required";
     } else {
@@ -80,23 +69,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     }
 
     $date=dateformatter($date);
-
-    /*Verifying variables after submission
-    echo $firstname;echo $lastname;echo $address;echo $date;echo $username;echo $password;echo $confirmpassword;echo $email;echo $gender;echo $currency;
-    echo "\n";
-    echo $errorfirstname;echo $errorlastname;echo $erroraddress;echo $errordate;echo $errorusername;echo $errorpassword;echo $errorconfirmpassword;echo $erroremail;echo $errorgender;echo $errorcurrency;
-    */      
     
     //inserting in database
     if($errorfirstname == "" && $errorlastname == "" && $erroraddress == "" && $errordate == "" && $errorusername == "" && $errorpassword == "" && $errorconfirmpassword == "" && $erroremail =="" && $errorgender == "" && $errorcurrency == ""){
         $hashed_password = password_hash($confirmedpassword,PASSWORD_DEFAULT);
-        require_once "includes/db_connect.php";
+        
         //$insertUser="INSERT INTO LoginHistory(username,login_time) VALUES(".$conn-> quote($_SESSION['username']).$conn->time().")";
 
         $sInsert = "INSERT INTO Users(Username,password,firstname,lastname,gender,email,address,dob,currency)
               VALUES(" . $conn->quote($username) ."," . $conn->quote($hashed_password) ."," . $conn->quote($firstname) ."," . $conn->quote($lastname) ."," . $conn->quote($gender) ."," . $conn->quote($email) ."," . $conn->quote($address) ."," . $conn->quote($date) .",". $conn->quote($currency) .")";
-
-        
+         
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
         $Result =$conn->exec($sInsert) ;
         if($Result ){	
@@ -116,7 +98,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 <html>
 <head>
     <title>Signup Page</title>
-    <link href="includes/sign_in.css" type="text/css" rel="stylesheet" />
+    <link href="css/signIn.css" type="text/css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/dataValidation.js"></script>
+
+    <script>
+    function validateForm(){
+        if(!checkTextIllegalCharactersById('first_name', 'First Name field'))
+            return false;
+        if(!checkTextIllegalCharactersById('last_name', 'Last Name field'))
+            return false;
+        if(!checkTextIllegalCharactersById('address', 'Address field'))
+            return false;
+        if(!checkTextBlankById('dob','Date of birth'))
+            return false;
+        if(!checkRadioSetClickedByName('gender', 'Gender'))
+		    return false;	
+        if(!checkTextBlankById('username','Username'))
+            return false;
+        if(!checkTextBlankById('password','Password'))
+            return false;
+        if(!checkTextBlankById('passwordverify','Password'))
+            return false;
+        if(!checkTextBlankById('email','Email'))
+            return false;
+        if(!setDefaultValue('currency'))  //if value is empty it is set to US dollars
+            $("#currency").val("US Dollars");
+
+    }
+    </script>
 </head>
 <body>
 <?php
@@ -125,55 +136,58 @@ if(isset($_SESSION['login'])){
 }//end if
 else{	  
 ?> 
+<div class="containers" style="background:url('images/signup2.jpg'); background-size: cover;">
     <div class="signupBox">
         <h3 >Please fill in the form below to register</h3>
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        <input type="text" name="first_name" value="<?php echo $firstname;?>" placeholder="Firstname" maxlength="20" ><br>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
+
+        <input type="text" name="first_name" value="<?php echo $firstname;?>" placeholder="Firstname" maxlength="20" id="first_name"><br>
         <span class="error"> <?php echo $errorfirstname;?></span>
 
-        <input type="text" name="last_name" value="<?php echo $lastname;?>" placeholder="Lastname" maxlength="20" ><br>
+        <input type="text" name="last_name" value="<?php echo $lastname;?>" placeholder="Lastname" maxlength="20" id="last_name" ><br>
         <span class="error"> <?php echo $errorlastname;?></span>
 
-        <input type="text" name="address" value="<?php echo $address;?>" placeholder="Address" maxlength="50" ><br>
+        <input type="text" name="address" value="<?php echo $address;?>" placeholder="Address" maxlength="50" id="address"><br>
         <span class="error"> <?php echo $erroraddress;?></span>
         
-        <input type="date" name="dob"><br>
+        <input type="date" name="dob" id="dob"><br>
         <span class="error"> <?php echo $errordate;?></span>
 
-        <div class="container">           
+        <div class="containers" style="border-bottom: 1px solid ;border-bottom-color: #7971ea;">           
             Gender<br><input type="radio" name="gender" value="male">Male 
             <input type="radio" name="gender" value="female">Female
             <input type="radio" name="gender"value="others" >Others                 
         </div>
         <span class="error"> <?php echo $errorgender;?></span>
 
-        <div class="containerCurrency">
-            Currency<br>
+        <div class="containers" style="border-bottom: 1px solid ;border-bottom-color: #7971ea;">
+            Currency
             <div class="select">
-                <select name="currency">
-                    <option value="US Dollars" selected="selected" <?php if($currency == "US Dollars") {echo "selected";}?>>US Dollars</option>
-                    <option value="Euro"<?php if($currency == "Euro") {echo "selected";}?>>Euro</option>
-                    <option value="Mauritian Rupees"<?php if($currency == "Mauritian Rupees") {echo "selected";}?>>Mauritian Rupees</option>
-                    <!-- 
-                    <option value="Rand"<?php //if($currency == "Dollars") {echo "selected";}?>>Rand</option>
-                    <option value="Yen"<?php //if($currency == "Dollars") {echo "selected";}?>>Yen</option>
-                    <option value="Indian Rupee"<?php //if($currency == "Dollars") {echo "selected";}?>>Indian Rupee</option>
-                    <option value="British Pound"<?php //if($currency == "Dollars") {echo "selected";}?>>British Pound</option> -->
-                </select>
+            <select name="currency" id="currency">
+            <?php
+            $currencyquery="SELECT currency FROM Currency";
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $dataa =$conn->query($currencyquery) ;
+            $results = $dataa->fetchAll(PDO::FETCH_ASSOC);
+            foreach($results as $outputs) {
+                $currencyOutput=$outputs['currency'];
+                echo "<option value=\"$currencyOutput\">$currencyOutput</option>";
+              }
+            ?>
+            </select>
             </div>
         </div>
-                <!--<span class="error"> <?php //echo $errorcurrency;?></span>-->
              
-        <input type="text" name="user_name" value="<?php echo $username;?>" placeholder="Username" maxlength="15" ><br>
+        <input type="text" name="user_name" value="<?php echo $username;?>" placeholder="Username" maxlength="15" id="username"><br>
         <span class="error"> <?php echo $errorusername;?></span>
 
-        <input type="password" name="passwords" placeholder="Password"><br>
+        <input type="password" name="passwords" placeholder="Password" id="password"><br>
         <span class="error"> <?php echo $errorpassword;?></span>
 
-        <input type="password" name="confirmpassword" placeholder="Confirm your password"><br>
+        <input type="password" name="confirmpassword" placeholder="Confirm your password" id="passwordverify"><br>
         <span class="error"> <?php echo $errorconfirmpassword;?></span>
 
-        <input type="email" name="emails" value="<?php echo $email;?>" placeholder="Email"><br>
+        <input type="email" name="emails" value="<?php echo $email;?>" placeholder="Email" id="email"><br>
         <span class="error"> <?php echo $erroremail;?></span>
 
         <input type="submit" value="Register">
@@ -181,6 +195,7 @@ else{
                 <!--include button bck to login-->
         </form>
     </div>  
+  </div>
 <?php
 }//end else
 ?>

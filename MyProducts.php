@@ -1,39 +1,148 @@
 <?php
 session_start();
 $user=$_SESSION['username'];
-
-require_once "includes/db_connect.php";
-
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-function dateformatter($date){
-	$date = str_replace('/', '-', $date );
-	$newDate = date("Y-m-d", strtotime($date));
-	return $newDate;
-}
+require_once "PhpFunctions/SellerNotif.php";
+require_once "PhpFunctions/feedback.php";
+require_once "PhpFunctions/phpFunctions.php";
+require_once "PhpFunctions/db_connect.php";
+$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $start_price=$start_time=$duration="";
-
+$deleteConfirmation=$stopConfirmation="";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
-  $start_price = test_input($_POST["start_price"]);
-  $duration = test_input($_POST["duration"]);
   $pid=$_POST["prodId"];
-  $the_time = date('Y-m-d H:i:s');
-  $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' days',strtotime($the_time)));
-  
-  $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
-                              start_price=$start_price
-                          WHERE current_owner='$user'
-                          AND productId=$pid ";
 
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$Result =$conn->exec($update) ;
-header("Location: MyProducts.php");
+  if(isset($_POST['resell'])){
+    $start_price = test_input($_POST["start_price"]);
+    $duration = test_input($_POST["duration"]);
+
+    if($start_price!="" && $duration!=""){
+      $the_time = date('Y-m-d H:i:s');
+      $duration += 3; //Timezone
+      $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' hours',strtotime($the_time)));
+
+      //Converting starting price of product to USD
+		$rateQuery = $conn->query("SELECT c.conversion_rate as rate
+                               FROM Users u, Currency c
+                               WHERE u.username = '$user'
+                               AND u.currency = c.currency")->fetch();
+                            
+    $rate = $rateQuery['rate'];
+    $start_price *= $rate; 
+
+      $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
+                                start_price=$start_price
+                            WHERE current_owner='$user'
+                            AND productId=$pid ";
+      $Result =$conn->exec($update) ;
+      header("Location: MyProducts.php");
+    } //else?
+  }
+  else if (isset($_POST['delete'])){
+    $deleteConfirmation=$_POST["deleteConfirmation"];
+    if($deleteConfirmation=="yes"){
+      $query="SELECT username FROM Bidding WHERE productId=$pid";
+      $Result =$conn->query($query);
+      $row = $Result->fetch();
+      if(!$row){
+        $delQuery="DELETE FROM Product WHERE productId=$pid";
+        $delResult =$conn->exec($delQuery) ;
+        header("Location: MyProducts.php");
+      }
+      else{
+        echo "<script type='text/javascript'>alert('Product cant be deleted. Someone has already bidded on it');</script>";
+        //echo "failed";
+      }
+    }
+  }
+  else if(isset($_POST['leavefeedback'])){
+    //Getting feedback value
+    $feedback = test_input($_POST["feedback"]);
+
+    //Updating feedback value of product
+    $update = "UPDATE Product
+               SET feedback = '$feedback'
+               WHERE productId = '$pid'";
+
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+    $Result =$conn->exec($update);
+
+    //Getting current owner of product
+    $auctionDetailQuery = $conn->query("SELECT * 
+                                        FROM AuctionDetail
+                                        WHERE productId = '$pid'
+                                        ORDER BY date DESC
+                                        LIMIT 1")->fetch();
+    $previous_owner = $auctionDetailQuery['previous_owner'];
+
+    //Getting current value of feedbackNotif of User
+    $feedbackNotifQuery = $conn->query("SELECT feedbackNotif FROM Users WHERE username = '$previous_owner'")->fetch();
+    $feedbackNotif = $feedbackNotifQuery['feedbackNotif'];
+
+    //Setting value of feedbackNotifQuery
+    if(empty($feedbackNotif)){
+      $feedbackNotif = $pid;
+    }
+    else{
+      $feedbackNotif = $feedbackNotif . ',' . $pid;
+    }
+
+    //Adding id of product to feedbackNotif field in current_owner to notify current_owner of feedback received
+    $update = "UPDATE Users
+               SET feedbackNotif = '$feedbackNotif'
+               WHERE username = '$previous_owner'";
+    
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+    $Result =$conn->exec($update) ;
+
+    //storing the feedback in Notification table so that user can view all later
+    $notiffdetail="Feedback of product $pid: $feedback";
+    $insertStmt= "INSERT INTO Notifications(notiffDetails,username)
+                  VALUES('$notiffdetail','$previous_owner')";
+    $resultnotiff=$conn->exec($insertStmt);
+    
+    header("Location: MyProducts.php");
+  }
+
+  else if (isset($_POST['stop'])){
+    $stopConfirmation=$_POST["stopConfirmation"];
+    if($stopConfirmation=="yes"){
+      $query="SELECT username FROM Bidding WHERE productId=$pid";
+      $Result =$conn->query($query);
+      $row = $Result->fetch();
+      if(!$row){
+        $update="UPDATE Product SET is_Sold=1 WHERE productId=$pid AND current_owner='$user'";
+        $answer =$conn->exec($update) ;
+        header("Location: MyProducts.php");
+      }
+      else{
+        echo "<script type='text/javascript'>alert('Product cant be stopped. Someone has already bidded on it');</script>";
+        //echo "failed";
+      }
+    }
+  }
+  else{
+    header("Location: MyProducts.php");
+  }
+  
 }
+
+//Getting ToCurrency of user
+if($user != ""){
+  $ToCurrencyQuery = $conn->query("SELECT c.code as code, c.conversion_rate as rate
+                                   FROM Users u, Currency c
+                                   WHERE u.currency = c.currency
+                                   AND username = '$user'")->fetch();
+                                                           
+  $ToCurrency = $ToCurrencyQuery['code'];
+  $rate = $ToCurrencyQuery['rate'];
+
+  //Setting Currency Symbol
+  $locale='en-US'; //browser or user locale
+  $fmt = new NumberFormatter( $locale."@currency=$ToCurrency", NumberFormatter::CURRENCY );
+  $symbol = $fmt->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+}
+
 ?>
 
 <html lang="en">
@@ -44,12 +153,10 @@ header("Location: MyProducts.php");
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/jquery-ui.css">
-    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="css/aos.css">
     <link rel="stylesheet" href="css/style.css">
-
-    <link rel="stylesheet" href="includes/productsRishikesh.css">
-    <link rel="stylesheet" href="includes/myproductsTab.css">
+    <link rel="stylesheet" href="css/products.css">
+    <link rel="stylesheet" href="css/myproductsTab.css">
 
 </head>
 <body>
@@ -64,7 +171,7 @@ header("Location: MyProducts.php");
                 <li class="has-children">
                   <span><?php echo $user?></span>
                   <ul class="dropdown">
-                      <li><a href="MyProfile.html">My Profile</a></li>
+                      <li><a href="MyProfile.php">My Profile</a></li>
                       <li><a href="MyBiddings.php">My Biddings</a></li>
                       <li><a href="homepage.php">Logout</a></li>
                   </ul>
@@ -84,10 +191,29 @@ header("Location: MyProducts.php");
           <nav class="site-navigation position-relative text-right" role="navigation">
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li><a href="homepage.php?referer=login"><span>Home</span></a></li>
-                <li class="active"><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
-                <li><a href="#about-section"><span>About Us</span></a></li>
-                <li><a href="blog.html"><span>FAQ</span></a></li>
-                <li><a href="#contact-section"><span>Contact</span></a></li>
+                <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
+                <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
+                <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="images/notification.png"></a>
+                  <ul class="dropdown-menu" >
+                  <?php
+                  $query="SELECT notiffId,notiffDetails FROM Notifications WHERE username='$user'LIMIT 5 ";
+                  $data  =$conn->query($query) ;
+                  $result = $data->fetchAll(PDO::FETCH_ASSOC);
+                  if(!$result){
+                      echo "<li>No notification</li>";
+                  }
+                  else{
+                      foreach($result as $output) {
+                          $notif = $output["notiffDetails"];
+                          echo "<li >$notif<hr></li>";
+                      }
+                  }
+                  ?>
+                  <li class="btn" id="clearbtn">Clear</li>
+                  </ul>                  
+                </li>
               </ul>
             </nav>
           </div>
@@ -96,46 +222,92 @@ header("Location: MyProducts.php");
     </header>
     <!--End of header-->
 
+    <!--Search Bar only-->
+	<div class="background-image" style="background-image: url(images/coverproduct.png); "data-aos="fade"> 
+		<div class="container">
+			<p>.</p>
+			<div class="row align-items-center justify-content-center text-center" style="min-height:325px;">
+				<div class="col-md-10">
+					<div class="row justify-content-center mb-4">
+						<div class="col-md-8 text-center">
+							<h1 style="color:white;" data-aos="fade-up" >My Products</h1>
+						</div>
+					</div>
+          <div class="row justify-content-center mb-4">
+						<div class="col-md-3 ">
+            <ul class="tab">
+              <li><a href="#" class="tablinks" data-aos="fade-up" onclick="switchTab(event, 'owned')">Owned</a></li>
+              <li><a href="#" class="tablinks" data-aos="fade-up" onclick="switchTab(event, 'inauction')">In Auction</a></li>
+            </ul>
+            </div>
+					</div>		
+				</div>
 
-    <div class="container" style="padding-left:70px; padding-top:75px">
-      <div class="row tab">
-        <button class="tablinks" onclick="switchTab(event, 'owned')">Items Owned</button>
-        <button class="tablinks" onclick="switchTab(event, 'inauction')">Items In Auction</button>
-      </div>
-      <div id="owned" class="tabcontent row">
+			</div>
+		</div>
+	</div>
+
+  <div style="padding-left:25px; padding-top:25px">
+    <div class="container">    
+    <div id="owned" class="tabcontent">
+
         <?php
-          $query="SELECT a.date, MAX(a.amount_paid) AS pmax, p.name, s.imageName,p.productId
-                  FROM Product p, AuctionDetail a, ProductImage s
-                  WHERE a.productId=p.productId
-                  AND p.productId=s.prodID
+          $query="SELECT  p.name, s.imageName,p.productId
+                  FROM Product p,  ProductImage s
+                  WHERE p.productId=s.prodID
                   AND p.current_owner='$user'
                   AND p.is_Sold=1
-                  GROUP BY p.name";
+                  ";
           $data  =$conn->query($query) ;
           $result = $data->fetchAll(PDO::FETCH_ASSOC);
-    
-          foreach($result as $output) {
-              $name =  $output["name"];
-              $price = $output["pmax"];
-              $date = $output["date"];
-              $imageName = $output["imageName"];
-              $pid=$output['productId'];
-              echo "
-              <div class=\"auctionBox grid-item\">
-                <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
-                <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
-                <center>Amount Paid: Rs $price</center>
-                <center>Date bought: $date</center>
-                <button  onclick=\"resell('$pid')\">Resell</button>
-                <button>Leave Feedback</button>
-                </div>";
-            }
-          
+          echo "<div class=\"row\">";
+          if(!$result){
+            echo "
+            <div class=\"col-lg-4 col-md-6 mb-5\">
+            None
+            </div>
+            ";
+          }
+          else{
+            foreach($result as $output) {
+                $name =  $output["name"];
+                $imageName = $output["imageName"];
+                $pid=$output['productId'];
+
+                $auctionDetailQuery = $conn->query("SELECT * FROM AuctionDetail WHERE productId = '$pid' LIMIT 1")->fetch();
+                $auctionDetail = $auctionDetailQuery['productId'];
+
+                echo "
+                  <div class=\"col-lg-4 col-md-6 mb-5\">
+                  <div class=\"product-item\">
+                    <figure>
+                    <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
+                    </figure>
+                    <div class=\"px-4\">
+                        <h3>$name</h3>
+                    </div>
+                    <div>
+                    <p class=\"btn mr-1 rounded-3\" onclick=\"resell('$pid')\">Resell</p>
+                    <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>";
+                    if($auctionDetail){
+                     echo "<p class=\"btn mr-1 rounded-3\" onclick=\"leaveFeedback('$pid')\">Leave Feedback</p>";
+                    }
+                    
+                echo"    </div>
+                  </div>
+                  </div>
+                ";
+              }
+          } 
         ?>
-      </div>
-      <div id="inauction" class="tabcontent row">
+    </div>
+    </div>
+
+    <div class="container">   
+    <div id="inauction" class="tabcontent">
+
         <?php
-        $query="SELECT p.start_time, p.start_price, p.name, s.imageName,p.productId
+        $query="SELECT p.start_time, p.start_price, p.end_time,  p.name, s.imageName,p.productId
                 FROM Product p, ProductImage s
                 WHERE p.current_owner='$user'
                 AND p.productId=s.prodID
@@ -143,41 +315,115 @@ header("Location: MyProducts.php");
         $data  =$conn->query($query) ;
         $result = $data->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach($result as $output) {
-            $name =  $output["name"];
-            $price = $output["start_price"];
-            $date = $output["start_time"];
-            $imageName = $output["imageName"];
+        echo "<div class=\"row\">";
+        if(!$result){
+          echo "
+          <div class=\"col-lg-4 col-md-6 mb-5\">
+          None
+          </div>
+          ";
+        }
+        else{
+          foreach($result as $output) {
+              $name =  $output["name"];
+              $price = $output["start_price"];
+              $date = $output["start_time"];
+              $end_time = $output["end_time"];
+              $imageName = $output["imageName"];
+              $pid=$output['productId'];
+              $currentPriceQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
+                                                            FROM Bidding
+                                                            WHERE productId = '$pid'")->fetch();
+                                                            
+              $currentPrice = $currentPriceQuery['price_bidded'];
+              if(empty($currentPrice)){
+                $currentPrice = $price;
+              }
 
-            echo "
-            <div class=\"auctionBox grid-item\">
-              <center><a href='details.php?id=".$output['productId']."'>$name</a></center>
-              <img src=\"http://localhost/Web-Assignment/images/$imageName\" width=\"248px\" height=\"200px\"/>
-              <center>Starting Price: Rs $price</center>
-              <center>Current Price: TO BE IMPLEMENTED</center>
-              <center>Time Left: TO BE IMPLEMENTED</center>
-              </div>";
+              $currentPrice /= $rate;
+              $currentPrice = round($currentPrice, 2);
+                echo "
+                  <div class=\"col-lg-4 col-md-6 mb-5\">
+                  <div class=\"product-item\">
+                    <figure>
+                    <img src=\"http://localhost/Web-Assignment/images/$imageName\" alt=\"Image\" class=\"image-size\">
+                    </figure>
+                    <div class=\"px-4\">
+                        <h3>$name</h3>
+                        <p>Current Price: $symbol $currentPrice</p>
+                        <center id=\"demo\" class=\"timer\"></center> 
+                        <p>Time Left: TO BE IMPLEMENTED</p>
+                    </div>
+                    <div>
+                    <p class=\"btn mr-1 rounded-3\" onclick=\"deletes('$pid')\">Delete</p>
+                    <p class=\"btn mr-1 rounded-3\" onclick=\"stopAuction('$pid')\">Stop Auction</p>
+                    </div>
+                  </div>
+                  </div>
+                ";
+            }
           }
         ?>
-      </div>
-      
-      
     </div>
+    </div>
+      
+      
+  </div>
+
     <div id="modal-wrapper" class="modal">
-      <form class="modal-content animate" action="" method="post">
+      <form class="modal-content animate" action="" method="post" >
         <div class="container">
           <h3>Reselling Product</h3>
           <span onclick="document.getElementById('modal-wrapper').style.display='none' " class="close" title="Close PopUp">&times;</span>
-          <input type="number" class="form-control" name="start_price" value="" placeholder="Starting Price" maxlength="20">
-          <input type="number" class="form-control" name="duration" value="" placeholder="Duration" maxlength="20">
+          <input type="number" class="form-control" name="start_price" value="" placeholder="Starting Price" min="1" maxlength="20">
+          <input type="number" class="form-control" name="duration" value="" placeholder="Duration(hours)" min="1" maxlength="20">
           <input type="hidden" id="prodId" name="prodId">
-          <input type="submit" value="Confirm Resale">
+          <input type="submit" value="Confirm Resale" name="resell">
+        </div>
+      </form>
+    </div>
+
+    <div id="modal-delete" class="modal">
+      <form class="modal-content animate" action="" method="post">
+      <div class="container">
+        <p>Confirm Deletion</p>
+        <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
+        <input type="checkbox" name="deleteConfirmation" value="yes">Yes
+        <input type="checkbox" name="deleteConfirmation" value="no">No<br>
+        <input type="hidden" id="prodIds" name="prodId">
+        <input type="submit" value="Delete" name="delete">
+        </div>
+      </form>
+    </div>
+
+    <div id="modal-feedback" class="modal">
+      <form class="modal-content animate" action="" method="post" >
+        <div class="container">
+          <h3>Leave Feedback</h3>
+          <span onclick="document.getElementById('modal-feedback').style.display='none' " class="close" title="Close PopUp">&times;</span>
+          <input type="text" class="form-control" name="feedback" value="" placeholder="Feedback">
+          <input type="hidden" id="prodIdFeedback" name="prodId">
+          <input type="submit" value="Leave Feedback" name="leavefeedback">
+        </div>
+      </form>
+    </div>
+
+    <div id="modal-stop" class="modal">
+      <form class="modal-content animate" action="" method="post">
+      <div class="container">
+        <p>Confirm Stopping Auction</p>
+        <span onclick="document.getElementById('modal-stop').style.display='none' " class="close" title="Close PopUp">&times;</span>
+        <input type="checkbox" name="stopConfirmation" value="yes">Yes
+        <input type="checkbox" name="stopConfirmation" value="no">No<br>
+        <input type="hidden" id="prodIdstop" name="prodId">
+        <input type="submit" value="Stop" name="stop">
         </div>
       </form>
     </div>
 
 </div>
 <script>
+        document.getElementsByClassName('tablinks')[0].click(); //to set default page first
         function switchTab(evt,choice){
           var i, tabcontent, tablinks;
           tabcontent = document.getElementsByClassName("tabcontent");
@@ -195,7 +441,6 @@ header("Location: MyProducts.php");
         function resell(pid){
           document.getElementById("modal-wrapper").style.display="block";
           document.getElementById("prodId").value=pid;
-         // productid.innerHTML="Value= "+"'"+pid+"'";
         }
 
         var modal = document.getElementById('modal-wrapper');
@@ -204,7 +449,51 @@ header("Location: MyProducts.php");
         modal.style.display = "none";
         }
         }
+        function deletes(pid){
+          document.getElementById("modal-delete").style.display="block";
+          document.getElementById("prodIds").value=pid;
+        }
+
+        function leaveFeedback(pid){
+          document.getElementById("modal-feedback").style.display="block";
+          document.getElementById("prodIdFeedback").value=pid;
+        }
+
+        function stopAuction(pid){
+          document.getElementById("modal-stop").style.display="block";
+          document.getElementById("prodIdstop").value=pid;
+        }
+
+      /*  var end_time = "<?php echo $end_time ?>";
+        console.log("end_time : " , end_time);
+        var deadline = new Date(end_time).getTime(); 
+        var now = new Date().getTime(); 
+        var t = deadline - now; 
+        var days = Math.floor(t / (1000 * 60 * 60 * 24)); 
+        var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60)); 
+        var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)); 
+        var seconds = Math.floor((t % (1000 * 60)) / 1000);
+
+        if(days == 0){
+          document.getElementById("demo").innerHTML = hours + ":" + minutes + ":" + seconds ; 
+        }
+        else if(days == 1){
+          document.getElementById("demo").innerHTML = days + " day "  
+          + hours + ":" + minutes + ":" + seconds ; 
+        }
+        else{
+          document.getElementById("demo").innerHTML = days + " days "  
+          + hours + ":" + minutes + ":" + seconds ; 
+        }
+
+        document.getElementById("demo").style.color = "red";*/
         
       </script>
+      <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

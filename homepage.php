@@ -1,26 +1,29 @@
 <?php
 session_start();
 $user=""; //to display the name of the user for the dropdown box
+
 if(isset($_GET['referer'])){
   if($_GET['referer'] == 'login')
   {
     $user=$_SESSION['username'];
   }//end if
 }
-
+require_once "PhpFunctions/SellerNotif.php";
+require_once "PhpFunctions/feedback.php";
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Homepage</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/magnific-popup.css">
     <link rel="stylesheet" href="css/jquery-ui.css">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/aos.css">   
     <link rel="stylesheet" href="css/style.css">
     
 </head>
@@ -50,9 +53,8 @@ if ($user ==""){
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li class="active"><a><span>Home</span></a></li>
                 <li><a href="ProductsNew.php"><span>Products</span></a></li>
-                <li><a href="#about-section"><span>About Us</span></a></li>
-                <li><a href="blog.html"><span>FAQ</span></a></li>
-                <li><a href="#contact-section"><span>Contact</span></a></li>
+                <li><a href="faq.php"><span>FAQ</span></a></li>
+                <li><a href="ContactUs.php"><span>Contact</span></a></li>
               </ul>
             </nav>
           </div>
@@ -68,7 +70,7 @@ if ($user ==""){
                 <li class="has-children">
                   <span><?php echo $user?></span>
                   <ul class="dropdown">
-                      <li><a href="MyProfile.html">My Profile</a></li>
+                      <li><a href="MyProfile.php">My Profile</a></li>
                       <li><a href="MyProducts.php">My Products</a></li>
                       <li><a href="MyBiddings.php">My Biddings</a></li>
                       <li><a href="homepage.php">Logout</a></li>
@@ -82,9 +84,28 @@ if ($user ==""){
               <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
                 <li class="active"><a><span>Home</span></a></li>
                 <li><a href="ProductsNew.php?referer=login"><span>Products</span></a></li>
-                <li><a href="#about-section"><span>About Us</span></a></li>
-                <li><a href="blog.html"><span>FAQ</span></a></li>
-                <li><a href="#contact-section"><span>Contact</span></a></li>
+                <li><a href="faq.php?referer=login"><span>FAQ</span></a></li>
+                <li><a href="ContactUs.php?referer=login"><span>Contact</span></a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="images/notification.png"></a>
+                  <ul class="dropdown-menu" >
+                  <?php
+                  $query="SELECT notiffDetails FROM Notifications WHERE username='$user'";
+                  $data  =$conn->query($query) ;
+                  $result = $data->fetchAll(PDO::FETCH_ASSOC);
+                  if(!$result){
+                      echo "<li>No notification</li>";
+                  }
+                  else{
+                      foreach($result as $output) {
+                          $notif = $output["notiffDetails"];
+                          echo "<li >$notif<hr></li>";
+                      }
+                  }
+                  ?>
+                  <li class="btn" id="clearbtn">Clear</li>
+                  </ul>                  
+                </li>
               </ul>
             </nav>
           </div>
@@ -126,16 +147,15 @@ if ($user ==""){
                     <div class="select-wrap">
                       <select class="form-control" name="category">
                         <option value="all">All Categories</option>
-                        <option value="Art">Art</option>
-                        <option value="Books and magazines">Books &amp; Magazines</option>
-                        <option value="Cellphones">Cellphones</option>
-                        <option value="Computers">Computers</option>
-                        <option value="Clothes">Clothes</option>
-                        <option value="Jewellery and Watches">Jewellery &amp; Watches</option>
-                        <option value="Music">Music</option>
-                        <option value="Movies">Movies</option>
-                        <option value="Health Care">Health Care</option>
-                        <option value="Vehicles">Vehicles</option>
+                        <?php
+                          $categoryQuery="SELECT categoryName FROM Category";
+                          $dataa  =$conn->query($categoryQuery) ;
+                          $results = $dataa->fetchAll(PDO::FETCH_ASSOC);
+                          foreach($results as $outputs) {
+                            $categoryOutput=$outputs["categoryName"];
+                            echo "<option value=\"$categoryOutput\">$categoryOutput</option>";
+                          }
+                        ?>
                       </select>
                     </div>
                   </div>
@@ -178,53 +198,14 @@ if ($user ==""){
         </div>
       </div>
     </div>
- <!--Contact Us-->  
-    <div class="site-section bg-light" id="contact-section">
-      <div class="container">
-        <div class="row">
-            <div class="col-md-5"  data-aos="fade" data-aos-delay="100">
-            
-                <div class="p-4 mb-3 bg-white">
-                  <p class="mb-0 font-weight-bold">Address</p>
-                  <p class="mb-4">203 Fake St. Mountain View, San Francisco, California, USA</p>
-    
-                  <p class="mb-0 font-weight-bold">Phone</p>
-                  <p class="mb-4"><a href="#">+1 232 3235 324</a></p>
-    
-                  <p class="mb-0 font-weight-bold">Email Address</p>
-                  <p class="mb-0"><a href="#">youremail@domain.com</a></p>
-                </div>
-            </div>
-            <div class="col-md-5"  data-aos="fade" data-aos-delay="100"></div>
-                
-                <div class="p-4 mb-3 bg-white">
-                  <h3 class="h5 text-black mb-3">More Info</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa ad iure porro mollitia architecto hic consequuntur. Distinctio nisi perferendis dolore, ipsa consectetur? Fugiat quaerat eos qui, libero neque sed nulla.</p>
-                  <p><a href="#" class="btn btn-primary px-4 py-2 text-white">Learn More</a></p>
-                </div>
-                </div>
-    
-              
-
-        </div>
-      </div>
-    </div>
-    
  
-
   <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
   <script src="js/jquery-ui.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/jquery.stellar.min.js"></script>
-  <script src="js/jquery.countdown.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/bootstrap-datepicker.min.js"></script>
   <script src="js/aos.js"></script>
-  <script src="js/rangeslider.min.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/dataValidation.js"></script>
     
 </body>
 </html>
