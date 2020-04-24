@@ -67,21 +67,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $deleteuser=$_POST["deleteConfirmationuser"];
         $email=$_POST["emailuser"];
         $userdelete=$_POST["usernamedel"];
-        $reason=$_POST["reason"];
         if($deleteuser=="yes"){
-            if(mail($email, "Why we deleted your account", $reason)){
-                $delStm="DELETE FROM Users WHERE username='$userdelete'";
-                $delresult=$conn->exec($delStm);
-                if($delresult){
-                    header("Location: adminhomepage.php?referer=login");
-                }
-                else{
-                    echo "<script>alert('failed');</script>";  
-                }
+            $delStm="DELETE FROM Users WHERE username='$userdelete'";
+            $delresult=$conn->exec($delStm);
+            if($delresult){
+                header("Location: adminhomepage.php?referer=login");
             }
             else{
-                echo "<script>alert('Email not sent');</script>";
-            }       
+                echo "<script>alert('failed');</script>";  
+            }
         }
         else{
             header("Location: adminhomepage.php?referer=login");
@@ -93,14 +87,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 <head>
     <title>Admin</title>
     <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="../css/table.css">
     <link rel="stylesheet" href="../css/myproductsTab.css">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+   
     <meta name="robots" content="noindex">
     <script>
          $(document).ready(function () {
+
              $("#viewproduct").click(function(){
                 $("#viewproduct").addClass("active");
                 $("div#details").load("viewproducts.php");
@@ -110,8 +109,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("div#viewreports").fadeOut(); 
                 $("#viewchart").removeClass("active");
                 $("#viewuser").removeClass("active");
+                $("#viewcurrency").removeClass("active");
                 $("#viewfaq").removeClass("active");
                 $("#viewreport").removeClass("active");
+                $("#generatedata").removeClass("active");
              })
 
              $("#viewchart").click(function(){
@@ -123,8 +124,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("div#viewreports").fadeOut();
                 $("#viewproduct").removeClass("active");
                 $("#viewuser").removeClass("active");
+                $("#viewcurrency").removeClass("active");
                 $("#viewfaq").removeClass("active");
                 $("#viewreport").removeClass("active");
+                $("#generatedata").removeClass("active");
              })
 
              $("#viewuser").click(function(){
@@ -136,7 +139,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("#viewproduct").removeClass("active");
                 $("#viewchart").removeClass("active");
                 $("#viewfaq").removeClass("active");
+                $("#viewcurrency").removeClass("active");
                 $("#viewreport").removeClass("active");
+                $("#generatedata").removeClass("active");
+             })
+
+             $("#viewcurrency").click(function(){
+                $("#viewcurrency").addClass("active");
+                $("div#details").load("viewcurrencies.php");
+                $("div#details").fadeIn();
+                $("div#viewfaqs").fadeOut();
+                $("div#viewreports").fadeOut();
+                $("div#viewusers").fadeOut();
+                $("#viewproduct").removeClass("active");
+                $("#viewchart").removeClass("active");
+                $("#viewuser").removeClass("active");
+                $("#viewfaq").removeClass("active");
+                $("#viewreport").removeClass("active");
+                $("#generatedata").removeClass("active");
              })
 
              $("#viewfaq").click(function(){
@@ -148,7 +168,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("#viewproduct").removeClass("active");
                 $("#viewchart").removeClass("active");
                 $("#viewuser").removeClass("active");
+                $("#viewcurrency").removeClass("active");
                 $("#viewreport").removeClass("active");
+                $("#generatedata").removeClass("active");
              })
 
              $("#viewreport").click(function(){
@@ -160,8 +182,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("#viewproduct").removeClass("active");
                 $("#viewchart").removeClass("active");
                 $("#viewuser").removeClass("active");
+                $("#viewcurrency").removeClass("active");
                 $("#viewfaq").removeClass("active");
+                $("#generatedata").removeClass("active");
              })
+
+             $("#generatedata").click(function(){
+                $("div#details").html("");
+                $("#generatedata").addClass("active");
+                $("div#details").load("viewGeneratedData.php");
+                $("div#details").fadeIn();
+                $("div#viewfaqs").fadeOut();
+                $("div#viewreports").fadeOut();
+                $("div#viewusers").fadeOut();
+                $("#viewproduct").removeClass("active");
+                $("#viewchart").removeClass("active");
+                $("#viewuser").removeClass("active");
+                $("#viewcurrency").removeClass("active");
+                $("#viewfaq").removeClass("active");
+                $("#viewreport").removeClass("active");
+             });
 
              $('.deletequestion').click(function(){
                  var questionId=$(this).attr('id');
@@ -169,7 +209,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                  $("#faqIdmodal").val(questionId);
              });
 
-             
+            $("button#createcurrency").click(function(){
+                console.log("Create currency clicked on Jquery");
+                $("div#modal-wrapper").css("display","block");
+                console.log("Modal displayed");
+            });
+                            
          });
     </script>
 </head>
@@ -182,13 +227,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             </div>
             
             <ul class="list-unstyled components">
-                <p>Management</p>
+                <h5 style="text-align:center">Management</h5><hr>
                 <li id="viewproduct"><a>All Products</a></li>
                 <li id="viewuser"><a>Users</a></li>
-                <li id="viewfaq"><a>FAQ</a></li>
-                <p>Other Tools</p>
+                <li id="viewcurrency"><a>Currencies</a></li>
+                <li id="viewfaq"><a>FAQ</a></li><hr>
+                <h5 style="text-align:center">Other Tools</h5><hr>
                 <li id="viewreport"><a>View Reports</a></li>
                 <li id="viewchart"><a>View Charts</a></li> 
+                <li id="generatedata"><a>Generate XML/JSON</a></li> 
                 <li><a href="adminlogout.php">Logout</a></li>
             </ul>
     </nav>            
@@ -227,6 +274,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 </div>
             </div>
             
+            
             <!--View FAQ-->
             <div id="viewfaqs" style="display:none" >
                 <div class="container table100 ver1 m-b-110">
@@ -248,7 +296,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                         <td><?php echo $rows['question']?></td>
                         <td><?php echo $rows['answer']?></td>
                         <td><?php echo $rows['category']?></td>
-                        <td><button class="btn deletequestion" id=<?php echo $faqid?>>Delete Question</button></td>
+                        <td><button class="btn deletequestion" id="<?php echo $faqid?>">Delete Question</button></td>
                         </tr>
                     <?php
                     }
@@ -316,7 +364,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <form class="modal-content animate" action="" method="post">
             <div class="container">
                 <p>Confirm Deletion</p>
-                <span onclick="document.getElementById('modal-delete-user').style.display='none' " class="close" title="Close PopUp">&times;</span>
+                <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
                 <input type="checkbox" name="deleteConfirmationuser" value="yes">Yes
                 <input type="checkbox" name="deleteConfirmationuser" value="no">No
                 <p>Give a reason why you are deleting this user</p>
@@ -326,13 +374,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 <input type="submit" value="Remove User" name="deleteuser">
                 </div>
             </form>
-        </div>           
+        </div>  
+
+        <div id="modal-wrapper" class="modal">
+            <form class="modal-content animate" action="" method="post">
+                <div class="container">
+                    <h3>Adding new Currency</h3>
+                    <span onclick="document.getElementById('modal-wrapper').style.display='none' " class="close" title="Close PopUp">&times;</span>
+                    <input type="text" class="form-control" name="CurrencyName" value="" placeholder="Currency Name"  >
+                    <input type="text" class="form-control" name="Code" value="" placeholder="Currency Code">
+                    <input type="submit" value="Add Currency" name="addCurrency">
+                </div>
+            </form>
+        </div>
+
+        <!--Add currency popup-->
+        <!--div id="modal-wrapper" class="modal" style="display:block;">
+            <form class="modal-content animate" action="" method="post" >
+                <div class="container">
+                    <h3>Adding new Currency</h3>
+                    <span onclick="document.getElementById('modal-wrapper').style.display='none' " class="close" title="Close PopUp">&times;</span>
+                    <input type="text" class="form-control" name="CurrencyName" value="" placeholder="Currency Name"  >
+                    <input type="text" class="form-control" name="Code" value="" placeholder="Currency Code" min="3" maxlength="3">
+                    <input type="submit" value="Add Currency" name="addCurrency">
+                </div>
+            </form>
+        </div-->    
+
+
         <script>
         function deleteUser(username, email){
                 $("#modal-delete-user").css("display","block");
                 $("#usernamedel").val(username);
                 $("#emailuser").val(email);
-                }
+        }
+
+        function addCurrency(){
+            console.log("Create currency clicked on JS");
+            document.getElementById("modal-wrapper").style.display="block";
+           // $("#modal-wrapper").css("display","block");
+        }
         </script>
 </div>
 </body>

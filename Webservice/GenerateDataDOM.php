@@ -59,6 +59,7 @@
     else{
         header('Content-Type: application/xml');
         $dom->formatOutput = true;
+        print $dom->saveXML();
         print $dom->save("AuctionHouseDataDOM.xml");
     }
 ?>

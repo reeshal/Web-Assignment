@@ -45,6 +45,7 @@
     if ($result->isValid()) {
         header('Content-Type: application/json'); 
         $jasondata=json_encode($decoded,JSON_PRETTY_PRINT);
+        echo $jasondata;
         file_put_contents("AuctionHouseData.json",$jasondata);
     }
     else{

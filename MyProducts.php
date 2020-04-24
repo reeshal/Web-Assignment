@@ -20,13 +20,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       $the_time = date('Y-m-d H:i:s');
       $duration += 3; //Timezone
       $endtime=date('Y-m-d H:i',strtotime('+'.$duration.' hours',strtotime($the_time)));
+
+      //Converting starting price of product to USD
+		$rateQuery = $conn->query("SELECT c.conversion_rate as rate
+                               FROM Users u, Currency c
+                               WHERE u.username = '$user'
+                               AND u.currency = c.currency")->fetch();
+                            
+    $rate = $rateQuery['rate'];
+    $start_price *= $rate; 
+
       $update="UPDATE Product SET is_Sold=0, start_time='$the_time', duration=$duration, end_time='$endtime',
                                 start_price=$start_price
                             WHERE current_owner='$user'
                             AND productId=$pid ";
       $Result =$conn->exec($update) ;
       header("Location: MyProducts.php");
-    } //else?
+    }
   }
   else if (isset($_POST['delete'])){
     $deleteConfirmation=$_POST["deleteConfirmation"];
@@ -116,6 +126,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
   }
   
 }
+
+//Getting ToCurrency of user
+if($user != ""){
+  $ToCurrencyQuery = $conn->query("SELECT c.code as code, c.conversion_rate as rate
+                                   FROM Users u, Currency c
+                                   WHERE u.currency = c.currency
+                                   AND username = '$user'")->fetch();
+                                                           
+  $ToCurrency = $ToCurrencyQuery['code'];
+  $rate = $ToCurrencyQuery['rate'];
+
+  //Setting Currency Symbol
+  $locale='en-US'; //browser or user locale
+  $fmt = new NumberFormatter( $locale."@currency=$ToCurrency", NumberFormatter::CURRENCY );
+  $symbol = $fmt->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+}
+
 ?>
 
 <html lang="en">
@@ -297,12 +324,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     <div class="container">   
     <div id="inauction" class="tabcontent">
 
-        <?php
+    <?php
         $query="SELECT p.start_price, p.name, s.imageName,p.productId, p.end_time
-                FROM Product p, ProductImage s
-                WHERE p.current_owner='$user'
-                AND p.productId=s.prodID
-                AND p.is_Sold=0";
+        FROM Product p, ProductImage s
+        WHERE p.current_owner='$user'
+        AND p.productId=s.prodID
+        AND p.is_Sold=0";
         $data  =$conn->query($query) ;
         $result = $data->fetchAll(PDO::FETCH_ASSOC);
 
@@ -329,6 +356,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
               if(empty($currentPrice)){
                 $currentPrice = $price;
               }
+
+              $currentPrice /= $rate;
+              $currentPrice = round($currentPrice, 2);
                 echo "
                   <div class=\"col-lg-4 col-md-6 mb-5\">
                   <div class=\"product-item\">
@@ -337,7 +367,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                     </figure>
                     <div class=\"px-4\">
                         <h3>$name</h3>
-                        <p>Current Price: Rs $currentPrice</p>
+                        <p>Current Price: $symbol $currentPrice</p>
+                        <center id=\"demo\" class=\"timer\"></center> 
                         <p>End Time: $date</p>
                     </div>
                     <div>

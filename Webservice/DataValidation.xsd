@@ -15,8 +15,8 @@
                                                 <xs:sequence>
                                                     <xs:element name="product_name" type="xs:string"/>
                                                     <xs:element name="description" type="xs:string"/>
-                                                    <xs:element name="start_price" type="xs:positiveInteger"/>
-                                                    <xs:element name="highest_bidded_price" type="xs:positiveInteger"/>
+                                                    <xs:element name="start_price" type="xs:decimal"/>
+                                                    <xs:element name="highest_bidded_price" type="xs:decimal"/>
                                                 </xs:sequence>
                                                 <xs:attribute name="product_id" type="xs:positiveInteger" use="required"/>
                                             </xs:complexType>
