@@ -5,8 +5,7 @@ $username=$_SESSION['username'];
 require_once "db_connect.php";
 //$productId = $_REQUEST['id'];
 $productId = $_POST['id'];//Get product id
-$FromCurrency = $_POST['fromCurrency'];//Get fromCurrency
-$ToCurrency = $_POST['toCurrency'];//Get toCurrency
+$rate = $_POST['rate'];//Get rate
 
 $biddingQuery = $conn->query("SELECT MAX(price_bidded) as price_bidded
                               FROM Bidding 
@@ -19,17 +18,8 @@ if(empty($price_bidded)){
   $price_bidded = $productQuery['start_price'];
 }
 
-//Currency conversion if necessary
-if($FromCurrency != $ToCurrency) {
-  $FromCurrency = urlencode($FromCurrency);
-  $ToCurrency = urlencode($ToCurrency);	
-  $encode_amount = 1;
-  $url  = "https://www.google.com/search?q=".$FromCurrency."+to+".$ToCurrency;
-  $get = file_get_contents($url);
-  $data = preg_split('/\D\s(.*?)\s=\s/',$get);
-  $exhangeRate = (float) substr($data[1],0,7);
-  $price_bidded = $price_bidded*$exhangeRate;
-}
+$price_bidded /= $rate;
+$price_bidded = round($price_bidded, 2);
 
 
 echo json_encode($price_bidded);

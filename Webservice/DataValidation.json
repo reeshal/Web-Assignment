@@ -19,8 +19,8 @@
                     "properties":{
                         "product_name":{"type":"string"},
                         "description":{"type":"string"},
-                        "start_price":{"type":"integer"},
-                        "highest_bidded_price":{"type":"integer"}
+                        "start_price":{"type":"number"},
+                        "highest_bidded_price":{"type":"number"}
                     },
                     "required":["product_name","description","start_price","highest_bidded_price"],
                     "additionalProperties" :false

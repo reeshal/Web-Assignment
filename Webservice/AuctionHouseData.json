@@ -11,14 +11,20 @@
             {
                 "product_name": "koala",
                 "description": "",
-                "start_price": 2,
+                "start_price": 22,
                 "highest_bidded_price": 4
             },
             {
                 "product_name": "food",
                 "description": "revwrj iwocjl ",
-                "start_price": 28,
+                "start_price": 36,
                 "highest_bidded_price": 37
+            },
+            {
+                "product_name": "Michelangelo",
+                "description": "Medieval Painting",
+                "start_price": 630,
+                "highest_bidded_price": 630.01
             }
         ]
     },
@@ -28,25 +34,14 @@
             {
                 "product_name": "Lord of the Rings",
                 "description": "books collection",
-                "start_price": 28,
+                "start_price": 345,
                 "highest_bidded_price": 101
             },
             {
                 "product_name": "Lord of the Rings",
                 "description": "books collection",
-                "start_price": 28,
+                "start_price": 345,
                 "highest_bidded_price": 29
-            }
-        ]
-    },
-    {
-        "category_name": "Computers",
-        "products": [
-            {
-                "product_name": "red lamborghini",
-                "description": "",
-                "start_price": 89999,
-                "highest_bidded_price": 89002
             }
         ]
     },
@@ -58,6 +53,12 @@
                 "description": "",
                 "start_price": 490,
                 "highest_bidded_price": 492
+            },
+            {
+                "product_name": "Black Skirt",
+                "description": "",
+                "start_price": 925,
+                "highest_bidded_price": 507
             }
         ]
     },

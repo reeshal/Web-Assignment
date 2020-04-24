@@ -12,13 +12,13 @@
       <product product_id="71">
         <product_name>koala</product_name>
         <description></description>
-        <start_price>2</start_price>
+        <start_price>22</start_price>
         <highest_bidded_price>4</highest_bidded_price>
       </product>
       <product product_id="53">
         <product_name>food</product_name>
         <description>revwrj iwocjl </description>
-        <start_price>28</start_price>
+        <start_price>36</start_price>
         <highest_bidded_price>37</highest_bidded_price>
       </product>
     </products>
@@ -29,19 +29,8 @@
       <product product_id="58">
         <product_name>Lord of the Rings</product_name>
         <description>books collection</description>
-        <start_price>28</start_price>
+        <start_price>345</start_price>
         <highest_bidded_price>101</highest_bidded_price>
-      </product>
-    </products>
-  </category>
-  <category>
-    <category_name>Computers</category_name>
-    <products>
-      <product product_id="66">
-        <product_name>red lamborghini</product_name>
-        <description></description>
-        <start_price>89999</start_price>
-        <highest_bidded_price>89002</highest_bidded_price>
       </product>
     </products>
   </category>
@@ -53,6 +42,12 @@
         <description></description>
         <start_price>490</start_price>
         <highest_bidded_price>492</highest_bidded_price>
+      </product>
+      <product product_id="68">
+        <product_name>Black Skirt</product_name>
+        <description></description>
+        <start_price>925</start_price>
+        <highest_bidded_price>507</highest_bidded_price>
       </product>
     </products>
   </category>
