@@ -104,103 +104,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $("#viewproduct").addClass("active");
                 $("div#details").load("viewproducts.php");
                 $("div#details").fadeIn();
-                $("div#viewfaqs").fadeOut(); 
-                $("div#viewusers").fadeOut(); 
-                $("div#viewreports").fadeOut(); 
-                $("#viewchart").removeClass("active");
-                $("#viewuser").removeClass("active");
-                $("#viewcurrency").removeClass("active");
-                $("#viewfaq").removeClass("active");
-                $("#viewreport").removeClass("active");
-                $("#generatedata").removeClass("active");
-             })
+                $("div#viewfaqs,div#viewusers,div#viewreports").fadeOut(); 
+                $("#viewchart,#viewuser,#viewcurrency,#viewfaq,#viewreport,#generatedata").removeClass("active");
+             });
 
              $("#viewchart").click(function(){
                 $("#viewchart").addClass("active");
                 $("div#details").load("viewcharts.php");
                 $("div#details").fadeIn();
-                $("div#viewfaqs").fadeOut(); 
-                $("div#viewusers").fadeOut(); 
-                $("div#viewreports").fadeOut();
-                $("#viewproduct").removeClass("active");
-                $("#viewuser").removeClass("active");
-                $("#viewcurrency").removeClass("active");
-                $("#viewfaq").removeClass("active");
-                $("#viewreport").removeClass("active");
-                $("#generatedata").removeClass("active");
-             })
+                $("div#viewfaqs,div#viewusers,div#viewreports").fadeOut(); 
+                $("#viewproduct,#viewuser,#viewcurrency,#viewfaq,#viewreport,#generatedata").removeClass("active");
+             });
 
              $("#viewuser").click(function(){
                 $("div#details").html("");
-                $("div#viewfaqs").fadeOut();
-                $("div#viewreports").fadeOut();
                 $("#viewuser").addClass("active");
                 $("div#viewusers").css("display","block");
-                $("#viewproduct").removeClass("active");
-                $("#viewchart").removeClass("active");
-                $("#viewfaq").removeClass("active");
-                $("#viewcurrency").removeClass("active");
-                $("#viewreport").removeClass("active");
-                $("#generatedata").removeClass("active");
-             })
+                $("div#viewfaqs,div#viewreports").fadeOut(); 
+                $("#viewproduct,#viewchart,#viewcurrency,#viewfaq,#viewreport,#generatedata").removeClass("active");
+             });
 
              $("#viewcurrency").click(function(){
                 $("#viewcurrency").addClass("active");
                 $("div#details").load("viewcurrencies.php");
                 $("div#details").fadeIn();
-                $("div#viewfaqs").fadeOut();
-                $("div#viewreports").fadeOut();
-                $("div#viewusers").fadeOut();
-                $("#viewproduct").removeClass("active");
-                $("#viewchart").removeClass("active");
-                $("#viewuser").removeClass("active");
-                $("#viewfaq").removeClass("active");
-                $("#viewreport").removeClass("active");
-                $("#generatedata").removeClass("active");
-             })
+                $("div#viewfaqs,div#viewreports,div#viewusers").fadeOut(); 
+                $("#viewproduct,#viewchart,#viewuser,#viewfaq,#viewreport,#generatedata").removeClass("active");
+             });
 
              $("#viewfaq").click(function(){
                 $("div#details").html("");
-                $("div#viewusers").fadeOut();
-                $("div#viewreports").fadeOut();
                 $("#viewfaq").addClass("active");
+                $("div#viewreports,div#viewusers").fadeOut(); 
+                $("#viewproduct,#viewchart,#viewuser,#viewcurrency,#viewreport,#generatedata").removeClass("active");
                 $("div#viewfaqs").css("display","block");
-                $("#viewproduct").removeClass("active");
-                $("#viewchart").removeClass("active");
-                $("#viewuser").removeClass("active");
-                $("#viewcurrency").removeClass("active");
-                $("#viewreport").removeClass("active");
-                $("#generatedata").removeClass("active");
-             })
+             });
 
              $("#viewreport").click(function(){
                 $("div#details").html("");
-                $("div#viewusers").fadeOut();
-                $("div#viewfaqs").fadeOut();
                 $("#viewreport").addClass("active");
                 $("div#viewreports").css("display","block");
-                $("#viewproduct").removeClass("active");
-                $("#viewchart").removeClass("active");
-                $("#viewuser").removeClass("active");
-                $("#viewcurrency").removeClass("active");
-                $("#viewfaq").removeClass("active");
-                $("#generatedata").removeClass("active");
-             })
+                $("div#viewfaqs,div#viewusers").fadeOut(); 
+                $("#viewproduct,#viewchart,#viewuser,#viewcurrency,#viewfaq,#generatedata").removeClass("active");
+             });
 
              $("#generatedata").click(function(){
                 $("div#details").html("");
                 $("#generatedata").addClass("active");
                 $("div#details").load("viewGeneratedData.php");
                 $("div#details").fadeIn();
-                $("div#viewfaqs").fadeOut();
-                $("div#viewreports").fadeOut();
-                $("div#viewusers").fadeOut();
-                $("#viewproduct").removeClass("active");
-                $("#viewchart").removeClass("active");
-                $("#viewuser").removeClass("active");
-                $("#viewcurrency").removeClass("active");
-                $("#viewfaq").removeClass("active");
-                $("#viewreport").removeClass("active");
+                $("div#viewfaqs,div#viewusers,div#viewreports").fadeOut(); 
+                $("#viewproduct,#viewchart,#viewuser,#viewcurrency,#viewfaq,#viewreport").removeClass("active");
              });
 
              $('.deletequestion').click(function(){
