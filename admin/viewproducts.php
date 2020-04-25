@@ -49,7 +49,7 @@ $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 echo "<td>".$row['category']."</td>";
                 echo "<td>".$row['end_time']."</td>";
                 echo "<td>".$currentowner."</td>";
-                echo "<td><button class=\"btn\" onclick=\"deletes('$pid','$email')\">Delete</button></td>";
+                echo "<td><button class=\"btn btn-primary\" onclick=\"deletes('$pid','$email')\">Delete</button></td>";
             }
             ?>
             </table>

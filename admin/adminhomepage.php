@@ -266,7 +266,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                         echo "<td>".$rows['firstname']."</td>";
                         echo "<td>".$rows['lastname']."</td>";
                         echo "<td>".$rows['dob']."</td>";
-                        echo "<td><button class=\"btn\" onclick=\"deleteUser('$username','$emailuser')\">Remove User</button></td>";
+                        echo "<td><button class=\"btn btn-primary\" onclick=\"deleteUser('$username','$emailuser')\">Remove User</button></td>";
                         echo "</tr>";
                     }
                     ?>
@@ -296,7 +296,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                         <td><?php echo $rows['question']?></td>
                         <td><?php echo $rows['answer']?></td>
                         <td><?php echo $rows['category']?></td>
-                        <td><button class="btn deletequestion" id="<?php echo $faqid?>">Delete Question</button></td>
+                        <td><button class="btn  btn-primary deletequestion" id="<?php echo $faqid?>">Delete Question</button></td>
                         </tr>
                     <?php
                     }
