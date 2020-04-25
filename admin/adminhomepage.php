@@ -351,7 +351,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <form class="modal-content animate" action="" method="post">
             <div class="container">
             <p>Confirm Deletion</p>
-            <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
+            <span onclick="document.getElementById('modal-delete-question').style.display='none' " class="close" title="Close PopUp">&times;</span>
             <input type="checkbox" name="deleteConfirmationfaq" value="yes">Yes
             <input type="checkbox" name="deleteConfirmationfaq" value="no">No
             <input type="hidden" id="faqIdmodal" name="faqId">
@@ -364,7 +364,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <form class="modal-content animate" action="" method="post">
             <div class="container">
                 <p>Confirm Deletion</p>
-                <span onclick="document.getElementById('modal-delete').style.display='none' " class="close" title="Close PopUp">&times;</span>
+                <span onclick="document.getElementById('modal-delete-user').style.display='none' " class="close" title="Close PopUp">&times;</span>
                 <input type="checkbox" name="deleteConfirmationuser" value="yes">Yes
                 <input type="checkbox" name="deleteConfirmationuser" value="no">No
                 <p>Give a reason why you are deleting this user</p>
