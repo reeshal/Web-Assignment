@@ -126,7 +126,7 @@ $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
          //Displaying add currency popup
         $("button#createcurrency").click(function(){
             console.log("Create currency clicked on Jquery");
-            $("div#modal-wrapper").css("display","block");
+            $("div#modal-add").css("display","block");
         });
 
         //Displaying delete currency popup
