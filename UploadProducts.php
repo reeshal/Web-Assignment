@@ -37,6 +37,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		$the_time = date('Y-m-d H:i:s');
 		$duration += 3; //Timezone
 		$endtime=date('Y-m-d H:i',strtotime('+'.$duration.' hours',strtotime($the_time)));
+		
+		//Converting starting price of product to USD
+		$rateQuery = $conn->query("SELECT c.conversion_rate as rate
+                                   FROM Users u, Currency c
+                                   WHERE u.username = '$username'
+                                   AND u.currency = c.currency")->fetch();
+                                                           
+		$rate = $rateQuery['rate'];
+		$start_price *= $rate; 
+		
 	    $insert = "INSERT INTO Product(name, description, start_price, category, start_time, duration, current_owner, end_time)
 			 VALUES(" . $conn->quote($product_name) .", " . $conn->quote($description) .", " . $conn->quote($start_price) .", " . $conn->quote($category) .", " . $conn->quote($the_time) .", " . $conn->quote($duration) .", " . $conn->quote($username) .", " . $conn->quote($endtime) .")";
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
